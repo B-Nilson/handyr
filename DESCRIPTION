@@ -12,6 +12,7 @@ Imports:
     dplyr,
     future,
     future.apply,
+    ggplot2,
     zoo
 Suggests: 
     testthat (>= 3.0.0)
