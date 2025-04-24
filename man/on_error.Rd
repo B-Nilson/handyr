@@ -31,6 +31,7 @@ on_error(read.csv("not_A_fil3.123"), return = NULL)
 }
 \seealso{
 Other Utilities: 
+\code{\link{for_each}()},
 \code{\link{swap}()}
 }
 \concept{Utilities}

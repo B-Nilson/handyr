@@ -26,6 +26,7 @@ swap(c(-20:20), what = Inf, with = NA)
 }
 \seealso{
 Other Utilities: 
+\code{\link{for_each}()},
 \code{\link{on_error}()}
 }
 \concept{Utilities}
