@@ -5,6 +5,7 @@
 #' @param taller A single numeric value indicating how many inches to add/remove to the output plot height. Default makes a 5"x6.5" image.
 #' @param page_width A single numeric value indicating the width of the page (minus margins) in inches that the image is intended for.
 #' @param quality A single character value equal to "high" (dpi = 300), "medium" (dpi = 200), or "low" (dpi = 100) indicating the output quality of the figure.
+#'   OR a single numeric value equal to the desired dpi.
 #'   Text sizes may need to be adjusted for differenct quality levels.
 #' @param ... (Optional) addition arguments passed on to ggplot2::ggsave()
 #'
@@ -27,7 +28,7 @@
 #'   )
 #' # save_figure(gg, "./test.png", taller = 1)
 save_figure <- function(gg, out_path, taller = 0, page_width = 6.5, quality = "high", ...) {
-  dpi <- if (quality == "high") 300 else if (quality == "medium") 200 else 100
+  dpi <- if (quality == "high") 300 else if (quality == "medium") 200 else if (quality == "low") 100 else quality
   ggplot2::ggsave(
     filename = out_path,
     plot = gg,
