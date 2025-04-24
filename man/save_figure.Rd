@@ -26,7 +26,7 @@ invisibly returns \code{gg}
 }
 \description{
 \code{save_figure()} is a wrapper around \code{ggplot2::ggsave()} that saves a high quality 5x7 figure by default.
-You can adjust the sizing from there by changing \code{wider} and \code{taller}
+You can adjust the sizing from there by changing \code{taller} and \code{page_width}.
 }
 \examples{
 gg <- ggplot2::ggplot() +

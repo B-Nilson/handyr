@@ -11,7 +11,7 @@
 #'
 #' @description
 #' `save_figure()` is a wrapper around `ggplot2::ggsave()` that saves a high quality 5x7 figure by default.
-#' You can adjust the sizing from there by changing `wider` and `taller` 
+#' You can adjust the sizing from there by changing `taller` and `page_width`. 
 #'
 #' @family Data Visualisation
 #'
