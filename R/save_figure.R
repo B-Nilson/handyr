@@ -6,14 +6,12 @@
 #' @param page_width A single numeric value indicating the width of the page (minus margins) in inches that the image is intended for.
 #' @param quality A single character value equal to "high" (dpi = 300), "medium" (dpi = 200), or "low" (dpi = 100) indicating the output quality of the figure.
 #'   OR a single numeric value equal to the desired dpi.
-#'   Text sizes may need to be adjusted for differenct quality levels.
+#'   Text sizes may need to be adjusted in relavant geoms/themes for different quality levels.
 #' @param ... (Optional) addition arguments passed on to ggplot2::ggsave()
 #'
 #' @description
-#' This provides a relatviley simple way to quickly save a ggplot figure as a png etc.
 #' `save_figure()` is a wrapper around `ggplot2::ggsave()` that saves a high quality 5x7 figure by default.
-#' You can adjust the sizing from there by changing `wider` and `taller`,
-#' and you can quickly adjust to a lower quality if file size matters.
+#' You can adjust the sizing from there by changing `wider` and `taller` 
 #'
 #' @family Data Visualisation
 #'

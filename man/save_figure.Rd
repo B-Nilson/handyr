@@ -16,18 +16,17 @@ save_figure(gg, out_path, taller = 0, page_width = 6.5, quality = "high", ...)
 \item{page_width}{A single numeric value indicating the width of the page (minus margins) in inches that the image is intended for.}
 
 \item{quality}{A single character value equal to "high" (dpi = 300), "medium" (dpi = 200), or "low" (dpi = 100) indicating the output quality of the figure.
-Text sizes may need to be adjusted for differenct quality levels.}
+OR a single numeric value equal to the desired dpi.
+Text sizes may need to be adjusted in relavant geoms/themes for different quality levels.}
 
 \item{...}{(Optional) addition arguments passed on to ggplot2::ggsave()}
 }
 \value{
-invisible NULL
+invisibly returns \code{gg}
 }
 \description{
-This provides a relatviley simple way to quickly save a ggplot figure as a png etc.
 \code{save_figure()} is a wrapper around \code{ggplot2::ggsave()} that saves a high quality 5x7 figure by default.
-You can adjust the sizing from there by changing \code{wider} and \code{taller},
-and you can quickly adjust to a lower quality if file size matters.
+You can adjust the sizing from there by changing \code{wider} and \code{taller}
 }
 \examples{
 gg <- ggplot2::ggplot() +
