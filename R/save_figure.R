@@ -17,7 +17,7 @@
 #'
 #' @family Data Visualisation
 #'
-#' @return invisible NULL
+#' @return invisibly returns `gg`
 #' @export
 #'
 #' @examples
@@ -38,5 +38,5 @@ save_figure <- function(gg, out_path, taller = 0, page_width = 6.5, quality = "h
     dpi = dpi,
     ...
   )
-  return(invisible(NULL))
+  invisible(gg)
 }
