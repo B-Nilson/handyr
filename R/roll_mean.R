@@ -1,4 +1,5 @@
 # Calculates rolling mean if enough non-na provided
+# TODO: digits = 0 seems unintuitive
 # TODO: code without zoo (use dplyr::lag/lead)
 # TODO: document, test, and export
 roll_mean <- function(x, width, direction = "backward", fill = NA, min_n = 0, digits = 0) {
