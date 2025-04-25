@@ -2,11 +2,11 @@
 #' Easy error handler
 #'
 #' @param ... A code block (typically wrapped in `{}`) to run and capture errors (if any).
-#' @param return (Optional) What is to be returned if an error occurs (instead of throwing an error).
+#' @param .return (Optional) What is to be returned if an error occurs (instead of throwing an error).
 #'   Default is `NULL`
-#' @param msg (Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a message instead.
+#' @param .message (Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a message instead.
 #'   Default is `FALSE`
-#' @param warn (Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a warning instead.
+#' @param .warn (Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a warning instead.
 #'   Default is `FALSE`
 #'
 #' @description
@@ -19,12 +19,12 @@
 #' @export
 #'
 #' @examples
-#' on_error(stop("test"), return = NULL, msg = TRUE)
-#' on_error(read.csv("not_A_fil3.123"), return = NULL)
-on_error <- function(..., return = NULL, msg = FALSE, warn = FALSE) {
+#' on_error(stop("test"), .return = -1, .message = TRUE)
+#' on_error(read.csv("not_A_fil3.123"), .return = NULL)
+on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
   tryCatch(..., error = \(e){
-    if (msg) message(as.character(e))
-    if (warn) warning(as.character(e))
-    return(return)
+    if (.message) message(as.character(e))
+    if (.warn) warning(as.character(e))
+    return(.return)
   })
 }
