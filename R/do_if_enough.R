@@ -15,6 +15,9 @@
 #' do_if_enough(c(1, 2, NA), mean, min_length = 2)
 #' do_if_enough(c(1, NA, NA), mean, min_length = 2)
 do_if_enough <- function(x, FUN, ..., .min_length = 0) {
+  if(.min_length == 0) {
+    return(FUN(x, na.rm = TRUE, ...))
+  }
   is_enough <- sum(!is.na(x)) >= .min_length
   if (is_enough) {
     FUN(x, na.rm = TRUE, ...)
