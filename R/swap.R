@@ -27,6 +27,3 @@ swap <- function(x, what, with) {
   x[x %in% what] <- with
   return(x)
 }
-# Wrappers for swap()
-swap_na <- function(x, with = -99) swap(x, NA, with)
-swap_inf <- function(x, with = NA) swap(x, Inf, with)
