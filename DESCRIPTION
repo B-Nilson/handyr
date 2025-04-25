@@ -13,6 +13,7 @@ Imports:
     future,
     future.apply,
     ggplot2,
+    lutz,
     zoo
 Suggests: 
     testthat (>= 3.0.0)
