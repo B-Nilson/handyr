@@ -2,30 +2,46 @@
 % Please edit documentation in R/save_figure.R
 \name{save_figure}
 \alias{save_figure}
-\title{Save a ggplot2 figure}
+\title{Save a ggplot2 figure for publishing}
 \usage{
-save_figure(gg, out_path, taller = 0, page_width = 6.5, quality = "high", ...)
+save_figure(
+  gg,
+  out_path,
+  page_width = 6.5,
+  base_height = 5,
+  taller = 0,
+  units = "in",
+  quality = "high",
+  ...
+)
 }
 \arguments{
 \item{gg}{a single ggplot object you would like to save.}
 
 \item{out_path}{A single character value indicating where to save the plot to (i.e. "./plots/my_figure_name.png")}
 
-\item{taller}{A single numeric value indicating how many inches to add/remove to the output plot height. Default makes a 5"x6.5" image.}
+\item{page_width}{A single numeric value indicating the width of the page (minus margins) that the image is intended for.
+Default is 6.5".}
 
-\item{page_width}{A single numeric value indicating the width of the page (minus margins) in inches that the image is intended for.}
+\item{base_height}{A single numeric value indicating the height of the figure (+\code{taller}).
+Default is 5".}
+
+\item{taller}{A single numeric value indicating how much to add/remove to the plot \code{base_height}.
+Default is 0.}
+
+\item{units}{A single character value equal to "in" (default) or "cm" indicating the units of \code{page_width}, \code{base_height}, and \code{taller}.}
 
 \item{quality}{A single character value equal to "high" (dpi = 300), "medium" (dpi = 200), or "low" (dpi = 100) indicating the output quality of the figure.
 OR a single numeric value equal to the desired dpi.
 Text sizes may need to be adjusted in relavant geoms/themes for different quality levels.}
 
-\item{...}{(Optional) addition arguments passed on to ggplot2::ggsave()}
+\item{...}{(Optional) addition arguments passed on to ggplot2::ggsave() (aside from )}
 }
 \value{
 invisibly returns \code{gg}
 }
 \description{
-\code{save_figure()} is a wrapper around \code{ggplot2::ggsave()} that saves a high quality 5x7 figure by default.
+\code{save_figure()} is a wrapper around \code{ggplot2::ggsave()} that saves a high quality 5x6.5 figure by default.
 You can adjust the sizing from there by changing \code{taller} and \code{page_width}.
 }
 \examples{

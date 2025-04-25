@@ -4,18 +4,18 @@
 \alias{on_error}
 \title{Easy error handler}
 \usage{
-on_error(..., return = NULL, msg = FALSE, warn = FALSE)
+on_error(..., .return = NULL, .message = FALSE, .warn = FALSE)
 }
 \arguments{
 \item{...}{A code block (typically wrapped in \code{{}}) to run and capture errors (if any).}
 
-\item{return}{(Optional) What is to be returned if an error occurs (instead of throwing an error).
+\item{.return}{(Optional) What is to be returned if an error occurs (instead of throwing an error).
 Default is \code{NULL}}
 
-\item{msg}{(Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a message instead.
+\item{.message}{(Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a message instead.
 Default is \code{FALSE}}
 
-\item{warn}{(Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a warning instead.
+\item{.warn}{(Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a warning instead.
 Default is \code{FALSE}}
 }
 \value{
@@ -26,8 +26,8 @@ the output of \code{...} unless an error occurs, then \code{return} instead.
 This is especially useful when attempting to load in multiple data files where it is possible for files not to exist.
 }
 \examples{
-on_error(stop("test"), return = NULL, msg = TRUE)
-on_error(read.csv("not_A_fil3.123"), return = NULL)
+on_error(stop("test"), .return = -1, .message = TRUE)
+on_error(read.csv("not_A_fil3.123"), .return = NULL)
 }
 \seealso{
 Other Utilities: 
