@@ -69,6 +69,7 @@ values <- 1:3 |>
 }
 \seealso{
 Other Utilities: 
+\code{\link{get_timezone}()},
 \code{\link{on_error}()},
 \code{\link{swap}()}
 }
