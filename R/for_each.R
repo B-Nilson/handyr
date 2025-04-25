@@ -2,12 +2,12 @@
 #'
 #' @param input A vector of values to be iterated over.
 #' @param FUN A function to be applied to each value in `input`.
-#' @param ... Any other arguments to be passed to `FUN`.
+#' @param ... Any other arguments to be passed to `FUN` or to [future.apply::future_lapply()] if `.parallel = TRUE`.
 #' @param .bind (Optional) A single logical (TRUE/FALSE) value indicating if the output should be bound rowwise.
 #'   Default is `FALSE`
 #' @param .name (Optional) A single logical (TRUE/FALSE) value indicating if the output should be named after the input.
 #'   Default is `FALSE`
-#' @param .parallel (Optional) A single logical (TRUE/FALSE) value indicating if the function should be run in parallel (see [future.apply::future_lapply()]).
+#' @param .parallel (Optional) A single logical (TRUE/FALSE) value indicating if the function should be run in parallel (see [future::multisession()]).
 #'   Default is `FALSE`
 #' @param .workers (Optional) A single numeric value indicating the number of workers to run in parallel.
 #'   Default is all available cores (see [parallel::detectCores()])

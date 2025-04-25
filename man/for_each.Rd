@@ -20,7 +20,7 @@ for_each(
 
 \item{FUN}{A function to be applied to each value in \code{input}.}
 
-\item{...}{Any other arguments to be passed to \code{FUN}.}
+\item{...}{Any other arguments to be passed to \code{FUN} or to \code{\link[future.apply:future_lapply]{future.apply::future_lapply()}} if \code{.parallel = TRUE}.}
 
 \item{.bind}{(Optional) A single logical (TRUE/FALSE) value indicating if the output should be bound rowwise.
 Default is \code{FALSE}}
@@ -28,7 +28,7 @@ Default is \code{FALSE}}
 \item{.name}{(Optional) A single logical (TRUE/FALSE) value indicating if the output should be named after the input.
 Default is \code{FALSE}}
 
-\item{.parallel}{(Optional) A single logical (TRUE/FALSE) value indicating if the function should be run in parallel (see \code{\link[future.apply:future_lapply]{future.apply::future_lapply()}}).
+\item{.parallel}{(Optional) A single logical (TRUE/FALSE) value indicating if the function should be run in parallel (see \code{\link[future:multisession]{future::multisession()}}).
 Default is \code{FALSE}}
 
 \item{.workers}{(Optional) A single numeric value indicating the number of workers to run in parallel.
