@@ -8,6 +8,7 @@
 #' @family Utilities
 #'
 #' @return a character vector indicating the summary of the time taken between each log call
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
@@ -24,9 +25,9 @@ summarise_logs <- function(logs) {
   summary <- logs |>
     for_each(as.data.frame, .bind = TRUE) |>
     dplyr::mutate(
-      delta = timestamp |> difftime(dplyr::lag(timestamp)),
-      text = text |>
-        paste0(": ", dplyr::lead(delta), " ", attr(delta, "units"))
+      delta = .data$timestamp |> difftime(dplyr::lag(.data$timestamp)),
+      text = .data$text |>
+        paste0(": ", dplyr::lead(.data$delta), " ", attr(.data$delta, "units"))
     )
 
   total_time <- difftime(logs[[length(logs)]]$timestamp, logs[[1]]$timestamp)
