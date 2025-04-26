@@ -49,7 +49,7 @@ test_that("header works", {
   result <- log("Hello, world!", header = TRUE, time = FALSE)
   expect_equal(
     paste0("   ", result$text, "   "),
-    result$message |> stringr::str_remove_all("\\||-|")
+    gsub("[\\||-]", "", result$message)
   )
 })
 
