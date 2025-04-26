@@ -5,6 +5,7 @@
 #' @param time_format A character value indicating the format of the timestamp
 #' @param tz A character value indicating the time zone to use for the timestamp
 #' @param header A logical value indicating if the message should be formatted as a header
+#' @param quiet A logical value indicating if the message should be printed
 #'
 #' @return a character vector of the formatted message
 #' @export

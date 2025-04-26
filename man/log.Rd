@@ -23,6 +23,8 @@ log(
 \item{tz}{A character value indicating the time zone to use for the timestamp}
 
 \item{header}{A logical value indicating if the message should be formatted as a header}
+
+\item{quiet}{A logical value indicating if the message should be printed}
 }
 \value{
 a character vector of the formatted message
