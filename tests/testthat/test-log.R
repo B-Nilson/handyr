@@ -1,0 +1,58 @@
+test_that("basic case works", {
+  expect_message(log("Hello, world!"))
+  expect_type(log("Hello, world!"), "list")
+  expect_length(log("Hello, world!"), 3)
+})
+
+test_that("time works", {
+  expect_message(log("Hello, world!", time = TRUE))
+  result <- log("Hello, world!", time = TRUE)
+  expect_equal(
+    paste0(result$timestamp, ": ", result$text),
+    result$message 
+  )
+})
+
+test_that("time_format works", {
+  expect_message(log("Hello, world!", time_format = "%Y-%m-%d"))
+  result <- log("Hello, world!", time_format = "%Y-%m-%d")
+  expect_equal(
+    paste0(result$timestamp, ": ", result$text),
+    result$message 
+  )
+  expect_message(log("Hello, world!", time_format = "%Y-%m-%d %H:%M"))
+  result <- log("Hello, world!", time_format = "%Y-%m-%d %H:%M")
+  expect_equal(
+    paste0(
+      format(result$timestamp, "%Y-%m-%d %H:%M"), ": ",
+      result$text
+    ),
+    result$message 
+  )
+})
+
+test_that("tz works", {
+  expect_message(log("Hello, world!", tz = "America/New_York"))
+  result <- log("Hello, world!", tz = "America/New_York")
+  expect_equal(
+    paste0(result$timestamp, ": ", result$text),
+    result$message 
+  )
+  expect_equal(
+    attr(result$timestamp, "tzone"),
+    "America/New_York"
+  )
+})
+
+test_that("header works", {
+  expect_message(log("Hello, world!", header = TRUE))
+  result <- log("Hello, world!", header = TRUE, time = FALSE)
+  expect_equal(
+    paste0("   ", result$text, "   "),
+    result$message |> stringr::str_remove_all("\\||-|")
+  )
+})
+
+test_that("quiet works", {
+  expect_no_message(log("Hello, world!", quiet = TRUE))
+})
