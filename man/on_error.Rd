@@ -33,6 +33,7 @@ on_error(read.csv("not_A_fil3.123"), .return = NULL)
 Other Utilities: 
 \code{\link{for_each}()},
 \code{\link{get_timezone}()},
+\code{\link{summarise_logs}()},
 \code{\link{swap}()}
 }
 \concept{Utilities}

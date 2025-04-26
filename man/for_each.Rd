@@ -71,6 +71,7 @@ values <- 1:3 |>
 Other Utilities: 
 \code{\link{get_timezone}()},
 \code{\link{on_error}()},
+\code{\link{summarise_logs}()},
 \code{\link{swap}()}
 }
 \concept{Utilities}

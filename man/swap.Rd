@@ -28,6 +28,7 @@ swap(c(-20:20), what = Inf, with = NA)
 Other Utilities: 
 \code{\link{for_each}()},
 \code{\link{get_timezone}()},
-\code{\link{on_error}()}
+\code{\link{on_error}()},
+\code{\link{summarise_logs}()}
 }
 \concept{Utilities}

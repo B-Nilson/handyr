@@ -28,6 +28,7 @@ get_timezone(-105.053144, 69.116178, method = "fast")
 Other Utilities: 
 \code{\link{for_each}()},
 \code{\link{on_error}()},
+\code{\link{summarise_logs}()},
 \code{\link{swap}()}
 }
 \concept{Utilities}
