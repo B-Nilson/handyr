@@ -4,7 +4,7 @@
 \alias{mode}
 \title{Calculate the stitistical mode (most common value)}
 \usage{
-mode(..., na.rm = TRUE)
+mode(..., na.rm = FALSE)
 }
 \arguments{
 \item{...}{numeric or character arguments (see \link[base:Extremes]{base::max}).}
