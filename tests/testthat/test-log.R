@@ -15,13 +15,13 @@ test_that("time works", {
 
 test_that("time_format works", {
   expect_message(log("Hello, world!", time_format = "%Y-%m-%d"))
-  result <- log("Hello, world!", time_format = "%Y-%m-%d")
+  result <- log("Hello, world!", time_format = "%Y-%m-%d", quiet = TRUE)
   expect_equal(
     paste0(result$timestamp, ": ", result$text),
     result$message 
   )
   expect_message(log("Hello, world!", time_format = "%Y-%m-%d %H:%M"))
-  result <- log("Hello, world!", time_format = "%Y-%m-%d %H:%M")
+  result <- log("Hello, world!", time_format = "%Y-%m-%d %H:%M", quiet = TRUE)
   expect_equal(
     paste0(
       format(result$timestamp, "%Y-%m-%d %H:%M"), ": ",
@@ -33,7 +33,7 @@ test_that("time_format works", {
 
 test_that("tz works", {
   expect_message(log("Hello, world!", tz = "America/New_York"))
-  result <- log("Hello, world!", tz = "America/New_York")
+  result <- log("Hello, world!", tz = "America/New_York", quiet = TRUE)
   expect_equal(
     paste0(result$timestamp, ": ", result$text),
     result$message 
@@ -46,7 +46,7 @@ test_that("tz works", {
 
 test_that("header works", {
   expect_message(log("Hello, world!", header = TRUE))
-  result <- log("Hello, world!", header = TRUE, time = FALSE)
+  result <- log("Hello, world!", header = TRUE, time = FALSE, quiet = TRUE)
   expect_equal(
     paste0("   ", result$text, "   "),
     gsub("[\\||-]", "", result$message)
