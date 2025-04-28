@@ -23,7 +23,6 @@
 #' rolling(x, width = 2, direction = "forward", fill = -1)
 #' @export
 # TODO: code without zoo (use dplyr::lag/lead)
-# TODO: document, test, and export
 rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fill = NA, .min_length = 0, .digits = 0) {
   rlang::check_installed("zoo")
   align <- ifelse(

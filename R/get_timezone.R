@@ -16,6 +16,7 @@
 #' @examples
 #' get_timezone(-105.053144, 69.116178, method = "fast")
 get_timezone <- function(lng, lat, method = "accurate", ...) {
+  rlang::check_installed("lutz")
   lutz::tz_lookup_coords(
     lat = lat,
     lon = lng,

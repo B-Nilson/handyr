@@ -47,6 +47,7 @@
 #'   for_each(\(value) message(value + 1), .invisible = TRUE)
 for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .invisible = FALSE) {
   if (.parallel) {
+    rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     future::plan(future::multisession, workers = .workers) # Run in parallel if desired
     lapply_fun <- future.apply::future_lapply
   } else {
