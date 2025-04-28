@@ -11,15 +11,16 @@
 #' @examples
 #' cities <- data.frame(
 #'   name = c("New York", "Los Angeles", "Chicago"),
-#'   lat = c(40.71278, 34.05224, 41.87811),
-#'   lon = c(-74.0060, -118.2437, -87.6298)
+#'   x = c(-74.0060, -118.2437, -87.6298),
+#'   y = c(40.71278, 34.05224, 41.87811)
 #' )
 #' cities_sf <- cities |>
-#'   sf::st_as_sf(coords = c("lon", "lat"), crs = "WGS84")
+#'   sf::st_as_sf(coords = c("x", "y"), crs = "WGS84")
 #' sf_as_df(cities_sf)
 #' sf_as_df(cities_sf, keep_coords = TRUE)
 sf_as_df <- function(sf_obj, keep_coords = FALSE) {
   rlang::check_installed("sf")
+  
   if (keep_coords) {
     sf_obj <- extract_sf_coords(sf_obj)
   }

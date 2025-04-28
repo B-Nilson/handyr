@@ -9,11 +9,11 @@
 #'
 #' cities <- data.frame(
 #'   name = c("New York", "Los Angeles", "Chicago"),
-#'   lat = c(40.71278, 34.05224, 41.87811),
-#'   lon = c(-74.0060, -118.2437, -87.6298)
+#'   x = c(-74.0060, -118.2437, -87.6298),
+#'   y = c(40.71278, 34.05224, 41.87811)
 #' )
-#' cities_sf <- cities |> 
-#'   sf::st_as_sf(coords = c("lon", "lat"), crs = "WGS84")
+#' cities_sf <- cities |>
+#'   sf::st_as_sf(coords = c("x", "y"), crs = "WGS84")
 #' cities_sf |>
 #'   extract_sf_coords()
 #' @export
@@ -29,9 +29,9 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
       y = coords[, 2],
       crs = sf::st_crs(.data$geometry)$input
     )
+
   if (keep_sf) {
     return(out)
-  } else {
-    return(sf_as_df(out))
   }
+  sf_as_df(out, keep_coords = FALSE) # coords already are extracted
 }
