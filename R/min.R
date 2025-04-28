@@ -30,4 +30,3 @@ min <- function(..., na.rm = FALSE) {
   }
   base::min(x)
 }
-
