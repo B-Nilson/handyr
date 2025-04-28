@@ -8,7 +8,7 @@
 #'   all values provided to max are NA, which would otherwise throw an warning and return Inf.
 #'   This is consitent with the behavior of [base::mean].
 #'
-#' @ return The maximum value from the provided values, or NA if all values are NA.
+#' @return The maximum value from the provided values, or NA if all values are NA.
 #' @examples
 #' data.frame(
 #'   x = c(1, 2, 3, NA, NA, NA),

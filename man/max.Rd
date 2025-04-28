@@ -11,6 +11,9 @@ max(..., na.rm = FALSE)
 
 \item{na.rm}{A logical value indicating whether NA values should be stripped before the computation proceeds.}
 }
+\value{
+The maximum value from the provided values, or NA if all values are NA.
+}
 \description{
 \code{max} provides a wrapper for the built-in function \link[base:Extremes]{base::max}. This handles the edge case where
 all values provided to max are NA, which would otherwise throw an warning and return Inf.
