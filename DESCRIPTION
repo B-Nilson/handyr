@@ -1,9 +1,9 @@
 Package: handyr
-Title: What the Package Does (One Line, Title Case)
+Title: Generally useful functions
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Brayden", "Nilson", , "nilson.brayden@gmail.com", role = c("aut", "cre"))
+Description: A collection of generally useful utility functions for various data manipulation and analysis tasks.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
