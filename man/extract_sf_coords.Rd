@@ -21,11 +21,11 @@ Extract coordinates from an sf object and add them as columns
 
 cities <- data.frame(
   name = c("New York", "Los Angeles", "Chicago"),
-  lat = c(40.71278, 34.05224, 41.87811),
-  lon = c(-74.0060, -118.2437, -87.6298)
+  x = c(-74.0060, -118.2437, -87.6298),
+  y = c(40.71278, 34.05224, 41.87811)
 )
-cities_sf <- cities |> 
-  sf::st_as_sf(coords = c("lon", "lat"), crs = "WGS84")
+cities_sf <- cities |>
+  sf::st_as_sf(coords = c("x", "y"), crs = "WGS84")
 cities_sf |>
   extract_sf_coords()
 }
