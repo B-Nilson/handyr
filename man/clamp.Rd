@@ -4,16 +4,20 @@
 \alias{clamp}
 \title{Clamp a value to a certain range}
 \usage{
-clamp(x, range)
+clamp(x, range = c(NA, NA))
 }
 \arguments{
 \item{x}{A numeric vector of value(s)}
 
-\item{range}{A numeric vector of length two to clamp \code{x} to}
+\item{range}{A numeric vector of length two to clamp \code{x} to. If \code{range[1]} is \code{NA}, then \code{min(x)} will be used. If \code{range[2]} is \code{NA}, then \code{max(x)} will be used}
 }
 \value{
 A numeric vector of \code{x} with values less than \code{min(range)} set to \code{min(range)} and values greater than \code{max(range)} set to \code{max(range)}
 }
 \description{
 Clamp a value to a certain range
+}
+\examples{
+clamp(1:5, range = c(2, 4))
+clamp(1:5, range = c(-1, 8))
 }
