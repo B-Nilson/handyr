@@ -33,9 +33,3 @@ test_that(".min_length works", {
     c(1:3, NA_real_) |> rolling(mean, .min_length = 4) |> sum()
   )), expected = NA_real_)
 })
-
-test_that(".digits works", {
-  expect_equal(expect_no_warning(expect_no_error(
-    (1:3 * exp(5)^2) |> rolling(mean, .digits = 1)
-  )), expected = c(NA, NA, 44052.9))
-})

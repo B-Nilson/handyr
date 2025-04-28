@@ -11,8 +11,7 @@ rolling(
   .width = 3,
   .direction = "backward",
   .fill = NA,
-  .min_length = 0,
-  .digits = 0
+  .min_length = 0
 )
 }
 \arguments{
@@ -35,9 +34,6 @@ The default is \code{NA}.}
 
 \item{.min_length}{(Optional) A single numeric value indicating the minimum number of observations required to
 compute a value.
-The default is \code{0}.}
-
-\item{.digits}{(Optional) A single numeric value indicating the number of decimal places to round the output.
 The default is \code{0}.}
 }
 \description{

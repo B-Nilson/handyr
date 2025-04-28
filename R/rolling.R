@@ -14,8 +14,6 @@
 #' @param .min_length (Optional) A single numeric value indicating the minimum number of observations required to
 #'   compute a value.
 #'   The default is `0`.
-#' @param .digits (Optional) A single numeric value indicating the number of decimal places to round the output.
-#'   The default is `0`.
 #'
 #' @examples
 #' x <- c(1, 2, 3, 4, 5)
@@ -23,7 +21,7 @@
 #' rolling(x, width = 2, direction = "forward", fill = -1)
 #' @export
 # TODO: code without zoo (use dplyr::lag/lead)
-rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fill = NA, .min_length = 0, .digits = 0) {
+rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fill = NA, .min_length = 0) {
   rlang::check_installed("zoo")
   align <- ifelse(
     .direction %in% c("backward", 1), "right",
@@ -35,6 +33,5 @@ rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fi
     zoo::rollapply(
       width = .width, align = align, fill = .fill,
       FUN = \(x) do_if_enough(x, FUN, .min_length = .min_length)
-    ) |>
-    round(digits = .digits)
+    )
 }
