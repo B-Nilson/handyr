@@ -44,8 +44,8 @@
 #'   for_each(\(value) value + 1, .parallel = TRUE, .workers = 2)
 #'
 #' values <- 1:3 |>
-#'   for_each(\(value) message(value + 1), .invisible = TRUE)
-for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .invisible = FALSE) {
+#'   for_each(\(value) message(value + 1), .quiet = TRUE)
+for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .quiet = FALSE) {
   
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.bind), length(.bind) == 1)
@@ -62,9 +62,10 @@ for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = 
   }
 
   # Run input through function
-  if (.invisible) {
-    out <- suppressWarnings(suppressMessages(invisible(input |>
-      lapply_fun(FUN, ...))))
+  if (.quiet) {
+    out <- suppressWarnings(suppressMessages(invisible(
+      input |> lapply_fun(FUN, ...)
+    )))
   } else {
     out <- input |> lapply_fun(FUN, ...)
   }
@@ -75,9 +76,8 @@ for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = 
 
   if (.bind) out <- out |> dplyr::bind_rows() # Bind rowise if desired
 
-  if (.invisible) {
-    invisible(out)
-  } else {
+  if (!.quiet) {
     return(out)
   }
+  invisible(out)
 }
