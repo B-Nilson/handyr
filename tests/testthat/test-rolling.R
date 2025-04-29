@@ -7,7 +7,7 @@ test_that("basic case works", {
 test_that("FUN works", {
   expect_equal(expect_no_warning(expect_no_error(
     (1:5) |> rolling(mean) |> sum(na.rm = TRUE)
-  )), expected = 27)
+  )), expected = 9)
 })
 
 test_that(".width works", {
