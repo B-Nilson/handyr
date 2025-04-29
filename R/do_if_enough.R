@@ -11,10 +11,10 @@
 #' @export
 #'
 #' @examples
-#' do_if_enough(c(1, 2, 3), mean, min_length = 2)
-#' do_if_enough(c(1, 2, NA), mean, min_length = 2)
-#' do_if_enough(c(1, NA, NA), mean, min_length = 2)
-do_if_enough <- function(x, FUN, ..., .min_length = 0) {
+#' do_if_enough(c(1, 2, 3), mean, .min_length = 2)
+#' do_if_enough(c(1, 2, NA), mean, .min_length = 2)
+#' do_if_enough(c(1, NA, NA), mean, .min_length = 2)
+do_if_enough <- function(x, FUN, ..., .min_length = 1) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(
