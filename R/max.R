@@ -20,6 +20,9 @@
 #' @export
 max <- function(..., na.rm = FALSE) {
   x <- unlist(list(...))
+  # Handle inputs
+  stopifnot(is.logical(na.rm), length(na.rm) == 1)
+
   # Handle NAs before max() to avoid warnings/Infinites
   if (na.rm) {
     x <- x[!is.na(x)]
@@ -28,5 +31,7 @@ max <- function(..., na.rm = FALSE) {
   if (length(x) == 0 | all(is.na(x))) {
     return(ifelse(is.numeric(x), NA_real_, NA_character_))
   }
+
+  # Find maximum
   base::max(x)
 }

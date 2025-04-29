@@ -28,6 +28,7 @@ rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fi
   stopifnot(is.numeric(.direction) | is.character(.direction), length(.direction) == 1)
   stopifnot(length(.fill) == 1)
   stopifnot(is.numeric(.min_length), length(.min_length) == 1)
+
   # translate .direction -> align for zoo
   align <- ifelse(
     .direction %in% c("backward", 1), "right",
@@ -35,6 +36,9 @@ rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fi
       ifelse(.direction %in% c("center", 0), "center", NA)
     )
   )
+  
+  # Apply rolling function with specified window/fill
+  # using `do_if_enough` to only apply function if enough values
   x |>
     zoo::rollapply(
       width = .width, align = align, fill = .fill,

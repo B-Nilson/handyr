@@ -11,5 +11,6 @@ truncate <- function(x, digits = 0) {
   stopifnot(is.numeric(x))
   stopifnot(length(digits) == 1, is.numeric(digits))
 
+  # Truncate values
   trunc(x * 10^digits) / 10^digits
 }

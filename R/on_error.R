@@ -21,6 +21,11 @@
 #' on_error(stop("test"), .return = -1, .message = TRUE)
 #' on_error(read.csv("not_A_fil3.123"), .return = NULL)
 on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
+  # Handle inputs
+  stopifnot(is.logical(.message), length(.message) == 1)
+  stopifnot(is.logical(.warn), length(.warn) == 1)
+
+  # Run input, catch errors if any and control response
   tryCatch(..., error = \(e){
     if (.message) message(as.character(e))
     if (.warn) warning(as.character(e))

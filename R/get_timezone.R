@@ -25,7 +25,8 @@ get_timezone <- function(lng, lat, method = "accurate", quiet = FALSE, ...) {
   stopifnot(length(lng) == length(lat), length(lng) > 0)
   stopifnot(method %in% c("accurate", "fast"), length(method) == 1)
   stopifnot(is.logical(quiet), length(quiet) == 1)
-
+  
+  # Lookup timezone(s)
   lutz::tz_lookup_coords(
     lat = lat,
     lon = lng,

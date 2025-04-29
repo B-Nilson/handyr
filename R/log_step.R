@@ -17,7 +17,8 @@
 #' # Do something else
 #' log_step("Complete")
 log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = NULL, quiet = FALSE) {
-
+  original <- message
+  # Handle inputs
   stopifnot(is.character(message))
   stopifnot(is.logical(header), length(header) == 1)
   stopifnot(is.logical(time), length(time) == 1)
@@ -25,8 +26,8 @@ log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-
   stopifnot(is.character(tz) | is.null(tz), length(tz) == 1 | is.null(tz))
   stopifnot(is.logical(quiet), length(quiet) == 1)
 
+  # Join message with spaces if multiple messages
   message <- paste(message, collapse = " ")
-  original <- message
   
   # Get current timestamp
   if (is.null(tz)) tz <- Sys.timezone()

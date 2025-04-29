@@ -20,6 +20,11 @@
 #' on_warning(warning("test"), .return = -1, .message = TRUE)
 #' on_warning(base::max(NA, na.rm = TRUE), .return = NULL)
 on_warning <- function(..., .return = NULL, .message = FALSE, .stop = FALSE) {
+  # Handle inputs
+  stopifnot(is.logical(.message), length(.message) == 1)
+  stopifnot(is.logical(.stop), length(.stop) == 1)
+
+  # Run input, catch warnings if any and control response
   tryCatch(..., warning = \(e){
     if (.message) message(as.character(e))
     if (.stop) stop(as.character(e))

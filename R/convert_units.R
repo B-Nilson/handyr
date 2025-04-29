@@ -20,7 +20,8 @@ convert_units <- function(x, from, to, ...) {
   # handle inputs
   stopifnot(is.numeric(x), is.character(from), is.character(to))
   stopifnot(length(from) == 1, length(to) == 1)
-
+  
+  # convert units
   x |>
     units::set_units(from, mode = "standard", ...) |>
     units::set_units(to, mode = "standard", ...) |>

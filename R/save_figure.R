@@ -40,8 +40,10 @@ save_figure <- function(gg, out_path, page_width = 6.5, base_height = 5, taller 
   stopifnot(is.numeric(taller), length(taller) == 1)
   stopifnot(is.character(units), length(units) == 1)
   stopifnot(quality %in% c("high", "medium", "low") | is.numeric(quality), length(quality) == 1)
+
   # translate quality -> dpi
   dpi <- if (quality == "high") 300 else if (quality == "medium") 200 else if (quality == "low") 100 else quality
+  
   # save figure
   ggplot2::ggsave(
     filename = out_path,

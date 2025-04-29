@@ -46,7 +46,7 @@
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
 for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .quiet = FALSE) {
-  
+  # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.bind), length(.bind) == 1)
   stopifnot(is.logical(.name), length(.name) == 1)
@@ -81,6 +81,7 @@ for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = 
   # Bind rowwise if desired
   if (.bind) out <- out |> dplyr::bind_rows()
 
+  # Return if not quiet, otherwise return invisibly
   if (!.quiet) {
     return(out)
   }

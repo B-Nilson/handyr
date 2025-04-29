@@ -21,6 +21,7 @@ do_if_enough <- function(x, FUN, ..., .min_length = 1) {
     is.numeric(.min_length), length(.min_length) == 1, .min_length >= 0,
     !is.na(.min_length), is.finite(.min_length)
   )
+
   # Apply function if min_length low enough to not matter
   if (.min_length <= 1) {
     return(FUN(x, na.rm = TRUE, ...))
@@ -30,6 +31,7 @@ do_if_enough <- function(x, FUN, ..., .min_length = 1) {
   if (!is_enough) {
     return(NA)
   }
+  
   # Apply function ignoring NAs
   FUN(x, na.rm = TRUE, ...)
 }

@@ -20,6 +20,9 @@
 #' @export
 min <- function(..., na.rm = FALSE) {
   x <- unlist(list(...))
+  # Handle inputs
+  stopifnot(is.logical(na.rm), length(na.rm) == 1)
+
   # Handle NAs before min() to avoid warnings/Infinites
   if (na.rm) {
     x <- x[!is.na(x)]
@@ -28,5 +31,7 @@ min <- function(..., na.rm = FALSE) {
   if (length(x) == 0 | all(is.na(x))) {
     return(ifelse(is.numeric(x), NA_real_, NA_character_))
   }
+
+  # Find minimum
   base::min(x)
 }
