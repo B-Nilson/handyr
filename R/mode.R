@@ -8,12 +8,7 @@
 #'
 #' @return The most common value from the provided values, or NA if all values are NA.
 #' @examples
-#' data.frame(
-#'   x = c(1, 1, 3, NA, NA, NA),
-#'   y = c("a", "a", "a", "b", "b", "b")
-#' ) |>
-#'   dplyr::group_by(y) |>
-#'   dplyr::summarise(mode_x = mode(x, na.rm = TRUE))
+#' mode(c(1, 1, 1:3))
 #'
 #' @export
 mode <- function(..., na.rm = FALSE) {
