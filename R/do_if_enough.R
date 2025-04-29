@@ -21,13 +21,15 @@ do_if_enough <- function(x, FUN, ..., .min_length = 1) {
     is.numeric(.min_length), length(.min_length) == 1, .min_length >= 0,
     !is.na(.min_length), is.finite(.min_length)
   )
+  # Apply function if min_length low enough to not matter
   if (.min_length <= 1) {
     return(FUN(x, na.rm = TRUE, ...))
   }
+  # Return NA if too few values
   is_enough <- sum(!is.na(x)) >= .min_length
-  if (is_enough) {
-    FUN(x, na.rm = TRUE, ...)
-  } else {
+  if (!is_enough) {
     return(NA)
   }
+  # Apply function ignoring NAs
+  FUN(x, na.rm = TRUE, ...)
 }

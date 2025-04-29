@@ -1,4 +1,3 @@
-# TODO: add tests
 #' Swap out values in a vector
 #'
 #' @param x Vector of values to be have certain values swapped out.
@@ -21,6 +20,7 @@ swap <- function(x, what, with) {
   stopifnot(length(what) == 1)
   stopifnot(length(with) == 1)
 
+  # TODO: is this needed? I think %in% handles NA/Inf
   if (any(is.na(what))) {
     x[is.na(x)] <- with
   }

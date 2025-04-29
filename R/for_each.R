@@ -53,9 +53,12 @@ for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = 
   stopifnot(is.logical(.parallel), length(.parallel) == 1)
   stopifnot(is.numeric(.workers), length(.workers) == 1)
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
-  if (.parallel) {
+
+  # Setup parallel if desired
+  # TODO: handle potential side effect here if user already had a plan() going
+  if (.parallel & length(input) > 1) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
-    future::plan(future::multisession, workers = .workers) # Run in parallel if desired
+    future::plan(future::multisession, workers = .workers)
     lapply_fun <- future.apply::future_lapply
   } else {
     lapply_fun <- lapply
@@ -70,11 +73,13 @@ for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = 
     out <- input |> lapply_fun(FUN, ...)
   }
 
-  if (.parallel) future::plan(future::sequential) # Stop running in parallel
-
-  if (.name) names(out) <- input # Use input as names if desired
-
-  if (.bind) out <- out |> dplyr::bind_rows() # Bind rowise if desired
+  # Stop running in parallel
+  # TODO: handle potential side effect here if user already had a plan() going
+  if (.parallel) future::plan(future::sequential)
+  # Use input as names if desired
+  if (.name) names(out) <- input
+  # Bind rowwise if desired
+  if (.bind) out <- out |> dplyr::bind_rows()
 
   if (!.quiet) {
     return(out)

@@ -12,7 +12,7 @@
 #' @param quality A single character value equal to "high" (dpi = 300), "medium" (dpi = 200), or "low" (dpi = 100) indicating the output quality of the figure.
 #'   OR a single numeric value equal to the desired dpi.
 #'   Text sizes may need to be adjusted in relavant geoms/themes for different quality levels.
-#' @param ... (Optional) addition arguments passed on to ggplot2::ggsave() (aside from )
+#' @param ... (Optional) addition arguments passed on to ggplot2::ggsave()
 #'
 #' @description
 #' `save_figure()` is a wrapper around `ggplot2::ggsave()` that saves a high quality 5x6.5 figure by default.
@@ -26,7 +26,7 @@
 #' @examples
 #' gg <- ggplot2::ggplot() +
 #'   ggplot2::geom_line(
-#'     data = data.frame(x = 1:100, y = (0:99)^2),
+#'     data = data.frame(x = 1:10, y = (0:9)^2),
 #'     ggplot2::aes(x, y)
 #'   )
 #' # save_figure(gg, "./test.png", taller = 1)
@@ -40,7 +40,9 @@ save_figure <- function(gg, out_path, page_width = 6.5, base_height = 5, taller 
   stopifnot(is.numeric(taller), length(taller) == 1)
   stopifnot(is.character(units), length(units) == 1)
   stopifnot(quality %in% c("high", "medium", "low") | is.numeric(quality), length(quality) == 1)
+  # translate quality -> dpi
   dpi <- if (quality == "high") 300 else if (quality == "medium") 200 else if (quality == "low") 100 else quality
+  # save figure
   ggplot2::ggsave(
     filename = out_path,
     plot = gg,
@@ -50,5 +52,6 @@ save_figure <- function(gg, out_path, page_width = 6.5, base_height = 5, taller 
     dpi = dpi,
     ...
   )
+  # return plot object invisibly in case desired for later
   invisible(gg)
 }

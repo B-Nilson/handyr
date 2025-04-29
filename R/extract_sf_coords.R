@@ -23,6 +23,7 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
   stopifnot(inherits(sf_obj, "sf"))
   stopifnot(is.logical(keep_sf), length(keep_sf) == 1)
 
+  # Extract coords/crs
   coords <- sf_obj |>
     sf::st_coordinates()
   crs <- sf::st_crs(sf_obj$geometry)$input
@@ -32,7 +33,9 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
   sf_obj$crs <- crs
   # Return if sf typing desired
   if (keep_sf) {
-    return(out)
+    return(sf_obj)
   }
-  sf_as_df(out, keep_coords = FALSE) # coords already are extracted
+  # Return as df if not
+  sf_obj |>
+    sf_as_df(keep_coords = FALSE) # (FALSE because coords already are extracted)
 }

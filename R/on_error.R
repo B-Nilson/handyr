@@ -1,4 +1,3 @@
-# TODO: add tests
 #' Easy error handler
 #'
 #' @param ... A code block (typically wrapped in `{}`) to run and capture errors (if any).

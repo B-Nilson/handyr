@@ -37,9 +37,9 @@ test_that(".parallel/.workers works", {
   ))
 })
 
-test_that(".invisible works", {
+test_that(".quiet works", {
   values <- 1:3
   expect_no_warning(expect_no_message(expect_no_error(expect_invisible(
-    values |> for_each(\(value) message(value + 1), .invisible = TRUE)
+    values |> for_each(\(value) message(value + 1), .quiet = TRUE)
   ))))
 })

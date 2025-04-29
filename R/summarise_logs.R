@@ -25,18 +25,22 @@ summarise_logs <- function(logs) {
   summary <- logs |>
     for_each(as.data.frame, .bind = TRUE) |>
     dplyr::mutate(
+      # TODO: clean this up (skip making delta, just do lead difftime)
       delta = .data$timestamp |> difftime(dplyr::lag(.data$timestamp)),
+      runtime = dplyr::lead(.data$delta),
+      units = attr(.data$delta, "units"),
       text = .data$text |>
-        paste0(": ", dplyr::lead(.data$delta), " ", attr(.data$delta, "units"))
+        paste0(": ", .data$runtime, " ", .data$units)
     )
 
-  total_time <- difftime(logs[[length(logs)]]$timestamp, logs[[1]]$timestamp)
-  time_units <- attr(total_time, "units")
+  total_time <- logs[[length(logs)]]$timestamp |>
+    difftime(logs[[1]]$timestamp)
+  time_units <- total_time |> attr("units")
 
   message(
     paste(
-      "Total time:", total_time, time_units, "\n-->",
-      summary$text[-length(summary$text)] |>
+      "Total time:", total_time, time_units,
+      "\n-->", summary$text[-length(summary$text)] |>
         paste(collapse = "\n--> ")
     )
   )

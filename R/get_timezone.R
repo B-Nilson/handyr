@@ -1,4 +1,4 @@
-#' Wrapper for looking up timezone of locations from lat/lng coords using the `lutz` package
+#' Get timezones of latitude/longitude pairs
 #'
 #' @param lng Vector of numeric values indicating location longitudes (decimal degrees) to lookup.
 #' @param lat Vector of numeric values indicating location latitudes (decimal degrees) to lookup.

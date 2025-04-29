@@ -6,7 +6,7 @@ test_that("basic case works", {
 
 test_that("FUN works", {
   expect_equal(expect_no_warning(expect_no_error(
-    (1:5) |> rolling(sum) |> sum(na.rm = TRUE)
+    (1:5) |> rolling(mean) |> sum(na.rm = TRUE)
   )), expected = 27)
 })
 

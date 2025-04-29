@@ -21,6 +21,10 @@ mode <- function(..., na.rm = FALSE) {
   if (length(x) == 0 | all(is.na(x))) {
     return(ifelse(is.numeric(x), NA_real_, NA_character_))
   }
+  # Get most common value
   ux <- unique(x)
-  ux[which.max(tabulate(match(x, ux)))]
+  max_idx <- match(x, ux) |>
+    tabulate() |>
+    which.max()
+  ux[max_idx]
 }

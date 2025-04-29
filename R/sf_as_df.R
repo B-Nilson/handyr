@@ -24,8 +24,8 @@ sf_as_df <- function(sf_obj, keep_coords = FALSE) {
   stopifnot(is.logical(keep_coords), length(keep_coords) == 1)
 
   if (keep_coords) {
-    sf_obj <- extract_sf_coords(sf_obj)
+    sf_obj <- sf_obj |> extract_sf_coords()
   }
-  sf::st_geometry(sf_obj) <- NULL
+  sf::st_geometry(sf_obj) <- NULL # sf -> data.frame
   return(sf_obj)
 }
