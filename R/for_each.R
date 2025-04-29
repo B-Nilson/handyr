@@ -11,7 +11,7 @@
 #'   Default is `FALSE`
 #' @param .workers (Optional) A single numeric value indicating the number of workers to run in parallel.
 #'   Default is all available cores (see [parallel::detectCores()])
-#' @param .invisible (Optional) A single logical (TRUE/FALSE) value indicating if the output should be invisible (no messages/warnings).
+#' @param .quiet (Optional) A single logical (TRUE/FALSE) value indicating if the output should be invisible (no messages/warnings).
 #'
 #' @description
 #' `for_each` provides a simple way to loop over a vector and apply a function with useful postprocessing.

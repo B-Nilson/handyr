@@ -34,7 +34,7 @@ Default is \code{FALSE}}
 \item{.workers}{(Optional) A single numeric value indicating the number of workers to run in parallel.
 Default is all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}})}
 
-\item{.invisible}{(Optional) A single logical (TRUE/FALSE) value indicating if the output should be invisible (no messages/warnings).}
+\item{.quiet}{(Optional) A single logical (TRUE/FALSE) value indicating if the output should be invisible (no messages/warnings).}
 }
 \value{
 the output of \code{FUN} iterated over \code{input}, optionally bound rowwise, named after \code{input}, or invisible.
