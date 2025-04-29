@@ -21,7 +21,7 @@ do_if_enough <- function(x, FUN, ..., .min_length = 1) {
     is.numeric(.min_length), length(.min_length) == 1, .min_length >= 0,
     !is.na(.min_length), is.finite(.min_length)
   )
-  if(.min_length == 0) {
+  if (.min_length <= 1) {
     return(FUN(x, na.rm = TRUE, ...))
   }
   is_enough <- sum(!is.na(x)) >= .min_length
