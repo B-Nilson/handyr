@@ -23,6 +23,12 @@
 # TODO: code without zoo (use dplyr::lag/lead)
 rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fill = NA, .min_length = 0) {
   rlang::check_installed("zoo")
+  # Handle inputs
+  stopifnot(is.function(FUN))
+  stopifnot(is.numeric(.width), length(.width) == 1)
+  stopifnot(is.numeric(.direction) | is.character(.direction), length(.direction) == 1)
+  stopifnot(length(.fill) == 1)
+  stopifnot(is.numeric(.min_length), length(.min_length) == 1)
   align <- ifelse(
     .direction %in% c("backward", 1), "right",
     ifelse(.direction %in% c("forward", -1), "left",

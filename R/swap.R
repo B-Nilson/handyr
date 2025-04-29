@@ -18,6 +18,9 @@
 #' swap(c(-20:20, Inf), what = Inf, with = NA)
 #' swap(c(-20:20), what = Inf, with = NA)
 swap <- function(x, what, with) {
+  stopifnot(length(what) == 1)
+  stopifnot(length(with) == 1)
+
   if (any(is.na(what))) {
     x[is.na(x)] <- with
   }

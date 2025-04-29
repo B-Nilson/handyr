@@ -16,6 +16,10 @@
 #' convert_units(c(1, 2, 3), from = "ug/m3", to = "g/km3")
 convert_units <- function(x, from, to) {
   rlang::check_installed("units")
+  # handle inputs
+  stopifnot(is.numeric(x), is.character(from), is.character(to))
+  stopifnot(length(from) == 1, length(to) == 1)
+
   x |>
     units::set_units(from, mode = "standard") |>
     units::set_units(to, mode = "standard") |>

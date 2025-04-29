@@ -7,5 +7,9 @@
 #' @return A numeric vector of `x` truncated to `digits` decimal places
 #' @export
 truncate <- function(x, digits = 0) {
+  # Handle inputs
+  stopifnot(is.numeric(x))
+  stopifnot(length(digits) == 1, is.numeric(digits))
+
   trunc(x * 10^digits) / 10^digits
 }

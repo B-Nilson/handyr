@@ -32,6 +32,14 @@
 #' # save_figure(gg, "./test.png", taller = 1)
 save_figure <- function(gg, out_path, page_width = 6.5, base_height = 5, taller = 0, units = "in", quality = "high", ...) {
   rlang::check_installed("ggplot2")
+  # Handle inputs
+  stopifnot(inherits(gg, "gg"))
+  stopifnot(is.character(out_path), length(out_path) == 1)
+  stopifnot(is.numeric(page_width), length(page_width) == 1)
+  stopifnot(is.numeric(base_height), length(base_height) == 1)
+  stopifnot(is.numeric(taller), length(taller) == 1)
+  stopifnot(is.character(units), length(units) == 1)
+  stopifnot(quality %in% c("high", "medium", "low") | is.numeric(quality), length(quality) == 1)
   dpi <- if (quality == "high") 300 else if (quality == "medium") 200 else if (quality == "low") 100 else quality
   ggplot2::ggsave(
     filename = out_path,

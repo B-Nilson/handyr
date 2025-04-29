@@ -46,6 +46,13 @@
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .invisible = TRUE)
 for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .invisible = FALSE) {
+  
+  stopifnot(is.function(FUN))
+  stopifnot(is.logical(.bind), length(.bind) == 1)
+  stopifnot(is.logical(.name), length(.name) == 1)
+  stopifnot(is.logical(.parallel), length(.parallel) == 1)
+  stopifnot(is.numeric(.workers), length(.workers) == 1)
+  stopifnot(is.logical(.quiet), length(.quiet) == 1)
   if (.parallel) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     future::plan(future::multisession, workers = .workers) # Run in parallel if desired

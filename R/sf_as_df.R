@@ -20,7 +20,9 @@
 #' sf_as_df(cities_sf, keep_coords = TRUE)
 sf_as_df <- function(sf_obj, keep_coords = FALSE) {
   rlang::check_installed("sf")
-  
+  stopifnot(inherits(sf_obj, "sf"))
+  stopifnot(is.logical(keep_coords), length(keep_coords) == 1)
+
   if (keep_coords) {
     sf_obj <- extract_sf_coords(sf_obj)
   }

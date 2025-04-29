@@ -15,6 +15,12 @@
 #' do_if_enough(c(1, 2, NA), mean, min_length = 2)
 #' do_if_enough(c(1, NA, NA), mean, min_length = 2)
 do_if_enough <- function(x, FUN, ..., .min_length = 0) {
+  # Handle inputs
+  stopifnot(is.function(FUN))
+  stopifnot(
+    is.numeric(.min_length), length(.min_length) == 1, .min_length >= 0,
+    !is.na(.min_length), is.finite(.min_length)
+  )
   if(.min_length == 0) {
     return(FUN(x, na.rm = TRUE, ...))
   }

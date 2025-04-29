@@ -17,6 +17,15 @@
 #' log("Complete", time = FALSE, header = TRUE)
 log <- function(message, time = TRUE, time_format = "%Y-%m-%d %H:%M:%S", tz = NULL, header = FALSE, quiet = FALSE) {
   original <- message
+
+
+  stopifnot(is.character(message))
+  stopifnot(is.logical(header), length(header) == 1)
+  stopifnot(is.logical(time), length(time) == 1)
+  stopifnot(is.character(time_format), length(time_format) == 1)
+  stopifnot(is.character(tz) | is.null(tz), length(tz) == 1 | is.null(tz))
+  stopifnot(is.logical(quiet), length(quiet) == 1)
+
   # Get current timestamp
   if (is.null(tz)) tz <- Sys.timezone()
   timestamp <- Sys.time() |>

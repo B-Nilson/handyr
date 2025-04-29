@@ -19,6 +19,9 @@
 #' @export
 extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
   rlang::check_installed("sf")
+  # Handle inputs
+  stopifnot(inherits(sf_obj, "sf"))
+  stopifnot(is.logical(keep_sf), length(keep_sf) == 1)
 
   coords <- sf_obj |>
     sf::st_coordinates()
