@@ -25,14 +25,12 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
 
   coords <- sf_obj |>
     sf::st_coordinates()
-
-  out <- sf_obj |>
-    dplyr::mutate(
-      x = coords[, 1],
-      y = coords[, 2],
-      crs = sf::st_crs(.data$geometry)$input
-    )
-
+  crs <- sf::st_crs(sf_obj$geometry)$input
+  # Add columns to input
+  sf_obj$x <- coords[, 1]
+  sf_obj$y <- coords[, 2]
+  sf_obj$crs <- crs
+  # Return if sf typing desired
   if (keep_sf) {
     return(out)
   }
