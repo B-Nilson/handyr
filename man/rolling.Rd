@@ -41,6 +41,6 @@ Perform a rolling calculation on a vector if enough values are provided.
 }
 \examples{
 x <- c(1, 2, 3, 4, 5)
-x |> rolling(mean, width = 2)
-rolling(x, width = 2, direction = "forward", fill = -1)
+x |> rolling(mean, .width = 2)
+x |> rolling(mean, .width = 2, .direction = "forward", .fill = -1)
 }

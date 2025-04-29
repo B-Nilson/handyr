@@ -12,7 +12,7 @@ for_each(
   .name = FALSE,
   .parallel = FALSE,
   .workers = parallel::detectCores(),
-  .invisible = FALSE
+  .quiet = FALSE
 )
 }
 \arguments{
@@ -65,12 +65,13 @@ values <- 1:3 |>
   for_each(\(value) value + 1, .parallel = TRUE, .workers = 2)
 
 values <- 1:3 |>
-  for_each(\(value) message(value + 1), .invisible = TRUE)
+  for_each(\(value) message(value + 1), .quiet = TRUE)
 }
 \seealso{
 Other Utilities: 
 \code{\link{get_timezone}()},
 \code{\link{on_error}()},
+\code{\link{on_warning}()},
 \code{\link{summarise_logs}()},
 \code{\link{swap}()}
 }

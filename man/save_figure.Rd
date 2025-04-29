@@ -35,7 +35,7 @@ Default is 0.}
 OR a single numeric value equal to the desired dpi.
 Text sizes may need to be adjusted in relavant geoms/themes for different quality levels.}
 
-\item{...}{(Optional) addition arguments passed on to ggplot2::ggsave() (aside from )}
+\item{...}{(Optional) addition arguments passed on to ggplot2::ggsave()}
 }
 \value{
 invisibly returns \code{gg}
@@ -47,7 +47,7 @@ You can adjust the sizing from there by changing \code{taller} and \code{page_wi
 \examples{
 gg <- ggplot2::ggplot() +
   ggplot2::geom_line(
-    data = data.frame(x = 1:100, y = (0:99)^2),
+    data = data.frame(x = 1:10, y = (0:9)^2),
     ggplot2::aes(x, y)
   )
 # save_figure(gg, "./test.png", taller = 1)

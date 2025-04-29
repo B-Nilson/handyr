@@ -2,9 +2,9 @@
 % Please edit documentation in R/get_timezone.R
 \name{get_timezone}
 \alias{get_timezone}
-\title{Wrapper for looking up timezone of locations from lat/lng coords using the \code{lutz} package}
+\title{Get timezones of latitude/longitude pairs}
 \usage{
-get_timezone(lng, lat, method = "accurate", ...)
+get_timezone(lng, lat, method = "accurate", quiet = FALSE, ...)
 }
 \arguments{
 \item{lng}{Vector of numeric values indicating location longitudes (decimal degrees) to lookup.}
@@ -13,7 +13,9 @@ get_timezone(lng, lat, method = "accurate", ...)
 
 \item{method}{A single character value indicating the lookup method to use (either "accurate" or "fast"). See \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} for more details.}
 
-\item{...}{(Optional) Additional paramaters to pass to \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords}}
+\item{quiet}{A single logical value indicating if messages and warnings should be suppressed.}
+
+\item{...}{Additional paramaters to pass to \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} (currently unused)}
 }
 \value{
 a character vector with the same length as \code{lat} and \code{lng} indicating the locations likely timezone.
@@ -22,12 +24,14 @@ a character vector with the same length as \code{lat} and \code{lng} indicating 
 \code{get_timezone} uses the \code{lutz} package to lookup the timezone of locations from lat/lng coords. See \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} for more details.
 }
 \examples{
-get_timezone(-105.053144, 69.116178, method = "fast")
+get_timezone(lng = -105.053144, lat = 69.116178, method = "accurate")
+get_timezone(lng = c(-105.053144, -106.053144), lat = c(69.116178, 49.116178), method = "fast")
 }
 \seealso{
 Other Utilities: 
 \code{\link{for_each}()},
 \code{\link{on_error}()},
+\code{\link{on_warning}()},
 \code{\link{summarise_logs}()},
 \code{\link{swap}()}
 }

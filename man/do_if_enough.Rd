@@ -4,7 +4,7 @@
 \alias{do_if_enough}
 \title{Apply a function if enough values are provided}
 \usage{
-do_if_enough(x, FUN, ..., .min_length = 0)
+do_if_enough(x, FUN, ..., .min_length = 1)
 }
 \arguments{
 \item{x}{A vector of values}
@@ -22,7 +22,7 @@ The output of FUN applied to x if enough values are provided, NA otherwise
 \code{do_if_enough} provides a simple way to apply a function if enough values are provided.
 }
 \examples{
-do_if_enough(c(1, 2, 3), mean, min_length = 2)
-do_if_enough(c(1, 2, NA), mean, min_length = 2)
-do_if_enough(c(1, NA, NA), mean, min_length = 2)
+do_if_enough(c(1, 2, 3), mean, .min_length = 2)
+do_if_enough(c(1, 2, NA), mean, .min_length = 2)
+do_if_enough(c(1, NA, NA), mean, .min_length = 2)
 }

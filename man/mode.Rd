@@ -18,11 +18,6 @@ The most common value from the provided values, or NA if all values are NA.
 \code{mode} determines the most common value in a vector while cleanly handling NAs
 }
 \examples{
-data.frame(
-  x = c(1, 1, 3, NA, NA, NA),
-  y = c("a", "a", "a", "b", "b", "b")
-) |>
-  dplyr::group_by(y) |>
-  dplyr::summarise(mode_x = mode(x, na.rm = TRUE))
+mode(c(1, 1, 1:3))
 
 }

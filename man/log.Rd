@@ -6,23 +6,23 @@
 \usage{
 log(
   message,
-  time = TRUE,
+  header = FALSE,
+  time = !header,
   time_format = "\%Y-\%m-\%d \%H:\%M:\%S",
   tz = NULL,
-  header = FALSE,
   quiet = FALSE
 )
 }
 \arguments{
 \item{message}{A character value of the message to be logged}
 
+\item{header}{A logical value indicating if the message should be formatted as a header}
+
 \item{time}{A logical value indicating if the current time should be prepended to the log message}
 
 \item{time_format}{A character value indicating the format of the timestamp}
 
 \item{tz}{A character value indicating the time zone to use for the timestamp}
-
-\item{header}{A logical value indicating if the message should be formatted as a header}
 
 \item{quiet}{A logical value indicating if the message should be printed}
 }
@@ -35,7 +35,8 @@ Log a message with optional timestamp and formatting
 \examples{
 log("My Awesome Script", time = FALSE, header = TRUE)
 log("Step 1...")
-Sys.sleep(0.8)
+# Do something
 log("Step 2...")
-log("Complete", time = FALSE, header = TRUE)
+# Do something else
+log("Complete")
 }

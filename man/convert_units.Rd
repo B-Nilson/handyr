@@ -4,7 +4,7 @@
 \alias{convert_units}
 \title{Convert between common units}
 \usage{
-convert_units(x, from, to)
+convert_units(x, from, to, ...)
 }
 \arguments{
 \item{x}{A numeric vector to convert}
@@ -12,6 +12,8 @@ convert_units(x, from, to)
 \item{from}{A string indicating the current unit of \code{x}. Examples: "cm", "mm", "in", "ft", "m", "km", "mi", "yd", "nm", "mi", "mile", "km", "mi", "yd", "ft", "in", "mm", "cm"}
 
 \item{to}{A string indicating the desired unit of \code{x}. Examples: "cm", "mm", "in", "ft", "m", "km", "mi", "yd", "nm", "mi", "mile", "km", "mi", "yd", "ft", "in", "mm", "cm"}
+
+\item{...}{Additional arguments passed on to \code{\link[units:units]{units::set_units()}}}
 }
 \value{
 A numeric vector of \code{x} converted to the desired unit
