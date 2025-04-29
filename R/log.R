@@ -10,14 +10,13 @@
 #' @return a character vector of the formatted message
 #' @export
 #' @examples
-#' log("My Awesome Script", time = FALSE, header = TRUE)
-#' log("Step 1...")
+#' log_step("My Awesome Script", time = FALSE, header = TRUE)
+#' log_step("Step 1...")
 #' # Do something
-#' log("Step 2...")
+#' log_step("Step 2...")
 #' # Do something else
-#' log("Complete")
-# TODO: rename to log_step due to overlap with base::log()
-log <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = NULL, quiet = FALSE) {
+#' log_step("Complete")
+log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = NULL, quiet = FALSE) {
 
   stopifnot(is.character(message))
   stopifnot(is.logical(header), length(header) == 1)

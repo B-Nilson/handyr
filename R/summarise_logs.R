@@ -13,12 +13,12 @@
 #'
 #' @examples
 #' logs <- list(
-#'   log("test", quiet = TRUE),
-#'   log("test", quiet = TRUE),
-#'   log("test", quiet = TRUE),
-#'   log("test", quiet = TRUE),
-#'   log("test", quiet = TRUE),
-#'   log("test", quiet = TRUE)
+#'   log_step("test", quiet = TRUE),
+#'   log_step("test", quiet = TRUE),
+#'   log_step("test", quiet = TRUE),
+#'   log_step("test", quiet = TRUE),
+#'   log_step("test", quiet = TRUE),
+#'   log_step("test", quiet = TRUE)
 #' )
 #' summarise_logs(logs)
 summarise_logs <- function(logs) {

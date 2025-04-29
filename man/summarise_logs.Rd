@@ -17,12 +17,12 @@ a character vector indicating the summary of the time taken between each log cal
 }
 \examples{
 logs <- list(
-  log("test", quiet = TRUE),
-  log("test", quiet = TRUE),
-  log("test", quiet = TRUE),
-  log("test", quiet = TRUE),
-  log("test", quiet = TRUE),
-  log("test", quiet = TRUE)
+  log_step("test", quiet = TRUE),
+  log_step("test", quiet = TRUE),
+  log_step("test", quiet = TRUE),
+  log_step("test", quiet = TRUE),
+  log_step("test", quiet = TRUE),
+  log_step("test", quiet = TRUE)
 )
 summarise_logs(logs)
 }
