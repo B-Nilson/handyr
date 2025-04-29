@@ -24,8 +24,7 @@ mode <- function(..., na.rm = FALSE) {
   }
   # Handle cases where mode doesn't need to be called
   if (length(x) == 0 | all(is.na(x))) {
-    na_out <- ifelse(is.numeric(x), return(NA_real_), return(NA_character_))
-    return(na_out)
+    return(ifelse(is.numeric(x), NA_real_, NA_character_))
   }
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]

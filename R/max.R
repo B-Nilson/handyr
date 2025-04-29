@@ -26,7 +26,7 @@ max <- function(..., na.rm = FALSE) {
   }
   # Handle cases where max doesn't need to be called
   if (length(x) == 0 | all(is.na(x))) {
-    ifelse(is.numeric(x), return(NA_real_), return(NA_character_))
+    return(ifelse(is.numeric(x), NA_real_, NA_character_))
   }
   base::max(x)
 }

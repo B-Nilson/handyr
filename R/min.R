@@ -26,7 +26,7 @@ min <- function(..., na.rm = FALSE) {
   }
   # Handle cases where min doesn't need to be called
   if (length(x) == 0 | all(is.na(x))) {
-    ifelse(is.numeric(x), return(NA_real_), return(NA_character_))
+    return(ifelse(is.numeric(x), NA_real_, NA_character_))
   }
   base::min(x)
 }
