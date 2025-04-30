@@ -18,7 +18,7 @@
 #' swap(c(-20:20), what = Inf, with = NA)
 swap <- function(x, what, with) {
   # Handle inputs
-  stopifnot(length(what) == 1)
+  stopifnot(length(what) >= 1)
   stopifnot(length(with) == 1)
 
   # Swap values
