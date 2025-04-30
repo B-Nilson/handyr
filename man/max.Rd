@@ -2,9 +2,12 @@
 % Please edit documentation in R/max.R
 \name{max}
 \alias{max}
-\title{Wrapper for max to handle NAs cleanly}
+\alias{min}
+\title{Get the maximum/minimum value while handling NAs cleanly}
 \usage{
 max(..., na.rm = FALSE)
+
+min(..., na.rm = FALSE)
 }
 \arguments{
 \item{...}{numeric or character arguments (see \link[base:Extremes]{base::max}).}
@@ -12,19 +15,29 @@ max(..., na.rm = FALSE)
 \item{na.rm}{A logical value indicating whether NA values should be stripped before the computation proceeds.}
 }
 \value{
-The maximum value from the provided values, or NA if all values are NA.
+A single value with the same type as the provided values
 }
 \description{
-\code{max} provides a wrapper for the built-in function \link[base:Extremes]{base::max}. This handles the edge case where
-all values provided to max are NA, which would otherwise throw an warning and return Inf.
-This is consitent with the behavior of \link[base:mean]{base::mean}.
+\code{max}/\code{min} provides a wrapper for the built-in functions \link[base:Extremes]{base::max}/\link[base:Extremes]{base::min} that handles NAs the same as \link[base:mean]{base::mean}.
+Specifically, this handles the case where all values provided to max/min are NA, which normally returns Inf/-Inf and throws a warning.
 }
 \examples{
+
+# Edge case where all values are NA
+base::max(c(NA, NA, NA)) # Returns NA
+base::max(c(NA, NA, NA), na.rm = TRUE) # Returns -Inf and throws warning
+max(c(NA, NA, NA)) # Returns NA
+max(c(NA, NA, NA), na.rm = TRUE) # Returns NA
+
+# Example usage with typical dplyr pipeline
 data.frame(
   x = c(1, 2, 3, NA, NA, NA),
   y = c("a", "a", "a", "b", "b", "b")
 ) |>
   dplyr::group_by(y) |>
-  dplyr::summarise(max_x = max(x, na.rm = TRUE))
+  dplyr::summarise(
+    max_x = max(x, na.rm = TRUE)
+    min_x = min(x, na.rm = TRUE)
+   )
 
 }
