@@ -1,20 +1,22 @@
 #' Get the maximum/minimum value while handling NAs cleanly
 #'
-#' @param ... numeric or character arguments (see [base::max]).
-#' @param na.rm A logical value indicating whether NA values should be stripped before the computation proceeds.
-#'
-#' @description
-#'   `max`/`min` provides a wrapper for the built-in functions [base::max]/[base::min] that handles NAs the same as [base::mean]. 
-#'   Specifically, this handles the case where all values provided to max/min are NA, which normally returns Inf/-Inf and throws a warning.
-#'
-#' @return A single value with the same type as the provided values
-#' @examples
+#' `max`/`min` provides a wrapper for the built-in functions [base::max]/[base::min] that handles NAs the same as [base::mean]. 
 #' 
+#' This handles the case where all values provided to max/min are NA, which normally returns Inf/-Inf and throws a warning (see examples).
+#' 
+#' @param ... numeric or character vectors (see [base::max]).
+#' @param na.rm A logical value indicating whether NA values should be removed.
+#'
+#' @return A single value with the same type as `...`
+#' 
+#' @examples
 #' # Edge case where all values are NA
 #' base::max(c(NA, NA, NA)) # Returns NA
 #' base::max(c(NA, NA, NA), na.rm = TRUE) # Returns -Inf and throws warning
+#' base::min(c(NA, NA, NA), na.rm = TRUE) # Returns Inf and throws warning
 #' max(c(NA, NA, NA)) # Returns NA
 #' max(c(NA, NA, NA), na.rm = TRUE) # Returns NA
+#' min(c(NA, NA, NA), na.rm = TRUE) # Returns NA
 #' 
 #' # Example usage with typical dplyr pipeline
 #' data.frame(
@@ -23,7 +25,9 @@
 #' ) |>
 #'   dplyr::group_by(y) |>
 #'   dplyr::summarise(
-#'     max_x = max(x, na.rm = TRUE)
+#'     base_max_x = base::max(x, na.rm = TRUE), # for comparison
+#'     base_min_x = base::min(x, na.rm = TRUE), # for comparison
+#'     max_x = max(x, na.rm = TRUE),
 #'     min_x = min(x, na.rm = TRUE)
 #'    )
 #'
