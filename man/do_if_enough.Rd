@@ -2,27 +2,35 @@
 % Please edit documentation in R/do_if_enough.R
 \name{do_if_enough}
 \alias{do_if_enough}
-\title{Apply a function if enough values are provided}
+\title{Apply a function if enough values are non-NA}
 \usage{
-do_if_enough(x, FUN, ..., .min_length = 1)
+do_if_enough(x, FUN, ..., .min_non_na = 1, .return = NA)
 }
 \arguments{
-\item{x}{A vector of values}
+\item{x}{A vector (numeric, character, etc).}
 
-\item{FUN}{A function to be applied to x}
+\item{FUN}{A function to be applied to \code{x}.}
 
-\item{...}{Additional arguments to be passed to FUN}
+\item{...}{Additional arguments to be passed to \code{FUN}.}
 
-\item{.min_length}{The minimum length of \code{x} to be considered enough}
+\item{.min_non_na}{The minimum length of \code{x} (ignoring NAs) to be considered enough.}
+
+\item{.return}{What to return instead of the output of \code{FUN} if not enough non-NA values.}
 }
 \value{
 The output of FUN applied to x if enough values are provided, NA otherwise
 }
 \description{
-\code{do_if_enough} provides a simple way to apply a function if enough values are provided.
+\code{do_if_enough}:
+\itemize{
+\item checks if enough non-NA values are in \code{x}. (see \code{.min_non_na})
+\item if so, applies a function (\code{FUN}) to \code{x}.
+\item if not, returns \code{.return}.
+}
 }
 \examples{
-do_if_enough(c(1, 2, 3), mean, .min_length = 2)
-do_if_enough(c(1, 2, NA), mean, .min_length = 2)
-do_if_enough(c(1, NA, NA), mean, .min_length = 2)
+do_if_enough(c(1, 2, 3), mean, .min_non_na = 2)
+do_if_enough(c(1, 2, NA), mean, .min_non_na = 2)
+do_if_enough(c(1, NA, NA), mean, .min_non_na = 2)
+do_if_enough(c(1, NA, NA), mean, .min_non_na = 2, .return = -1)
 }
