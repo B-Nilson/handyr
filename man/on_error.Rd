@@ -2,37 +2,34 @@
 % Please edit documentation in R/on_error.R
 \name{on_error}
 \alias{on_error}
-\title{Easy error handler}
+\alias{on_warning}
+\title{Control what happens when an error/warning occurs}
 \usage{
 on_error(..., .return = NULL, .message = FALSE, .warn = FALSE)
+
+on_warning(..., .return = NULL, .message = FALSE, .stop = FALSE)
 }
 \arguments{
-\item{...}{A code block (typically wrapped in \code{{}}) to run and capture errors (if any).}
+\item{...}{Something to run and capture errors/warnings (if any).}
 
-\item{.return}{(Optional) What is to be returned if an error occurs (instead of throwing an error).
+\item{.return}{What is to be returned if an error/warning occurs.
 Default is \code{NULL}}
 
-\item{.message}{(Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a message instead.
+\item{.message}{A logical value indicating if the error message should be displayed as a message instead.
 Default is \code{FALSE}}
 
-\item{.warn}{(Optional) A single logical (TRUE/FALSE) value indicating if the error message should be displayed as a warning instead.
+\item{.warn, .stop}{A logical value indicating if the error/warning message should be displayed as a warning/error instead.
 Default is \code{FALSE}}
 }
 \value{
-the output of \code{...} unless an error occurs, then \code{return} instead.
+the output of \code{...} unless an error/warning occurs, then \code{.return} instead.
 }
 \description{
-\code{on_error} provides a simple way to handle errors by specifying a value to be returned on error and/or if a message/warning should be displayed instead.
-This is especially useful when attempting to load in multiple data files where it is possible for files not to exist.
+\code{on_error}/\code{on_warning} provide a simple way to handle errors/warnings by specifying a value to be returned instead as well as if a message or warning/error should be displayed instead.
 }
 \examples{
 on_error(stop("test"), .return = -1, .message = TRUE)
 on_error(read.csv("not_A_fil3.123"), .return = NULL)
+on_warning(warning("test"), .return = -1, .message = TRUE)
+on_warning(base::max(NA, na.rm = TRUE), .return = NULL)
 }
-\seealso{
-Other Utilities: 
-\code{\link{on_warning}()},
-\code{\link{summarise_logs}()},
-\code{\link{swap}()}
-}
-\concept{Utilities}

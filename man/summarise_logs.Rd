@@ -28,8 +28,6 @@ summarise_logs(logs)
 }
 \seealso{
 Other Utilities: 
-\code{\link{on_error}()},
-\code{\link{on_warning}()},
 \code{\link{swap}()}
 }
 \concept{Utilities}
