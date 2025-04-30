@@ -27,7 +27,7 @@ logs$summaries <- log_step("Vector Functions")
 x <- c(1:10 + 0.123, NA) |>
   clamp(range = c(2, 9)) |> # replcae values outside range with nearest value
   swap(2, with = NA) |> # swap out all "2"s with NA
-  rolling(mean, width = 3, direction = "backwards", .min_length = 2) |> # 3-point rolling mean
+  rolling(mean, width = 3, direction = "backwards", .min_non_na = 2) |> # 3-point rolling mean
   truncate(digits = 1) |> # drop all digits after the first
   convert_units(from = "m", to = "km") |> # convert from metres to kilometres
   max(na.rm = TRUE) # take the max (or `min()` or `mode()`)

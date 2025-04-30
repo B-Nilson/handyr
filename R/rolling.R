@@ -11,7 +11,7 @@
 #'   Options are `"backward"` (1), `"forward"` (-1), or `"center"` (0).
 #' @param .fill (Optional) A single value to be used for filling in any values that are outside of the window.
 #'   The default is `NA`.
-#' @param .min_length (Optional) A single numeric value indicating the minimum number of observations required to
+#' @param .min_non_na (Optional) A single numeric value indicating the minimum number of observations required to
 #'   compute a value.
 #'   The default is `0`.
 #'
@@ -20,14 +20,14 @@
 #' x |> rolling(mean, .width = 2)
 #' x |> rolling(mean, .width = 2, .direction = "forward", .fill = -1)
 #' @export
-rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fill = NA, .min_length = 0) {
+rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fill = NA, .min_non_na = 0) {
   rlang::check_installed("zoo")
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.numeric(.width), length(.width) == 1)
   stopifnot(is.numeric(.direction) | is.character(.direction), length(.direction) == 1)
   stopifnot(length(.fill) == 1)
-  stopifnot(is.numeric(.min_length), length(.min_length) == 1)
+  stopifnot(is.numeric(.min_non_na), length(.min_non_na) == 1)
 
   # translate .direction -> align for zoo
   align <- ifelse(
@@ -42,6 +42,6 @@ rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fi
   x |>
     zoo::rollapply(
       width = .width, align = align, fill = .fill,
-      FUN = \(x) do_if_enough(x, FUN, .min_length = .min_length)
+      FUN = \(x) do_if_enough(x, FUN, .min_non_na = .min_non_na)
     )
 }
