@@ -2,7 +2,7 @@
 % Please edit documentation in R/clamp.R
 \name{clamp}
 \alias{clamp}
-\title{Replace values outside of a range with the nearest value in that range}
+\title{Replace out-of-range values with the nearest in-range value}
 \usage{
 clamp(x, range = c(NA, NA))
 }
@@ -26,6 +26,7 @@ A numeric vector equal to \code{x} with:
 \code{clamp} sets values less than \code{min(range)} to \code{min(range)} and values greater than \code{max(range)} to \code{max(range)}
 }
 \examples{
+clamp(1:5, range = c(2, NA)) # 2, 2, 3, 4, 5
 clamp(1:5, range = c(2, 4)) # 2, 2, 3, 4, 4
 clamp(1:5, range = c(-1, 1)) # 1, 1, 1, 1, 1
 }
