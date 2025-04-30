@@ -2,22 +2,25 @@
 % Please edit documentation in R/mode.R
 \name{mode}
 \alias{mode}
-\title{Calculate the stitistical mode (most common value)}
+\title{Get the most common value}
 \usage{
 mode(..., na.rm = FALSE)
 }
 \arguments{
-\item{...}{numeric or character arguments (see \link[base:Extremes]{base::max}).}
+\item{...}{numeric or character vectors (see \link[base:Extremes]{base::max}).}
 
-\item{na.rm}{A logical value indicating whether NA values should be stripped before the computation proceeds.}
+\item{na.rm}{A logical value indicating whether NA values should be removed.}
 }
 \value{
-The most common value from the provided values, or NA if all values are NA.
+A single value with the same type as \code{...}
 }
 \description{
-\code{mode} determines the most common value in a vector while cleanly handling NAs
+\code{mode} determines the statistical mode (the most common value) of one or more vectors
 }
 \examples{
-mode(c(1, 1, 1:3))
+mode(c("A", "B", "A")) # Returns "A"
+mode(1:3, 3:6, 2:4, NA) # Returns 3
+mode(1, 1:3, c(NA, NA, NA)) # Returns NA
+mode(1, 1:3, c(NA, NA, NA), na.rm = TRUE) # Returns 1
 
 }
