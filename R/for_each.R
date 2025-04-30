@@ -1,29 +1,30 @@
 #' Loop over a vector and apply a function with useful postprocessing
 #'
-#' @param input A vector of values to be iterated over.
-#' @param FUN A function to be applied to each value in `input`.
-#' @param ... Any other arguments to be passed to `FUN` or to [future.apply::future_lapply()] if `.parallel = TRUE`.
-#' @param .bind (Optional) A single logical (TRUE/FALSE) value indicating if the output should be bound rowwise.
+#' @param x Something iterable (a vector, list, etc).
+#' @param FUN A function to be applied to each entry in `input`.
+#' @param ... Additional arguments to be passed to `FUN` or to [future.apply::future_lapply()] if `.parallel = TRUE`.
+#' @param .bind A logical value indicating whether to apply [dplyr::bind_rows()].
 #'   Default is `FALSE`
-#' @param .name (Optional) A single logical (TRUE/FALSE) value indicating if the output should be named after the input.
-#'   Default is `FALSE`
-#' @param .parallel (Optional) A single logical (TRUE/FALSE) value indicating if the function should be run in parallel (see [future::multisession()]).
-#'   Default is `FALSE`
-#' @param .workers (Optional) A single numeric value indicating the number of workers to run in parallel.
-#'   Default is all available cores (see [parallel::detectCores()])
-#' @param .quiet (Optional) A single logical (TRUE/FALSE) value indicating if the output should be invisible (no messages/warnings).
+#' @param .name A logical value indicating if the output should be named after `x`. (i.e `names(out) <- x`)
+#'   Default is `FALSE`.
+#' @param .parallel A logical value indicating if the function should be run in parallel (see [future::multisession()]).
+#'   Default is `FALSE`.
+#' @param .workers A single numeric value indicating the number of workers to run in parallel if `.parallel = TRUE`.
+#'   Default is all available cores (see [parallel::detectCores()]).
+#' @param .quiet A logical value indicating if the output should be invisible (no messages/warnings).
+#'   Default is `FALSE`.
 #'
 #' @description
 #' `for_each` provides a simple way to loop over a vector and apply a function with useful postprocessing.
 #'
-#' @family Utilities
-#'
-#' @return the output of `FUN` iterated over `input`, optionally bound rowwise, named after `input`, or invisible.
+#' @return a list of the output of `FUN` iterated over `x` which:
+#'   if `.bind = TRUE`: is bound rowwise into a data frame using [dplyr::bind_rows()] 
+#'   if `.name = TRUE`: has names set to `x` using `names(out) <- x`
+#'   if `.quiet = TRUE`: is invisible
 #' @export
 #'
 #' @examples
-#' values <- 1:3
-#' values |> for_each(\(value) value + 1)
+#' 1:3 |> for_each(\(value) value + 1)
 #'
 #' list(
 #'   data.frame(x = 1:3),
@@ -45,7 +46,7 @@
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .quiet = FALSE) {
+for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.bind), length(.bind) == 1)
@@ -56,7 +57,7 @@ for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = 
 
   # Setup parallel if desired
   # TODO: handle potential side effect here if user already had a plan() going
-  if (.parallel & length(input) > 1) {
+  if (.parallel & length(x) > 1) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     future::plan(future::multisession, workers = .workers)
     lapply_fun <- future.apply::future_lapply
@@ -64,20 +65,20 @@ for_each <- function(input, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = 
     lapply_fun <- lapply
   }
 
-  # Run input through function
+  # Run x through function
   if (.quiet) {
     out <- suppressWarnings(suppressMessages(invisible(
-      input |> lapply_fun(FUN, ...)
+      x |> lapply_fun(FUN, ...)
     )))
   } else {
-    out <- input |> lapply_fun(FUN, ...)
+    out <- x |> lapply_fun(FUN, ...)
   }
 
   # Stop running in parallel
   # TODO: handle potential side effect here if user already had a plan() going
   if (.parallel) future::plan(future::sequential)
-  # Use input as names if desired
-  if (.name) names(out) <- input
+  # Use x as names if desired
+  if (.name) names(out) <- x
   # Bind rowwise if desired
   if (.bind) out <- out |> dplyr::bind_rows()
 

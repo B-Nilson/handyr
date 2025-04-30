@@ -30,7 +30,6 @@ on_warning(base::max(NA, na.rm = TRUE), .return = NULL)
 }
 \seealso{
 Other Utilities: 
-\code{\link{for_each}()},
 \code{\link{get_timezone}()},
 \code{\link{on_error}()},
 \code{\link{summarise_logs}()},

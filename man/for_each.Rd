@@ -5,7 +5,7 @@
 \title{Loop over a vector and apply a function with useful postprocessing}
 \usage{
 for_each(
-  input,
+  x,
   FUN,
   ...,
   .bind = FALSE,
@@ -16,35 +16,38 @@ for_each(
 )
 }
 \arguments{
-\item{input}{A vector of values to be iterated over.}
+\item{x}{Something iterable (a vector, list, etc).}
 
-\item{FUN}{A function to be applied to each value in \code{input}.}
+\item{FUN}{A function to be applied to each entry in \code{input}.}
 
-\item{...}{Any other arguments to be passed to \code{FUN} or to \code{\link[future.apply:future_lapply]{future.apply::future_lapply()}} if \code{.parallel = TRUE}.}
+\item{...}{Additional arguments to be passed to \code{FUN} or to \code{\link[future.apply:future_lapply]{future.apply::future_lapply()}} if \code{.parallel = TRUE}.}
 
-\item{.bind}{(Optional) A single logical (TRUE/FALSE) value indicating if the output should be bound rowwise.
+\item{.bind}{A logical value indicating whether to apply \code{\link[dplyr:bind_rows]{dplyr::bind_rows()}}.
 Default is \code{FALSE}}
 
-\item{.name}{(Optional) A single logical (TRUE/FALSE) value indicating if the output should be named after the input.
-Default is \code{FALSE}}
+\item{.name}{A logical value indicating if the output should be named after \code{x}. (i.e \code{names(out) <- x})
+Default is \code{FALSE}.}
 
-\item{.parallel}{(Optional) A single logical (TRUE/FALSE) value indicating if the function should be run in parallel (see \code{\link[future:multisession]{future::multisession()}}).
-Default is \code{FALSE}}
+\item{.parallel}{A logical value indicating if the function should be run in parallel (see \code{\link[future:multisession]{future::multisession()}}).
+Default is \code{FALSE}.}
 
-\item{.workers}{(Optional) A single numeric value indicating the number of workers to run in parallel.
-Default is all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}})}
+\item{.workers}{A single numeric value indicating the number of workers to run in parallel if \code{.parallel = TRUE}.
+Default is all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}}).}
 
-\item{.quiet}{(Optional) A single logical (TRUE/FALSE) value indicating if the output should be invisible (no messages/warnings).}
+\item{.quiet}{A logical value indicating if the output should be invisible (no messages/warnings).
+Default is \code{FALSE}.}
 }
 \value{
-the output of \code{FUN} iterated over \code{input}, optionally bound rowwise, named after \code{input}, or invisible.
+a list of the output of \code{FUN} iterated over \code{x} which:
+if \code{.bind = TRUE}: is bound rowwise into a data frame using \code{\link[dplyr:bind_rows]{dplyr::bind_rows()}}
+if \code{.name = TRUE}: has names set to \code{x} using \code{names(out) <- x}
+if \code{.quiet = TRUE}: is invisible
 }
 \description{
 \code{for_each} provides a simple way to loop over a vector and apply a function with useful postprocessing.
 }
 \examples{
-values <- 1:3
-values |> for_each(\(value) value + 1)
+1:3 |> for_each(\(value) value + 1)
 
 list(
   data.frame(x = 1:3),
@@ -67,12 +70,3 @@ values <- 1:3 |>
 values <- 1:3 |>
   for_each(\(value) message(value + 1), .quiet = TRUE)
 }
-\seealso{
-Other Utilities: 
-\code{\link{get_timezone}()},
-\code{\link{on_error}()},
-\code{\link{on_warning}()},
-\code{\link{summarise_logs}()},
-\code{\link{swap}()}
-}
-\concept{Utilities}

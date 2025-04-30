@@ -29,7 +29,6 @@ get_timezone(lng = c(-105.053144, -106.053144), lat = c(69.116178, 49.116178), m
 }
 \seealso{
 Other Utilities: 
-\code{\link{for_each}()},
 \code{\link{on_error}()},
 \code{\link{on_warning}()},
 \code{\link{summarise_logs}()},
