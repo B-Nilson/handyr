@@ -1,20 +1,30 @@
-#' Perform a rolling calculation on a vector if enough values are provided.
+#' Apply a function over a rolling window
 #'
-#' @param x A vector of values
-#' @param FUN (Optional) A function to be applied to each window of `x`.
-#'   The default is `mean`.
-#' @param ... (Optional) Additional arguments to be passed to `FUN`
-#' @param .width (Optional) A single numeric value indicating the width of the window.
-#'   The default is `3`.
-#' @param .direction (Optional) A single character string or numeric value indicating the direction of the window.
-#'   The default is `"backward"`.
+#' `rolling` applies a funtion (`FUN`) over a moving window (see `.width` and `.direction`) for each element of `x` using [zoo::rollapply()].
+#' 
+#' * Be sure to fill any gaps in `x` and ensure `x` is sorted, otherwise the window may be applied incorrectly.
+#' * Values outside of the window are replaced with `.fill`.
+#' * `.min_non_na` is passed to [do_if_enough()] to only apply `FUN` if enough values are present in the window.
+#' 
+#' @param x A vector.
+#' @param FUN A function to be applied to each window of `x`.
+#'   Default is `mean`.
+#' @param ... Additional arguments to be passed to `FUN`.
+#' @param .width A numeric value indicating the width of the window.
+#'   See [zoo::rollapply()] for more details.
+#'   Default is `3`.
+#' @param .direction A character string or numeric value indicating the direction of the window.
 #'   Options are `"backward"` (1), `"forward"` (-1), or `"center"` (0).
+#'   See the `align` argument in [zoo::rollapply()] for more details.
+#'   Default is `"backward"`.
 #' @param .fill (Optional) A single value to be used for filling in any values that are outside of the window.
-#'   The default is `NA`.
+#'   See [zoo::rollapply()] for more details.
+#'   Default is `NA`.
 #' @param .min_non_na (Optional) A single numeric value indicating the minimum number of observations required to
 #'   compute a value.
-#'   The default is `0`.
+#'   Default is `0`.
 #'
+#' @return A vector of the same length as `x` and type of the output of `FUN`.
 #' @examples
 #' x <- c(1, 2, 3, 4, 5)
 #' x |> rolling(mean, .width = 2)

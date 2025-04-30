@@ -2,7 +2,7 @@
 % Please edit documentation in R/rolling.R
 \name{rolling}
 \alias{rolling}
-\title{Perform a rolling calculation on a vector if enough values are provided.}
+\title{Apply a function over a rolling window}
 \usage{
 rolling(
   x,
@@ -15,29 +15,42 @@ rolling(
 )
 }
 \arguments{
-\item{x}{A vector of values}
+\item{x}{A vector.}
 
-\item{FUN}{(Optional) A function to be applied to each window of \code{x}.
-The default is \code{mean}.}
+\item{FUN}{A function to be applied to each window of \code{x}.
+Default is \code{mean}.}
 
-\item{...}{(Optional) Additional arguments to be passed to \code{FUN}}
+\item{...}{Additional arguments to be passed to \code{FUN}.}
 
-\item{.width}{(Optional) A single numeric value indicating the width of the window.
-The default is \code{3}.}
+\item{.width}{A numeric value indicating the width of the window.
+See \code{\link[zoo:rollapply]{zoo::rollapply()}} for more details.
+Default is \code{3}.}
 
-\item{.direction}{(Optional) A single character string or numeric value indicating the direction of the window.
-The default is \code{"backward"}.
-Options are \code{"backward"} (1), \code{"forward"} (-1), or \code{"center"} (0).}
+\item{.direction}{A character string or numeric value indicating the direction of the window.
+Options are \code{"backward"} (1), \code{"forward"} (-1), or \code{"center"} (0).
+See the \code{align} argument in \code{\link[zoo:rollapply]{zoo::rollapply()}} for more details.
+Default is \code{"backward"}.}
 
 \item{.fill}{(Optional) A single value to be used for filling in any values that are outside of the window.
-The default is \code{NA}.}
+See \code{\link[zoo:rollapply]{zoo::rollapply()}} for more details.
+Default is \code{NA}.}
 
 \item{.min_non_na}{(Optional) A single numeric value indicating the minimum number of observations required to
 compute a value.
-The default is \code{0}.}
+Default is \code{0}.}
+}
+\value{
+A vector of the same length as \code{x} and type of the output of \code{FUN}.
 }
 \description{
-Perform a rolling calculation on a vector if enough values are provided.
+\code{rolling} applies a funtion (\code{FUN}) over a moving window (see \code{.width} and \code{.direction}) for each element of \code{x} using \code{\link[zoo:rollapply]{zoo::rollapply()}}.
+}
+\details{
+\itemize{
+\item Be sure to fill any gaps in \code{x} and ensure \code{x} is sorted, otherwise the window may be applied incorrectly.
+\item Values outside of the window are replaced with \code{.fill}.
+\item \code{.min_non_na} is passed to \code{\link[=do_if_enough]{do_if_enough()}} to only apply \code{FUN} if enough values are present in the window.
+}
 }
 \examples{
 x <- c(1, 2, 3, 4, 5)
