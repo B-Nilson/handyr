@@ -2,22 +2,30 @@
 % Please edit documentation in R/clamp.R
 \name{clamp}
 \alias{clamp}
-\title{Clamp a value to a certain range}
+\title{Replace values outside of a range with the nearest value in that range}
 \usage{
 clamp(x, range = c(NA, NA))
 }
 \arguments{
-\item{x}{A numeric vector of value(s)}
+\item{x}{A numeric vector.}
 
-\item{range}{A numeric vector of length two to clamp \code{x} to. If \code{range[1]} is \code{NA}, then \code{min(x)} will be used. If \code{range[2]} is \code{NA}, then \code{max(x)} will be used}
+\item{range}{A numeric vector of length two to clamp \code{x} to.
+\itemize{
+\item If \code{range[1]} is \code{NA} (default), then \code{min(x)} will be used.
+\item If \code{range[2]} is \code{NA} (default), then \code{max(x)} will be used.
+}}
 }
 \value{
-A numeric vector of \code{x} with values less than \code{min(range)} set to \code{min(range)} and values greater than \code{max(range)} set to \code{max(range)}
+A numeric vector equal to \code{x} with:
+\itemize{
+\item values less than \code{min(range)} set to \code{min(range)}
+\item values greater than \code{max(range)} set to \code{max(range)}
+}
 }
 \description{
-Clamp a value to a certain range
+\code{clamp} sets values less than \code{min(range)} to \code{min(range)} and values greater than \code{max(range)} to \code{max(range)}
 }
 \examples{
-clamp(1:5, range = c(2, 4))
-clamp(1:5, range = c(-1, 8))
+clamp(1:5, range = c(2, 4)) # 2, 2, 3, 4, 4
+clamp(1:5, range = c(-1, 1)) # 1, 1, 1, 1, 1
 }
