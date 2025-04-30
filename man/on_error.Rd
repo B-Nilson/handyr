@@ -31,7 +31,6 @@ on_error(read.csv("not_A_fil3.123"), .return = NULL)
 }
 \seealso{
 Other Utilities: 
-\code{\link{get_timezone}()},
 \code{\link{on_warning}()},
 \code{\link{summarise_logs}()},
 \code{\link{swap}()}

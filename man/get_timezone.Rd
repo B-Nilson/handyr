@@ -2,23 +2,24 @@
 % Please edit documentation in R/get_timezone.R
 \name{get_timezone}
 \alias{get_timezone}
-\title{Get timezones of latitude/longitude pairs}
+\title{Lookup timezones of latitude/longitude pairs}
 \usage{
 get_timezone(lng, lat, method = "accurate", quiet = FALSE, ...)
 }
 \arguments{
-\item{lng}{Vector of numeric values indicating location longitudes (decimal degrees) to lookup.}
+\item{lng, lat}{Numeric longitude/latitude pairs (decimal degrees).}
 
-\item{lat}{Vector of numeric values indicating location latitudes (decimal degrees) to lookup.}
+\item{method}{either "accurate" or "fast",  indicating the lookup method to use.
+See \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} for more details.
+Set \code{.quiet} to \code{TRUE} to suppress warning produced when \code{method = "fast"}.}
 
-\item{method}{A single character value indicating the lookup method to use (either "accurate" or "fast"). See \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} for more details.}
+\item{quiet}{A logical value indicating if messages and warnings should be suppressed.}
 
-\item{quiet}{A single logical value indicating if messages and warnings should be suppressed.}
-
-\item{...}{Additional paramaters to pass to \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} (currently unused)}
+\item{...}{Additional parameters to pass to \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} (currently unused)}
 }
 \value{
-a character vector with the same length as \code{lat} and \code{lng} indicating the locations likely timezone.
+a character vector with the same length as \code{lat} and \code{lng} indicating each locations likely timezone.
+See \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} for more details.
 }
 \description{
 \code{get_timezone} uses the \code{lutz} package to lookup the timezone of locations from lat/lng coords. See \link[lutz:tz_lookup_coords]{lutz::tz_lookup_coords} for more details.
@@ -27,11 +28,3 @@ a character vector with the same length as \code{lat} and \code{lng} indicating 
 get_timezone(lng = -105.053144, lat = 69.116178, method = "accurate")
 get_timezone(lng = c(-105.053144, -106.053144), lat = c(69.116178, 49.116178), method = "fast")
 }
-\seealso{
-Other Utilities: 
-\code{\link{on_error}()},
-\code{\link{on_warning}()},
-\code{\link{summarise_logs}()},
-\code{\link{swap}()}
-}
-\concept{Utilities}
