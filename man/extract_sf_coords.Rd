@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_sf_coords.R
 \name{extract_sf_coords}
 \alias{extract_sf_coords}
-\title{Extract coordinates from an sf object and add them as columns}
+\title{Add sf coordinates and crs as columns}
 \usage{
 extract_sf_coords(sf_obj, keep_sf = TRUE)
 }
@@ -12,13 +12,16 @@ extract_sf_coords(sf_obj, keep_sf = TRUE)
 \item{keep_sf}{A logical value indicating if the return object should remain an \code{sf} object or be converted to a \code{data.frame}}
 }
 \value{
-An \code{sf} object with two additional columns: \code{lng} and \code{lat} for longitude and latitude respectively.
+If \code{keep_sf} is:
+\itemize{
+\item \code{TRUE} \code{sf_obj} with two additional numeric columns (\code{x} and \code{y}) and a character column (\code{crs}).
+\item \code{FALSE}: same as above, but converted to a \code{data.frame}
+}
 }
 \description{
-Extract coordinates from an sf object and add them as columns
+\code{extract_sf_coords} adds the x and y coordinates and the crs as additional columns to an \code{sf} object, with the option to convert it to a \code{data.frame}.
 }
 \examples{
-
 cities <- data.frame(
   name = c("Nanaimo", "Port Moody", "Prince George"),
   x = c(-124.0531, -122.8519, -122.7949),

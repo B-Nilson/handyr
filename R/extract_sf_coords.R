@@ -1,12 +1,18 @@
-#' Extract coordinates from an sf object and add them as columns
+#' Add sf coordinates and crs as columns
+#'
+#' `extract_sf_coords` adds the x and y coordinates and the crs as additional columns to an `sf` object, with the option to convert it to a `data.frame`.
 #'
 #' @param sf_obj An object of class `sf`, typically created by [sf::st_as_sf()]
 #' @param keep_sf A logical value indicating if the return object should remain an `sf` object or be converted to a `data.frame`
 #'
-#' @return An `sf` object with two additional columns: `lng` and `lat` for longitude and latitude respectively.
+#' @return
+#'  If `keep_sf` is:
+#'   * `TRUE` `sf_obj` with two additional numeric columns (`x` and `y`) and a character column (`crs`).
+#'   * `FALSE`: same as above, but converted to a `data.frame`
+#'
+#' @export
 #'
 #' @examples
-#'
 #' cities <- data.frame(
 #'   name = c("Nanaimo", "Port Moody", "Prince George"),
 #'   x = c(-124.0531, -122.8519, -122.7949),
@@ -16,7 +22,6 @@
 #'   sf::st_as_sf(coords = c("x", "y"), crs = "WGS84")
 #' cities_sf |>
 #'   extract_sf_coords()
-#' @export
 extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
   rlang::check_installed("sf")
   # Handle inputs
@@ -31,7 +36,7 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
   sf_obj$x <- coords[, 1]
   sf_obj$y <- coords[, 2]
   sf_obj$crs <- crs
-  
+
   # Return if sf typing desired
   if (keep_sf) {
     return(sf_obj)
