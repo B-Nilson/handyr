@@ -7,20 +7,18 @@
 convert_units(x, from, to, ...)
 }
 \arguments{
-\item{x}{A numeric vector to convert}
+\item{x}{A numeric vector.}
 
-\item{from}{A string indicating the current unit of \code{x}. Examples: "cm", "mm", "in", "ft", "m", "km", "mi", "yd", "nm", "mi", "mile", "km", "mi", "yd", "ft", "in", "mm", "cm"}
-
-\item{to}{A string indicating the desired unit of \code{x}. Examples: "cm", "mm", "in", "ft", "m", "km", "mi", "yd", "nm", "mi", "mile", "km", "mi", "yd", "ft", "in", "mm", "cm"}
+\item{from, to}{A string indicating the current/desired unit of \code{x}.
+Run \code{\link[units:valid_udunits]{units::valid_udunits()}} for a list of valid units.}
 
 \item{...}{Additional arguments passed on to \code{\link[units:units]{units::set_units()}}}
 }
 \value{
-A numeric vector of \code{x} converted to the desired unit
+A numeric vector with the same length/type as \code{x}.
 }
 \description{
-A wrapper around \code{\link[units:units]{units::set_units()}} to convert between common units
-Run \code{\link[units:valid_udunits]{units::valid_udunits()}} for a list of valid units
+\code{convert_units} is a wrapper around \code{\link[units:units]{units::set_units()}} to switch between common measurement units.
 }
 \examples{
 convert_units(c(1, 2, 3), from = "cm", to = "km")
@@ -28,5 +26,5 @@ convert_units(c(1, 2, 3), from = "degF", to = "degC")
 convert_units(c(1, 2, 3), from = "ft", to = "m")
 convert_units(c(1, 2, 3), from = "oz", to = "L")
 convert_units(c(1, 2, 3), from = "m/s", to = "km/h")
-convert_units(c(1, 2, 3), from = "ug/m3", to = "g/km3")
+convert_units(c(1, 2, 3), from = "ug/m3", to = "mg/km3")
 }
