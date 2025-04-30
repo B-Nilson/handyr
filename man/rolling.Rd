@@ -11,7 +11,7 @@ rolling(
   .width = 3,
   .direction = "backward",
   .fill = NA,
-  .min_length = 0
+  .min_non_na = 0
 )
 }
 \arguments{
@@ -32,7 +32,7 @@ Options are \code{"backward"} (1), \code{"forward"} (-1), or \code{"center"} (0)
 \item{.fill}{(Optional) A single value to be used for filling in any values that are outside of the window.
 The default is \code{NA}.}
 
-\item{.min_length}{(Optional) A single numeric value indicating the minimum number of observations required to
+\item{.min_non_na}{(Optional) A single numeric value indicating the minimum number of observations required to
 compute a value.
 The default is \code{0}.}
 }
