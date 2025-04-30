@@ -1,14 +1,23 @@
-#' Log a message with optional timestamp and formatting
+#' Log a message for script progress tracking
 #'
-#' @param message A character value of the message to be logged
-#' @param header A logical value indicating if the message should be formatted as a header
-#' @param time A logical value indicating if the current time should be prepended to the log message
-#' @param time_format A character value indicating the format of the timestamp
-#' @param tz A character value indicating the time zone to use for the timestamp
-#' @param quiet A logical value indicating if the message should be printed
+#' @param message the message to be logged.
+#'  If more than one message is provided, they will be combined with `paste(collapse = " ")`
+#' @param header A logical value indicating if the message should be formatted as a header ("|--- message ---|")
+#'   Default is `FALSE`
+#' @param time A logical value indicating if the current time should be prepended to the log message.
+#'   Default is the opposite of `header`
+#' @param time_format A character value indicating the format of the timestamp.
+#'   See [base::strptime()] for formating details.
+#'   Default is "%Y-%m-%d %H:%M:%S" (YYYY-MM-DD HH:MM:SS).
+#' @param tz A character value indicating the time zone to use for the timestamp.
+#'   Default is [base::Sys.timezone()].
+#' @param quiet A logical value indicating if the message should not be printed using [base::message()].
+#'   Default is `FALSE`.
 #'
 #' @return a character vector of the formatted message
+#' 
 #' @export
+#' 
 #' @examples
 #' log_step("My Awesome Script", time = FALSE, header = TRUE)
 #' log_step("Step 1...")
@@ -16,21 +25,20 @@
 #' log_step("Step 2...")
 #' # Do something else
 #' log_step("Complete")
-log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = NULL, quiet = FALSE) {
+log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE) {
   original <- message
   # Handle inputs
   stopifnot(is.character(message))
   stopifnot(is.logical(header), length(header) == 1)
   stopifnot(is.logical(time), length(time) == 1)
   stopifnot(is.character(time_format), length(time_format) == 1)
-  stopifnot(is.character(tz) | is.null(tz), length(tz) == 1 | is.null(tz))
+  stopifnot(is.character(tz), length(tz) == 1)
   stopifnot(is.logical(quiet), length(quiet) == 1)
 
   # Join message with spaces if multiple messages
   message <- paste(message, collapse = " ")
   
   # Get current timestamp
-  if (is.null(tz)) tz <- Sys.timezone()
   timestamp <- Sys.time() |>
     format(time_format, tz = tz)
 

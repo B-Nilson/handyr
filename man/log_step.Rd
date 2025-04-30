@@ -2,35 +2,42 @@
 % Please edit documentation in R/log_step.R
 \name{log_step}
 \alias{log_step}
-\title{Log a message with optional timestamp and formatting}
+\title{Log a message for script progress tracking}
 \usage{
 log_step(
   message,
   header = FALSE,
   time = !header,
   time_format = "\%Y-\%m-\%d \%H:\%M:\%S",
-  tz = NULL,
+  tz = Sys.timezone(),
   quiet = FALSE
 )
 }
 \arguments{
-\item{message}{A character value of the message to be logged}
+\item{message}{the message to be logged.
+If more than one message is provided, they will be combined with \code{paste(collapse = " ")}}
 
-\item{header}{A logical value indicating if the message should be formatted as a header}
+\item{header}{A logical value indicating if the message should be formatted as a header ("|--- message ---|")
+Default is \code{FALSE}}
 
-\item{time}{A logical value indicating if the current time should be prepended to the log message}
+\item{time}{A logical value indicating if the current time should be prepended to the log message.
+Default is the opposite of \code{header}}
 
-\item{time_format}{A character value indicating the format of the timestamp}
+\item{time_format}{A character value indicating the format of the timestamp.
+See \code{\link[base:strptime]{base::strptime()}} for formating details.
+Default is "\%Y-\%m-\%d \%H:\%M:\%S" (YYYY-MM-DD HH:MM:SS).}
 
-\item{tz}{A character value indicating the time zone to use for the timestamp}
+\item{tz}{A character value indicating the time zone to use for the timestamp.
+Default is \code{\link[base:timezones]{base::Sys.timezone()}}.}
 
-\item{quiet}{A logical value indicating if the message should be printed}
+\item{quiet}{A logical value indicating if the message should not be printed using \code{\link[base:message]{base::message()}}.
+Default is \code{FALSE}.}
 }
 \value{
 a character vector of the formatted message
 }
 \description{
-Log a message with optional timestamp and formatting
+Log a message for script progress tracking
 }
 \examples{
 log_step("My Awesome Script", time = FALSE, header = TRUE)
