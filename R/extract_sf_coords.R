@@ -28,6 +28,7 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE, add_crs = TRUE) {
   # Handle inputs
   stopifnot(inherits(sf_obj, "sf"))
   stopifnot(is.logical(keep_sf), length(keep_sf) == 1)
+  stopifnot(is.logical(add_crs), length(add_crs) == 1)
 
   # Extract coords/crs
   coords <- sf_obj |>
