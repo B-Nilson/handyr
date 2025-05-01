@@ -35,6 +35,7 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
 
   # Get interval frequencies
   intervals <- diff(x)
+  if(is.numeric(intervals)) intervals <- round(intervals, digits = 14) # handle floating point errors
   unique_intervals <- unique(intervals)
   frequencies <- match(intervals, unique_intervals) |>
     tabulate()
