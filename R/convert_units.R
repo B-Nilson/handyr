@@ -30,3 +30,5 @@ convert_units <- function(x, from, to, ...) {
     units::set_units(to, mode = "standard", ...) |>
     as.numeric()
 }
+
+# TODO: add ability to add custom units

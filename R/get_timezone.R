@@ -18,6 +18,8 @@
 #' get_timezone(lng = -105.053144, lat = 69.116178, method = "accurate")
 #' get_timezone(lng = c(-105.053144, -106.053144), lat = c(69.116178, 49.116178), method = "fast")
 get_timezone <- function(lng, lat, method = "accurate", quiet = FALSE, ...) {
+  # TODO: make this tidy friendly with{{ }} ?
+  # TODO: leverage convert_coordinates to allow for x/y/crs inputs instead of lat/lng 
   rlang::check_installed("lutz")
   # Handle inputs
   stopifnot(
