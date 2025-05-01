@@ -38,3 +38,9 @@ test_that("na.rm works", {
     2
   )
 })
+
+test_that("quiet works", {
+  expect_invisible(expect_no_warning(expect_no_error(
+    get_interval(c(1, 3, 5:10), quiet = TRUE)
+  )))
+})

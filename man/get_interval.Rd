@@ -4,7 +4,7 @@
 \alias{get_interval}
 \title{Determine distance(s) between values}
 \usage{
-get_interval(x, most_common = TRUE, na.rm = FALSE)
+get_interval(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{x}{A numeric, Date, POSIXt, or POSIXct vector.}
@@ -12,6 +12,9 @@ get_interval(x, most_common = TRUE, na.rm = FALSE)
 \item{most_common}{A logical value indicating whether the most common interval (default) should be returned or all intervals and their frequencies in a sorted data frame.}
 
 \item{na.rm}{A logical value indicating whether NAs should be removed before calculating the interval frequencies.
+Default is \code{FALSE}.}
+
+\item{quiet}{A logical value indicating whether warnings should be suppressed and output should be invisible.
 Default is \code{FALSE}.}
 }
 \value{

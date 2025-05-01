@@ -6,6 +6,8 @@
 #' @param most_common A logical value indicating whether the most common interval (default) should be returned or all intervals and their frequencies in a sorted data frame.
 #' @param na.rm A logical value indicating whether NAs should be removed before calculating the interval frequencies.
 #'   Default is `FALSE`.
+#' @param quiet A logical value indicating whether warnings should be suppressed and output should be invisible.
+#'   Default is `FALSE`.
 #'
 #' @return
 #' * If `most_common = TRUE` (default), a single numeric or difftime value.
@@ -18,7 +20,7 @@
 #' get_interval(as.Date(c("2020-01-01", "2020-01-03", "2020-01-05", "2020-01-06")))
 #' get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04", "2020-01-01 00:00:05")))
 #' get_interval(c(0, 3, 5, 7:10), most_common = FALSE)
-get_interval <- function(x, most_common = TRUE, na.rm = FALSE) {
+get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
   # Handle inputs
   stopifnot(is.numeric(x) | inherits(x, "Date") | inherits(x, "POSIXt") | inherits(x, "POSIXct"))
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
@@ -44,7 +46,7 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE) {
   )
 
   # Warn if more than one interval has the same frequency
-  if (nrow(interval_freqs) > 1) {
+  if (!quiet & nrow(interval_freqs) > 1) {
     if (interval_freqs$frequency[1] == interval_freqs$frequency[2]) {
       warning(paste0(
         "More than one interval has the same top frequency.",
@@ -56,8 +58,9 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE) {
 
   # Return most common interval value
   if (most_common) {
-    return(interval_freqs$interval[1])
+    interval <- interval_freqs$interval[1]
+    if (quiet) invisible(interval) else interval
   } else { # or data frame of all intervals and frequencies
-    return(interval_freqs)
+    if (quiet) invisible(interval_freqs) else interval_freqs
   }
 }
