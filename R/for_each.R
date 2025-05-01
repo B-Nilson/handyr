@@ -10,7 +10,7 @@
 #' @param .parallel A logical value indicating if the function should be run in parallel (see [future::multisession()]).
 #'   Default is `FALSE`.
 #' @param .workers A single numeric value indicating the number of workers to run in parallel if `.parallel = TRUE`.
-#'   Default is all available cores (see [parallel::detectCores()]).
+#'   Default is `NULL` which uses all available cores (see [parallel::detectCores()]).
 #' @param .quiet A logical value indicating if the output should be invisible (no messages/warnings).
 #'   Default is `FALSE`.
 #'
@@ -46,7 +46,7 @@
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = parallel::detectCores(), .quiet = FALSE) {
+for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = NULL, .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.bind), length(.bind) == 1)
@@ -59,6 +59,7 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALS
   # TODO: handle potential side effect here if user already had a plan() going
   if (.parallel & length(x) > 1) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
+    if (is.null(.workers)) .workers <- parallel::detectCores()
     future::plan(future::multisession, workers = .workers)
     lapply_fun <- future.apply::future_lapply
   } else {
