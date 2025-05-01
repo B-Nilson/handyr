@@ -10,7 +10,7 @@
 #' @param .warn,.stop A logical value indicating if the error/warning message should be displayed as a warning/error instead.
 #'   Default is `FALSE`
 #'
-#' @return the output of `...` unless an error/warning occurs, then `.return` instead.
+#' @return the output of `...` unless an error/warning occurs, then `invisible(.return)` instead.
 #' @export
 #'
 #' @examples
@@ -27,7 +27,7 @@ on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
   tryCatch(..., error = \(e){
     if (.message) message(as.character(e))
     if (.warn) warning(as.character(e))
-    return(.return)
+    return(invisible(.return))
   })
 }
 
@@ -42,6 +42,6 @@ on_warning <- function(..., .return = NULL, .message = FALSE, .stop = FALSE) {
   tryCatch(..., warning = \(e){
     if (.message) message(as.character(e))
     if (.stop) stop(as.character(e))
-    return(.return)
+    return(invisible(.return))
   })
 }
