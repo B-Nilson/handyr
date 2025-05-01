@@ -19,9 +19,9 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE) {
 
   # Combine into data frame and sort
   interval_freqs <- data.frame(
-    interval = unique_intervals,
-    frequency = frequencies
-  )[order(-frequencies), ]
+    interval = unique_intervals[order(-frequencies)],
+    frequency = frequencies[order(-frequencies)]
+  )
 
   # Return most common interval value
   if (most_common) {
