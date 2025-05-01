@@ -31,6 +31,7 @@ summarise_logs <- function(logs) {
       text = .data$text |>
         paste0(": ", .data$run_time, " ", .data$units)
     )
+  sections <- sections[-c(1, nrow(sections)), ]
 
   total_time <- sum(sections$run_time, na.rm = TRUE)
   time_units <- total_time |> attr("units")
@@ -38,7 +39,7 @@ summarise_logs <- function(logs) {
   message(
     paste(
       "Total time:", total_time, time_units,
-      "\n-->", sections$text[-nrow(sections)] |>
+      "\n-->", sections$text |>
         paste(collapse = "\n--> ")
     )
   )
