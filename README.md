@@ -32,9 +32,20 @@ x <- c(1:10 + 0.123, NA) |>
   convert_units(from = "m", to = "km") |> # convert from metres to kilometres
   max(na.rm = TRUE) # take the max (or `min()` or `mode()`)
 
-logs$others <- log_step("Other Functions")
+logs$others <- log_step("Location Functions")
 tz <- get_timezone(lng = -105.053144, lat = 69.116178)
 
+cities <- data.frame(
+    name = c("Nanaimo", "Port Moody", "Prince George"),
+    x = c(-124.0531, -122.8519, -122.7949),
+    y = c(49.1633, 49.2844, 53.8934)
+  )
+cities_sf <- cities |>
+  sf::st_as_sf(coords = c("x", "y"), crs = "WGS84")
+sf_as_df(cities_sf)
+extract_sf_coords(cities_sf)
+
+logs$others <- log_step("QOL Functions")
 load_your_data <- function(x) {
   if(x %in% c(1, 4)) {
     stop("Something went wrong") # simulate file not existing or some other error
@@ -46,6 +57,7 @@ your_data <- 1:5 |> for_each(
   \(x) load_your_data(x) |> on_error(.return = NULL), 
   .bind = TRUE
 )
+get_interval(your_data$x)
 # End logging and summarise
 logs$complete = log_step("Completed Successfully")
 summarise_logs(logs)
