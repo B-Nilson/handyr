@@ -2,6 +2,7 @@
 # handyr
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/B-Nilson/handyr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/B-Nilson/handyr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of handyr is to streamline common datascience tasks with wrappers around various handy packages in a consistent style.
