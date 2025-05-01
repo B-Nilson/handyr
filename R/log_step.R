@@ -13,6 +13,8 @@
 #'   Default is [base::Sys.timezone()].
 #' @param quiet A logical value indicating if the message should not be printed using [base::message()].
 #'   Default is `FALSE`.
+#' @param sep A character value indicating the separator to use between messages when combined if multiple messages are provided.
+#'   Default is " ".
 #'
 #' @return a character vector of the formatted message
 #' 
@@ -25,7 +27,7 @@
 #' log_step("Step 2...")
 #' # Do something else
 #' log_step("Complete")
-log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE) {
+log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE, sep = " ") {
   original <- message
   # Handle inputs
   stopifnot(is.character(message))
@@ -35,8 +37,8 @@ log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-
   stopifnot(is.character(tz), length(tz) == 1)
   stopifnot(is.logical(quiet), length(quiet) == 1)
 
-  # Join message with spaces if multiple messages
-  message <- paste(message, collapse = " ")
+  # Join message with `sep` if multiple messages
+  message <- paste(message, collapse = sep)
   
   # Get current timestamp
   timestamp <- Sys.time() |>
