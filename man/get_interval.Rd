@@ -29,6 +29,6 @@ Default is \code{FALSE}.}
 \examples{
 get_interval(c(1, 3, 5:10))
 get_interval(as.Date(c("2020-01-01", "2020-01-03", "2020-01-05", "2020-01-06")))
-get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04", "2020-01-01 00:00:05")))
+get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04")))
 get_interval(c(0, 3, 5, 7:10), most_common = FALSE)
 }

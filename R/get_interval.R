@@ -18,11 +18,11 @@
 #' @examples
 #' get_interval(c(1, 3, 5:10))
 #' get_interval(as.Date(c("2020-01-01", "2020-01-03", "2020-01-05", "2020-01-06")))
-#' get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04", "2020-01-01 00:00:05")))
+#' get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04")))
 #' get_interval(c(0, 3, 5, 7:10), most_common = FALSE)
 get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
   # Handle inputs
-  stopifnot(is.numeric(x) | inherits(x, "Date") | inherits(x, "POSIXt") | inherits(x, "POSIXct"))
+  stopifnot(is.numeric(x) | inherits(x, c("Date", "POSIXt", "POSIXct")))
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
 
   # Handle NAs before calculating
@@ -50,7 +50,7 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
     if (interval_freqs$frequency[1] == interval_freqs$frequency[2]) {
       warning(paste0(
         "More than one interval has the same top frequency.",
-        if (most_common) "Returning the first interval.",
+        if (most_common) " Returning the first interval.",
         if (most_common) "\nSet `most_common = FALSE` to see all intervals and their frequencies."
       ))
     }
