@@ -4,6 +4,7 @@
 #'
 #' @param sf_obj An object of class `sf`, typically created by [sf::st_as_sf()]
 #' @param keep_sf A logical value indicating if the return object should remain an `sf` object or be converted to a `data.frame`
+#' @param add_crs A logical value indicating if the crs should be added as a column
 #'
 #' @return
 #'  If `keep_sf` is:
@@ -22,11 +23,12 @@
 #'   sf::st_as_sf(coords = c("x", "y"), crs = "WGS84")
 #' cities_sf |>
 #'   extract_sf_coords()
-extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
+extract_sf_coords <- function(sf_obj, keep_sf = TRUE, add_crs = TRUE) {
   rlang::check_installed("sf")
   # Handle inputs
   stopifnot(inherits(sf_obj, "sf"))
   stopifnot(is.logical(keep_sf), length(keep_sf) == 1)
+  stopifnot(is.logical(add_crs), length(add_crs) == 1)
 
   # Extract coords/crs
   coords <- sf_obj |>
@@ -35,7 +37,7 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE) {
   # Add columns to input
   sf_obj$x <- coords[, 1]
   sf_obj$y <- coords[, 2]
-  sf_obj$crs <- crs
+  if (add_crs) sf_obj$crs <- crs
 
   # Return if sf typing desired
   if (keep_sf) {

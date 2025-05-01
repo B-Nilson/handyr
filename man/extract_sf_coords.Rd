@@ -4,12 +4,14 @@
 \alias{extract_sf_coords}
 \title{Add sf coordinates and crs as columns}
 \usage{
-extract_sf_coords(sf_obj, keep_sf = TRUE)
+extract_sf_coords(sf_obj, keep_sf = TRUE, add_crs = TRUE)
 }
 \arguments{
 \item{sf_obj}{An object of class \code{sf}, typically created by \code{\link[sf:st_as_sf]{sf::st_as_sf()}}}
 
 \item{keep_sf}{A logical value indicating if the return object should remain an \code{sf} object or be converted to a \code{data.frame}}
+
+\item{add_crs}{A logical value indicating if the crs should be added as a column}
 }
 \value{
 If \code{keep_sf} is:
