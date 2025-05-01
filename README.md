@@ -47,7 +47,7 @@ extract_sf_coords(cities_sf)
 
 logs$others <- log_step("QOL Functions")
 load_your_data <- function(x) {
-  if(x %in% c(1, 4)) {
+  if(x %in% c(2, 4)) {
     stop("Something went wrong") # simulate file not existing or some other error
   } else{
     data.frame(x = x, y = x^2) # simulate data being loaded in
@@ -58,6 +58,7 @@ your_data <- 1:5 |> for_each(
   .bind = TRUE
 )
 get_interval(your_data$x)
+
 # End logging and summarise
 logs$complete = log_step("Completed Successfully")
 summarise_logs(logs)
