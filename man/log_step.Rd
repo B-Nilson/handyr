@@ -10,7 +10,8 @@ log_step(
   time = !header,
   time_format = "\%Y-\%m-\%d \%H:\%M:\%S",
   tz = Sys.timezone(),
-  quiet = FALSE
+  quiet = FALSE,
+  sep = " "
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ Default is \code{\link[base:timezones]{base::Sys.timezone()}}.}
 
 \item{quiet}{A logical value indicating if the message should not be printed using \code{\link[base:message]{base::message()}}.
 Default is \code{FALSE}.}
+
+\item{sep}{A character value indicating the separator to use between messages when combined if multiple messages are provided.
+Default is " ".}
 }
 \value{
 a character vector of the formatted message

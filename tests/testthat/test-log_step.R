@@ -56,3 +56,7 @@ test_that("header works", {
 test_that("quiet works", {
   expect_no_message(log_step("Hello, world!", quiet = TRUE))
 })
+
+test_that("sep works", {
+  expect_message(log_step(c("Hello", "world!"), sep = ", "), regexp = "Hello, world!")
+})
