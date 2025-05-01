@@ -22,7 +22,7 @@ Default is \code{FALSE}}
 Default is \code{FALSE}}
 }
 \value{
-the output of \code{...} unless an error/warning occurs, then \code{.return} instead.
+the output of \code{...} unless an error/warning occurs, then \code{invisible(.return)} instead.
 }
 \description{
 \code{on_error}/\code{on_warning} provide a simple way to handle errors/warnings by specifying a value to be returned instead as well as if a message or warning/error should be displayed instead.
