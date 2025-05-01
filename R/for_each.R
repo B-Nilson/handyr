@@ -52,7 +52,8 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALS
   stopifnot(is.logical(.bind), length(.bind) == 1)
   stopifnot(is.logical(.name), length(.name) == 1)
   stopifnot(is.logical(.parallel), length(.parallel) == 1)
-  stopifnot(is.numeric(.workers), length(.workers) == 1)
+  stopifnot(is.numeric(.workers) | is.null(.workers))
+  stopifnot(length(.workers) == 1 | is.null(.workers))
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
 
   # Setup parallel if desired
