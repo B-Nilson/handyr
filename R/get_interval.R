@@ -1,6 +1,6 @@
 get_interval <- function(x, most_common = TRUE, na.rm = FALSE) {
   # Handle inputs
-  stopifnot(is.numeric(x) | inherits(x, "Date") | inherits(x, "POSIXt"))
+  stopifnot(is.numeric(x) | inherits(x, "Date") | inherits(x, "POSIXt") | inherits(x, "POSIXct"))
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
 
   # Handle NAs before calculating
