@@ -43,6 +43,17 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE) {
     frequency = frequencies[order(-frequencies)]
   )
 
+  # Warn if more than one interval has the same frequency
+  if (nrow(interval_freqs) > 1) {
+    if (interval_freqs$frequency[1] == interval_freqs$frequency[2]) {
+      warning(paste0(
+        "More than one interval has the same top frequency.",
+        if (most_common) "Returning the first interval.",
+        if (most_common) "\nSet `most_common = FALSE` to see all intervals and their frequencies."
+      ))
+    }
+  }
+
   # Return most common interval value
   if (most_common) {
     return(interval_freqs$interval[1])
