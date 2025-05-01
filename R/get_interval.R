@@ -1,3 +1,23 @@
+#' Determine distance(s) between values
+#'
+#' `get_interval` finds the most common interval in a vector. If there are multiple intervals of the same frequency, it takes the first one in the sorted vector and a warning is raised.
+#' 
+#' @param x A numeric, Date, POSIXt, or POSIXct vector.
+#' @param most_common A logical value indicating whether the most common interval (default) should be returned or all intervals and their frequencies in a sorted data frame.
+#' @param na.rm A logical value indicating whether NAs should be removed before calculating the interval frequencies.
+#'   Default is `FALSE`.
+#' 
+#' @return  
+#' * If `most_common = TRUE` (default), a single numeric or difftime value. 
+#' * If `most_common = FALSE`, a sorted data frame with columns `interval` (numeric or difftime) and `frequency` (integer).
+#' 
+#' @export
+#' 
+#' @examples
+#' get_interval(c(1, 3, 5:10))
+#' get_interval(as.Date(c("2020-01-01", "2020-01-03", "2020-01-05", "2020-01-06")))
+#' get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04", "2020-01-01 00:00:05")))
+#' get_interval(c(0, 3, 5, 7:10), most_common = FALSE)
 get_interval <- function(x, most_common = TRUE, na.rm = FALSE) {
   # Handle inputs
   stopifnot(is.numeric(x) | inherits(x, "Date") | inherits(x, "POSIXt") | inherits(x, "POSIXct"))
