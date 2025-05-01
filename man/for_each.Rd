@@ -11,7 +11,7 @@ for_each(
   .bind = FALSE,
   .name = FALSE,
   .parallel = FALSE,
-  .workers = parallel::detectCores(),
+  .workers = NULL,
   .quiet = FALSE
 )
 }
@@ -32,7 +32,7 @@ Default is \code{FALSE}.}
 Default is \code{FALSE}.}
 
 \item{.workers}{A single numeric value indicating the number of workers to run in parallel if \code{.parallel = TRUE}.
-Default is all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}}).}
+Default is \code{NULL} which uses all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}}).}
 
 \item{.quiet}{A logical value indicating if the output should be invisible (no messages/warnings).
 Default is \code{FALSE}.}
