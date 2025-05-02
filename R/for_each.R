@@ -7,6 +7,8 @@
 #'   Default is `FALSE`
 #' @param .name A logical value indicating if the output should be named after `x`. (i.e `names(out) <- x`)
 #'   Default is `FALSE`.
+#' @param .as_list A logical value indicating if the output should be a list (see [lapply()] / [future.apply::future_lapply()]) or a vector (see[sapply()] / [future.apply::future_sapply()]).
+#'   Default is `NULL`, which is `FALSE` if `x` is a vector, `TRUE` otherwise.
 #' @param .parallel A logical value indicating if the function should be run in parallel (see [future::multisession()]).
 #'   Default is `FALSE`.
 #' @param .workers A single numeric value indicating the number of workers to run in parallel if `.parallel = TRUE`.
@@ -42,19 +44,24 @@
 #'   )
 #'
 #' values <- 1:3 |>
-#'   for_each(\(value) value + 1, .parallel = TRUE, .workers = 2)
+#'   for_each(\(value) value + 1, .parallel = TRUE, .workers = 2, .as_list = TRUE)
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALSE, .workers = NULL, .quiet = FALSE) {
+for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.bind), length(.bind) == 1)
   stopifnot(is.logical(.name), length(.name) == 1)
+  stopifnot(is.logical(.as_list) | is.null(.as_list))
+  stopifnot(length(.as_list) == 1 | is.null(.as_list))
   stopifnot(is.logical(.parallel), length(.parallel) == 1)
   stopifnot(is.numeric(.workers) | is.null(.workers))
   stopifnot(length(.workers) == 1 | is.null(.workers))
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
+
+  # Handle .as_list being NULL
+  if(is.null(.as_list)) .as_list <- !(is.vector(x) & !is.list(x)) # if x is vector, return vector, otherwise return list
 
   # Setup parallel if desired
   # TODO: handle potential side effect here if user already had a plan() going
@@ -62,18 +69,18 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALS
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     if (is.null(.workers)) .workers <- parallel::detectCores()
     future::plan(future::multisession, workers = .workers)
-    lapply_fun <- future.apply::future_lapply
+    apply_fun <- ifelse(.as_list, future.apply::future_lapply,  future.apply::future_sapply)
   } else {
-    lapply_fun <- lapply
+    apply_fun <- ifelse(.as_list, lapply,  sapply)
   }
 
   # Run x through function
   if (.quiet) {
     out <- suppressWarnings(suppressMessages(invisible(
-      x |> lapply_fun(FUN, ...)
+      x |> apply_fun(FUN, ...)
     )))
   } else {
-    out <- x |> lapply_fun(FUN, ...)
+    out <- x |> apply_fun(FUN, ...)
   }
 
   # Stop running in parallel

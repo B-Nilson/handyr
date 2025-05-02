@@ -10,6 +10,7 @@ for_each(
   ...,
   .bind = FALSE,
   .name = FALSE,
+  .as_list = NULL,
   .parallel = FALSE,
   .workers = NULL,
   .quiet = FALSE
@@ -27,6 +28,9 @@ Default is \code{FALSE}}
 
 \item{.name}{A logical value indicating if the output should be named after \code{x}. (i.e \code{names(out) <- x})
 Default is \code{FALSE}.}
+
+\item{.as_list}{A logical value indicating if the output should be a list (see \code{\link[=lapply]{lapply()}} / \code{\link[future.apply:future_lapply]{future.apply::future_lapply()}}) or a vector (see\code{\link[=sapply]{sapply()}} / \code{\link[future.apply:future_lapply]{future.apply::future_sapply()}}).
+Default is \code{NULL}, which is \code{FALSE} if \code{x} is a vector, \code{TRUE} otherwise.}
 
 \item{.parallel}{A logical value indicating if the function should be run in parallel (see \code{\link[future:multisession]{future::multisession()}}).
 Default is \code{FALSE}.}
@@ -65,7 +69,7 @@ c("bread", "jam") |>
   )
 
 values <- 1:3 |>
-  for_each(\(value) value + 1, .parallel = TRUE, .workers = 2)
+  for_each(\(value) value + 1, .parallel = TRUE, .workers = 2, .as_list = TRUE)
 
 values <- 1:3 |>
   for_each(\(value) message(value + 1), .quiet = TRUE)

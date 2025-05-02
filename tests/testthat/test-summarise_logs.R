@@ -6,7 +6,7 @@ test_that("basic case works", {
     log_step("test3", quiet = TRUE),
     log_step("test4", quiet = TRUE),
     log_step("test5", quiet = TRUE),
-    log_step('Complete', quiet = TRUE)
+    log_step("Complete", quiet = TRUE)
   )
   expect_message(
     summarise_logs(logs)

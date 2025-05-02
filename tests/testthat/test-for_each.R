@@ -2,7 +2,7 @@ test_that("basic case works", {
   values <- 1:3
   expect_equal(
     values |> for_each(\(value) value + 1),
-    expected = 2:4 |> as.list()
+    expected = 2:4
   )
 })
 
@@ -31,7 +31,18 @@ test_that(".name works", {
         \(value) paste("eat", value),
         .name = TRUE
       ),
-    expected = list(bread = "eat bread", jam = "eat jam")
+    expected = c(bread = "eat bread", jam = "eat jam")
+  )
+})
+
+test_that(".as_list works", {
+  expect_equal(
+    c("bread", "jam") |>
+      for_each(
+        \(value) paste("eat", value),
+        .as_list = TRUE
+      ),
+    expected = list("eat bread", "eat jam")
   )
 })
 
@@ -39,18 +50,21 @@ test_that(".parallel/.workers works", {
   values <- 1:3
   expect_equal(
     values |> for_each(\(value) value + 1, .parallel = TRUE),
-    expected = 2:4 |> as.list()
+    expected = 2:4
   )
   expect_equal(
     values |> for_each(\(value) value + 1, .parallel = TRUE, .workers = 2),
-    expected = 2:4 |> as.list()
+    expected = 2:4
   )
 })
 
 test_that(".quiet works", {
   values <- 1:3
   expect_no_message(expect_invisible(expect_equal(
-    values |> for_each(\(value) {message(value + 1); value + 1}, .quiet = TRUE),
-    expected = 2:4 |> as.list()
+    values |> for_each(\(value) {
+      message(value + 1)
+      value + 1
+    }, .quiet = TRUE),
+    expected = 2:4
   )))
 })

@@ -9,7 +9,7 @@ test_that("time works", {
   result <- log_step("Hello, world!", time = TRUE)
   expect_equal(
     paste0(result$timestamp, ": ", result$text),
-    result$message 
+    result$message
   )
 })
 
@@ -18,7 +18,7 @@ test_that("time_format works", {
   result <- log_step("Hello, world!", time_format = "%Y-%m-%d", quiet = TRUE)
   expect_equal(
     paste0(result$timestamp, ": ", result$text),
-    result$message 
+    result$message
   )
   expect_message(log_step("Hello, world!", time_format = "%Y-%m-%d %H:%M"))
   result <- log_step("Hello, world!", time_format = "%Y-%m-%d %H:%M", quiet = TRUE)
@@ -27,7 +27,7 @@ test_that("time_format works", {
       format(result$timestamp, "%Y-%m-%d %H:%M"), ": ",
       result$text
     ),
-    result$message 
+    result$message
   )
 })
 
@@ -36,7 +36,7 @@ test_that("tz works", {
   result <- log_step("Hello, world!", tz = "America/New_York", quiet = TRUE)
   expect_equal(
     paste0(result$timestamp, ": ", result$text),
-    result$message 
+    result$message
   )
   expect_equal(
     attr(result$timestamp, "tzone"),
