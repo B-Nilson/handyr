@@ -21,4 +21,3 @@ test_that(".warn works", {
     on_error(stop(), .warn = TRUE)
   ))
 })
-
