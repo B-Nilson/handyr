@@ -57,6 +57,10 @@ test_that("most_common works", {
     get_interval(c(0, 3, 5, 7:10), most_common = FALSE),
     expected = data.frame(interval = c(1, 2, 3), frequency = c(3, 2, 1))
   )
+  expect_equal(
+    get_interval(c(0, 3, 5, 7:10), most_common = FALSE, quiet = TRUE),
+    expected = data.frame(interval = c(1, 2, 3), frequency = c(3, 2, 1))
+  )
 })
 
 test_that("na.rm works", {
@@ -79,7 +83,27 @@ test_that("na.rm works", {
 })
 
 test_that("quiet works", {
-  expect_invisible(expect_no_warning(expect_no_error(
+  expect_invisible(
     get_interval(c(1, 3, 5:10), quiet = TRUE)
-  )))
+  )
+})
+
+test_that("works when not needed", {
+  expect_equal(
+    get_interval(c(NA_real_, NA_real_, NA_real_), na.rm = FALSE),
+    expected = NA_real_
+  )
+  expect_equal(
+    get_interval(numeric(0), na.rm = FALSE),
+    expected = NA_real_
+  )
+})
+
+test_that("warning if 2+ equal top intervals", {
+  expect_warning(
+    expect_equal(
+      get_interval(c(1:3, seq(4, 10, by = 2))),
+      expected = 1
+    )
+  )
 })
