@@ -3,7 +3,7 @@ test_that("basic case works", {
     ggplot2::geom_line(ggplot2::aes(x, y))
   expect_silent(
     gg |> save_figure(
-      out_path = tempfile(fileext = ".png"), 
+      out_path = tempfile(fileext = ".png"),
       quality = "low", base_height = 1, page_width = 1
     )
   )

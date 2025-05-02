@@ -61,7 +61,10 @@ test_that(".parallel/.workers works", {
 test_that(".quiet works", {
   values <- 1:3
   expect_no_message(expect_invisible(expect_equal(
-    values |> for_each(\(value) {message(value + 1); value + 1}, .quiet = TRUE),
+    values |> for_each(\(value) {
+      message(value + 1)
+      value + 1
+    }, .quiet = TRUE),
     expected = 2:4
   )))
 })
