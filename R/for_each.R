@@ -44,7 +44,7 @@
 #'   )
 #'
 #' values <- 1:3 |>
-#'   for_each(\(value) value + 1, .parallel = TRUE, .workers = 2)
+#'   for_each(\(value) value + 1, .parallel = TRUE, .workers = 2, .as_list = TRUE)
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
