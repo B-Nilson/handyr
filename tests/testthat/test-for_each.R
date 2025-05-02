@@ -2,7 +2,7 @@ test_that("basic case works", {
   values <- 1:3
   expect_equal(
     values |> for_each(\(value) value + 1),
-    expected = 2:4
+    expected = 2:4 |> as.list()
   )
 })
 
