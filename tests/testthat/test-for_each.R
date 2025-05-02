@@ -35,6 +35,17 @@ test_that(".name works", {
   )
 })
 
+test_that(".as_list works", {
+  expect_equal(
+    c("bread", "jam") |>
+      for_each(
+        \(value) paste("eat", value),
+        .as_list = TRUE
+      ),
+    expected = list("eat bread", "eat jam")
+  )
+})
+
 test_that(".parallel/.workers works", {
   values <- 1:3
   expect_equal(
