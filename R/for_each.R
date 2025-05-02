@@ -62,18 +62,18 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .parallel = FALS
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     if (is.null(.workers)) .workers <- parallel::detectCores()
     future::plan(future::multisession, workers = .workers)
-    lapply_fun <- future.apply::future_lapply
+    apply_fun <- if (is.vector(x) & !is.list(x)) future.apply::future_sapply else future.apply::future_lapply
   } else {
-    lapply_fun <- lapply
+    apply_fun <- if (is.vector(x) & !is.list(x)) sapply else lapply
   }
 
   # Run x through function
   if (.quiet) {
     out <- suppressWarnings(suppressMessages(invisible(
-      x |> lapply_fun(FUN, ...)
+      x |> apply_fun(FUN, ...)
     )))
   } else {
-    out <- x |> lapply_fun(FUN, ...)
+    out <- x |> apply_fun(FUN, ...)
   }
 
   # Stop running in parallel
