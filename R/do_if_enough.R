@@ -1,3 +1,32 @@
+#' Apply a function if a condition is met
+#'
+#' @param x Something that `.do` can be applied to.
+#' @param .do A function to be applied to `x`.
+#' @param .if A logical value indicating if `.do` should be applied or not.
+#' @param ... Additional arguments to be passed to `.do`.
+#' @param .return What to return instead of the output of `.do` if `.if == FALSE`.
+#'
+#' @return The output of `.do` applied to `x` if `.if == TRUE`, `.return` otherwise
+#' 
+#' @export
+#' 
+#' @examples
+#' do_if(c(1, 2, 3), mean, .if = TRUE)
+#' do_if(c(1, 2, 3), mean, .if = FALSE)
+#' do_if(c(1, 2, 3), mean, .if = FALSE, .return = -1)
+do_if <- function(x, .do, .if = TRUE, ..., .return = NA) {
+  # Handle inputs
+  stopifnot(is.function(.do))
+  stopifnot(is.logical(.if), length(.if) == 1, !is.na(.if))
+
+  # Return .return if not is_true, otherwise apply function
+  if (!.if) {
+    return(.return)
+  } else {
+    .do(x, ...)
+  }
+}
+
 #' Apply a function if enough values are non-NA
 #'
 #' @description
