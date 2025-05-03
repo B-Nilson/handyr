@@ -62,6 +62,9 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL,
   stopifnot(is.logical(.parallel), length(.parallel) == 1)
   stopifnot(is.numeric(.workers) | is.null(.workers))
   stopifnot(length(.workers) == 1 | is.null(.workers))
+  stopifnot(is.character(.plan) | is.function(.plan) | is.null(.plan)) # TODO: restrict inputs more?
+  stopifnot(length(.plan) == 1 | is.null(.plan))
+  stopifnot(is.logical(.parallel_cleanup), length(.parallel_cleanup) == 1)
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
 
   # Handle .as_list being NULL
