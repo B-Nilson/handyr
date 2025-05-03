@@ -46,7 +46,7 @@ test_that(".as_list works", {
   )
 })
 
-test_that(".parallel/.workers works", {
+test_that(".parallel/.workers/.plan/.clean works", {
   values <- 1:3
   expect_equal(
     values |> for_each(\(value) value + 1, .parallel = TRUE),
@@ -56,8 +56,15 @@ test_that(".parallel/.workers works", {
     values |> for_each(\(value) value + 1, .parallel = TRUE, .workers = 2),
     expected = 2:4
   )
+  expect_true(is(future::plan(), "sequential")) 
+  expect_equal(
+    values |> for_each(\(value) value + 1, .parallel = TRUE, .workers = 2, .plan = "multicore", .parallel_cleanup = FALSE) ,
+    expected = 2:4
+  )
+  expect_true(is(future::plan(), "multicore"))
+  future::plan("sequential")
 })
-
+  
 test_that(".quiet works", {
   values <- 1:3
   expect_no_message(expect_invisible(expect_equal(
