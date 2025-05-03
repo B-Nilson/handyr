@@ -1,7 +1,7 @@
 #' Log a message for script progress tracking
 #'
-#' @param message the message to be logged.
-#'  If more than one message is provided, they will be combined with `paste(collapse = " ")`
+#' @param ... One or more character (or coercible to) values or vectors of messages. 
+#'  If more than one message is provided, they will be combined with `paste(collapse = sep)`
 #' @param header A logical value indicating if the message should be formatted as a header ("|--- message ---|")
 #'   Default is `FALSE`
 #' @param time A logical value indicating if the current time should be prepended to the log message.
@@ -24,13 +24,15 @@
 #' log_step("My Awesome Script", time = FALSE, header = TRUE)
 #' log_step("Step 1...")
 #' # Do something
-#' log_step("Step 2...")
+#' log_step("Step-", 2, "...", sep = "")
 #' # Do something else
 #' log_step("Complete")
-log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE, sep = " ") {
-  original <- message
+log_step <- function(..., header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE, sep = " ") {
+  messages <- as.character(unlist(list(...)))
+  messages <- messages[!is.na(messages)]
+  
   # Handle inputs
-  stopifnot(is.character(message))
+  stopifnot(is.character(messages), length(messages) > 0)
   stopifnot(is.logical(header), length(header) == 1)
   stopifnot(is.logical(time), length(time) == 1)
   stopifnot(is.character(time_format), length(time_format) == 1)
@@ -38,7 +40,8 @@ log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-
   stopifnot(is.logical(quiet), length(quiet) == 1)
 
   # Join message with `sep` if multiple messages
-  message <- paste(message, collapse = sep)
+  original_message <- paste(messages, collapse = sep)
+  message = original_message # modify a copy so we can return the original
   
   # Get current timestamp
   timestamp <- Sys.time() |>
@@ -64,7 +67,7 @@ log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-
     list(
       timestamp = as.POSIXct(timestamp, format = time_format, tz = tz),
       message = message,
-      text = original
+      text = original_message
     )
   )
 }
