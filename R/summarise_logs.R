@@ -46,7 +46,7 @@ summarise_logs <- function(logs, save_to = NULL) {
 
   # Combine log messages and time summary
   log_text <- log_summary$message |>
-    c(time_summary$message)
+    c(time_summary$message |> strsplit(split = "\n") |> unlist())
   # Save log if file path provided
   if (!is.null(save_to)) {
     log_text |> writeLines(save_to)
