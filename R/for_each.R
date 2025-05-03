@@ -3,6 +3,9 @@
 #' @param x Something iterable (a vector, list, etc).
 #' @param FUN A function to be applied to each entry in `input`.
 #' @param ... Additional arguments to be passed to `FUN` or to [future.apply::future_lapply()] if `.parallel = TRUE`.
+#' @param .enumerate A logical value indicating if `i` should be passed to `FUN` alongside `x`. 
+#'   Default is `FALSE`.
+#'   If `TRUE`, `FUN` is run as `FUN(x[[i]], i, ...)`, where `i` is the index of values in `x`.
 #' @param .bind A logical value indicating whether to apply [dplyr::bind_rows()].
 #'   Default is `FALSE`
 #' @param .name A logical value indicating if the output should be named after `x`. (i.e `names(out) <- x`)
@@ -31,6 +34,7 @@
 #'
 #' @examples
 #' 1:3 |> for_each(\(value) value + 1)
+#' c(7, 7, 7) |> for_each(\(value, i) value + i, .enumerate = TRUE)
 #'
 #' list(
 #'   data.frame(x = 1:3),
