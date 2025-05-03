@@ -6,6 +6,14 @@ test_that("basic case works", {
   )
 })
 
+test_that(".enumerate works", {
+  values <- c(5, 5, 5)
+  expect_equal(
+    values |> for_each(\(value, i) value + i, .enumerate = TRUE),
+    expected = 6:8
+  )
+})
+
 test_that(".bind works", {
   dats <- list(
     data.frame(x = 1:3),
