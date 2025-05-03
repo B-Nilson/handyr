@@ -22,6 +22,13 @@
 #' )
 #' summarise_logs(logs)
 summarise_logs <- function(logs, save_to = NULL) {
+
+  stopifnot(is.list(logs), length(logs) > 2)
+  stopifnot(
+    is.character(save_to) | is.null(save_to),
+    length(save_to) == 1 | is.null(save_to)
+  )
+
   # Make log data frame with run times
   log_summary <- logs |>
     for_each(as.data.frame, .bind = TRUE) |>
