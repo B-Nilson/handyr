@@ -33,13 +33,13 @@ do_if <- function(x, .do, .if = TRUE, ..., .return = NA) {
 #'   `do_if_enough`:
 #'    * checks if enough non-NA values are in `x`. (see `.min_non_na`)
 #'    * if so, applies a function (`FUN`) to `x`.
-#'    * if not, returns `.return`.
+#'    * if not, returns `.return`. (see [do_if()] for more details)
 #' 
 #' @param x A vector (numeric, character, etc).
 #' @param FUN A function to be applied to `x`.
 #' @param ... Additional arguments to be passed to `FUN`.
 #' @param .min_non_na The minimum length of `x` (ignoring NAs) to be considered enough.
-#' @param .return What to return instead of the output of `FUN` if not enough non-NA values.
+#' @param .return What to return instead of the output of `FUN` if not enough non-NA values. 
 #'
 #' @return The output of FUN applied to x if enough values are provided, `.return` otherwise
 #' 
