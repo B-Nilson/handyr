@@ -1,9 +1,10 @@
-#' Summarise logs stored from repeated `log` calls
+#' Log overall and individual run time for repeated [log_step()] calls
+#' 
+#' `summarise_logs` takes a list of log entries from [log_step()] and outpus a message with a summary of the time taken between each log call.
 #'
-#' @param logs A list of `log` values
-#'
-#' @description
-#' `summarise_logs` takes a list of `log` values and returns a summary of the time taken between each log call.
+#' @param logs A list of [log_step()] return values
+#' @param save_to A character value indicating the path to a text file to save the summary of the logs to.
+#'   Default is `NULL` (do not save a log file).
 #'
 #' @family Utilities
 #'

@@ -2,18 +2,21 @@
 % Please edit documentation in R/summarise_logs.R
 \name{summarise_logs}
 \alias{summarise_logs}
-\title{Summarise logs stored from repeated \code{log} calls}
+\title{Log overall and individual run time for repeated \code{\link[=log_step]{log_step()}} calls}
 \usage{
-summarise_logs(logs)
+summarise_logs(logs, save_to = NULL)
 }
 \arguments{
-\item{logs}{A list of \code{log} values}
+\item{logs}{A list of \code{\link[=log_step]{log_step()}} return values}
+
+\item{save_to}{A character value indicating the path to a text file to save the summary of the logs to.
+Default is \code{NULL} (do not save a log file).}
 }
 \value{
 a character vector indicating the summary of the time taken between each log call
 }
 \description{
-\code{summarise_logs} takes a list of \code{log} values and returns a summary of the time taken between each log call.
+\code{summarise_logs} takes a list of log entries from \code{\link[=log_step]{log_step()}} and outpus a message with a summary of the time taken between each log call.
 }
 \examples{
 logs <- list(
