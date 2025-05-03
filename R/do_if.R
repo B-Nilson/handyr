@@ -11,9 +11,9 @@
 #' @export
 #' 
 #' @examples
-#' do_if(c(1, 2, 3), mean, .if = TRUE)
-#' do_if(c(1, 2, 3), mean, .if = FALSE)
-#' do_if(c(1, 2, 3), mean, .if = FALSE, .return = -1)
+#' c(1, 2, 3) |> do_if(.do = mean, .if = TRUE)
+#' c(1, 2, 3) |> do_if(.do = mean, .if = FALSE)
+#' c(1, 2, 3) |> do_if(.do = mean, .if = FALSE, .return = -1)
 do_if <- function(x, .do, .if = TRUE, ..., .return = NA) {
   # Handle inputs
   stopifnot(is.function(.do))

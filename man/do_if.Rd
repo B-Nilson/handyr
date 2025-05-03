@@ -24,7 +24,7 @@ The output of \code{.do} applied to \code{x} if \code{.if == TRUE}, \code{.retur
 Apply a function if a condition is met
 }
 \examples{
-do_if(c(1, 2, 3), mean, .if = TRUE)
-do_if(c(1, 2, 3), mean, .if = FALSE)
-do_if(c(1, 2, 3), mean, .if = FALSE, .return = -1)
+c(1, 2, 3) |> do_if(.do = mean, .if = TRUE)
+c(1, 2, 3) |> do_if(.do = mean, .if = FALSE)
+c(1, 2, 3) |> do_if(.do = mean, .if = FALSE, .return = -1)
 }
