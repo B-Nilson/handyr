@@ -48,7 +48,7 @@
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .quiet = FALSE) {
+for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.bind), length(.bind) == 1)
@@ -68,7 +68,7 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL,
   if (.parallel & length(x) > 1) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     if (is.null(.workers)) .workers <- parallel::detectCores()
-    future::plan(future::multisession, workers = .workers)
+    if(!is.null(.plan)) future::plan(.plan, workers = .workers)
     apply_fun <- ifelse(.as_list, future.apply::future_lapply,  future.apply::future_sapply)
   } else {
     apply_fun <- ifelse(.as_list, lapply,  sapply)
@@ -84,8 +84,7 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL,
   }
 
   # Stop running in parallel
-  # TODO: handle potential side effect here if user already had a plan() going
-  if (.parallel) future::plan(future::sequential)
+  if (.parallel & .parallel_cleanup) future::plan(future::sequential)
   # Use x as names if desired
   if (.name) names(out) <- x
   # Bind rowwise if desired
