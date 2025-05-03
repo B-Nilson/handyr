@@ -13,6 +13,10 @@
 #'   Default is `FALSE`.
 #' @param .workers A single numeric value indicating the number of workers to run in parallel if `.parallel = TRUE`.
 #'   Default is `NULL` which uses all available cores (see [parallel::detectCores()]).
+#' @param .plan A string indicating the strategy to use if `.parallel = TRUE`.
+#'   Default is `"multisession"` (see [future::plan()]).
+#' @param .parallel_cleanup A logical value indicating if the parallel plan should be reset to sequential using `future::plan("sequential")` if `.parallel = TRUE`.
+#'   Default is `TRUE`.
 #' @param .quiet A logical value indicating if the output should be invisible (no messages/warnings).
 #'   Default is `FALSE`.
 #'
