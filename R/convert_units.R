@@ -4,11 +4,13 @@
 #'
 #' @param x A numeric vector.
 #' @param from,to A string indicating the current/desired unit of `x`.
-#'  Run [units::valid_udunits()] for a list of valid units.
+#'  Run [units::valid_udunits()] for a list of valid units for your system.
+#' @param keep_units A logical value indicating whether to keep the units after conversion (default is `FALSE`).
 #' @param ... Additional arguments passed on to [units::set_units()]
 #'
 #' @return A numeric vector with the same length/type as `x`.
-#'
+#' If `keep_units = TRUE`, the units attribute is preserved
+#' 
 #' @export
 #'
 #' @examples
