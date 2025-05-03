@@ -1,4 +1,4 @@
-#' Loop over a vector and apply a function with useful postprocessing
+#' Loop over a vector-like object and apply a function
 #'
 #' @param x Something iterable (a vector, list, etc).
 #' @param FUN A function to be applied to each entry in `input`.
