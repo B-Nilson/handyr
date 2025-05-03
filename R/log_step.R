@@ -28,7 +28,9 @@
 #' # Do something else
 #' log_step("Complete")
 log_step <- function(..., header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE, sep = " ") {
-  messages <- unlist(list(...))
+  messages <- as.character(unlist(list(...)))
+  messages <- messages[!is.na(messages)]
+  
   # Handle inputs
   stopifnot(is.character(messages), length(messages) > 0)
   stopifnot(is.logical(header), length(header) == 1)
