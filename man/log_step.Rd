@@ -5,7 +5,7 @@
 \title{Log a message for script progress tracking}
 \usage{
 log_step(
-  message,
+  ...,
   header = FALSE,
   time = !header,
   time_format = "\%Y-\%m-\%d \%H:\%M:\%S",
@@ -15,8 +15,8 @@ log_step(
 )
 }
 \arguments{
-\item{message}{the message to be logged.
-If more than one message is provided, they will be combined with \code{paste(collapse = " ")}}
+\item{...}{One or more character (or coercible to) values or vectors of messages.
+If more than one message is provided, they will be combined with \code{paste(collapse = sep)}}
 
 \item{header}{A logical value indicating if the message should be formatted as a header ("|--- message ---|")
 Default is \code{FALSE}}
@@ -47,7 +47,7 @@ Log a message for script progress tracking
 log_step("My Awesome Script", time = FALSE, header = TRUE)
 log_step("Step 1...")
 # Do something
-log_step("Step 2...")
+log_step("Step-", 2, "...", sep = "")
 # Do something else
 log_step("Complete")
 }
