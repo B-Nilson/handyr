@@ -41,7 +41,7 @@ do_if <- function(x, .do, .if = TRUE, ..., .return = NA) {
 #' @param .min_non_na The minimum length of `x` (ignoring NAs) to be considered enough.
 #' @param .return What to return instead of the output of `FUN` if not enough non-NA values.
 #'
-#' @return The output of FUN applied to x if enough values are provided, NA otherwise
+#' @return The output of FUN applied to x if enough values are provided, `.return` otherwise
 #' 
 #' @export
 #'
@@ -59,16 +59,18 @@ do_if_enough <- function(x, FUN, ..., .min_non_na = 1, .return = NA) {
     !is.na(.min_non_na), is.finite(.min_non_na)
   )
 
+  # Remove NAs
+  x <- x[!is.na(x)]
+
   # Apply function if min_length low enough to not matter
-  if (.min_non_na <= 1) {
-    return(FUN(x, na.rm = TRUE, ...))
+  if (.min_non_na <= 1 & length(x) >= .min_non_na) {
+    return(FUN(x, ...))
   }
-  # Return .return if too few values
-  is_enough <- sum(!is.na(x)) >= .min_non_na
-  if (!is_enough) {
-    return(.return)
-  }
-  
-  # Apply function ignoring NAs
-  FUN(x, na.rm = TRUE, ...)
+
+  # Return .return if too few values, apply function otherwise
+  x |> do_if(
+    .do = FUN, ..., 
+    .if = length(x) >= .min_non_na, 
+    .return = .return
+  )
 }

@@ -18,7 +18,7 @@ do_if_enough(x, FUN, ..., .min_non_na = 1, .return = NA)
 \item{.return}{What to return instead of the output of \code{FUN} if not enough non-NA values.}
 }
 \value{
-The output of FUN applied to x if enough values are provided, NA otherwise
+The output of FUN applied to x if enough values are provided, \code{.return} otherwise
 }
 \description{
 \code{do_if_enough}:
