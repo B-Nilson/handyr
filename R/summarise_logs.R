@@ -39,7 +39,7 @@ summarise_logs <- function(logs, save_to = NULL) {
 
   # Log a summary of total time and each sections time
   time_summary <- log_step(
-    "Total time:", total_time, time_units,
+    "\nTotal time:", total_time, time_units,
     "\n-->", sections$text |> paste(collapse = "\n--> "),
     time = FALSE
   )
