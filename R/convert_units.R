@@ -18,17 +18,18 @@
 #' convert_units(c(1, 2, 3), from = "oz", to = "L")
 #' convert_units(c(1, 2, 3), from = "m/s", to = "km/h")
 #' convert_units(c(1, 2, 3), from = "ug/m3", to = "mg/km3")
-convert_units <- function(x, from, to, ...) {
+convert_units <- function(x, from, to, keep_units = FALSE, ...) {
   rlang::check_installed("units")
   # handle inputs
   stopifnot(is.numeric(x), is.character(from), is.character(to))
   stopifnot(length(from) == 1, length(to) == 1)
 
   # convert units
-  x |>
+  converted <- x |>
     units::set_units(from, mode = "standard", ...) |>
-    units::set_units(to, mode = "standard", ...) |>
-    as.numeric()
+    units::set_units(to, mode = "standard", ...) 
+  # drop units if desired
+  if (!keep_units) converted <- converted |> as.numeric()
+  
+  return(converted)
 }
-
-# TODO: add ability to add custom units
