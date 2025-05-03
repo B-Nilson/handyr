@@ -13,6 +13,8 @@ for_each(
   .as_list = NULL,
   .parallel = FALSE,
   .workers = NULL,
+  .plan = "multisession",
+  .parallel_cleanup = TRUE,
   .quiet = FALSE
 )
 }
@@ -37,6 +39,12 @@ Default is \code{FALSE}.}
 
 \item{.workers}{A single numeric value indicating the number of workers to run in parallel if \code{.parallel = TRUE}.
 Default is \code{NULL} which uses all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}}).}
+
+\item{.plan}{A string indicating the strategy to use if \code{.parallel = TRUE}.
+Default is \code{"multisession"} (see \code{\link[future:plan]{future::plan()}}).}
+
+\item{.parallel_cleanup}{A logical value indicating if the parallel plan should be reset to sequential using \code{future::plan("sequential")} if \code{.parallel = TRUE}.
+Default is \code{TRUE}.}
 
 \item{.quiet}{A logical value indicating if the output should be invisible (no messages/warnings).
 Default is \code{FALSE}.}
