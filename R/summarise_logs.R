@@ -21,9 +21,9 @@
 #'   log_step("test", quiet = TRUE)
 #' )
 #' summarise_logs(logs)
-summarise_logs <- function(logs) {
-  # Determine run times
-  sections <- logs |>
+summarise_logs <- function(logs, save_to = NULL) {
+  # Make log data frame with run times
+  log_summary <- logs |>
     for_each(as.data.frame, .bind = TRUE) |>
     dplyr::mutate(
       run_time = .data$timestamp |> dplyr::lead() |> difftime(.data$timestamp),
@@ -31,16 +31,25 @@ summarise_logs <- function(logs) {
       text = .data$text |>
         paste0(": ", .data$run_time, " ", .data$units)
     )
-  sections <- sections[-c(1, nrow(sections)), ]
-
+  
+  # Extract run times for each section
+  sections <- log_summary[-c(1, nrow(log_summary)), ]
   total_time <- sum(sections$run_time, na.rm = TRUE)
   time_units <- total_time |> attr("units")
 
-  message(
-    paste(
-      "Total time:", total_time, time_units,
-      "\n-->", sections$text |>
-        paste(collapse = "\n--> ")
-    )
+  # Log a summary of total time and each sections time
+  time_summary <- log_step(
+    "Total time:", total_time, time_units,
+    "\n-->", sections$text |> paste(collapse = "\n--> "),
+    time = FALSE
   )
+
+  # Combine log messages and time summary
+  log_text <- log_summary$message |>
+    c(time_summary$message)
+  # Save log if file path provided
+  if (!is.null(save_to)) {
+    log_text |> writeLines(save_to)
+  }
+  return(invisible(log_text))
 }
