@@ -52,9 +52,10 @@
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
+for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
+  stopifnot(is.logical(.enumerate), length(.enumerate) == 1)
   stopifnot(is.logical(.bind), length(.bind) == 1)
   stopifnot(is.logical(.name), length(.name) == 1)
   stopifnot(is.logical(.as_list) | is.null(.as_list))
@@ -81,13 +82,23 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL,
     apply_fun <- ifelse(.as_list, lapply,  sapply)
   }
 
-  # Run x through function
+  # Run x (and i if .enumerate) through function
   if (.quiet) {
-    out <- suppressWarnings(suppressMessages(invisible(
-      x |> apply_fun(FUN, ...)
-    )))
+    if(.enumerate) {
+      out <- suppressWarnings(suppressMessages(invisible(
+        seq_along(x) |> apply_fun(\(i) FUN(x[[i]], i, ...))
+      )))
+    } else {
+      out <- suppressWarnings(suppressMessages(invisible(
+        x |> apply_fun(FUN, ...)
+      )))
+    }
   } else {
-    out <- x |> apply_fun(FUN, ...)
+    if(.enumerate) {
+      out <- seq_along(x) |> apply_fun(\(i) FUN(x[[i]], i, ...))
+    } else {
+      out <- x |> apply_fun(FUN, ...)
+    }
   }
 
   # Stop running in parallel
