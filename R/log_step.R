@@ -27,10 +27,10 @@
 #' log_step("Step 2...")
 #' # Do something else
 #' log_step("Complete")
-log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE, sep = " ") {
-  original <- message
+log_step <- function(..., header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE, sep = " ") {
+  messages <- unlist(list(...))
   # Handle inputs
-  stopifnot(is.character(message))
+  stopifnot(is.character(messages), length(messages) > 0)
   stopifnot(is.logical(header), length(header) == 1)
   stopifnot(is.logical(time), length(time) == 1)
   stopifnot(is.character(time_format), length(time_format) == 1)
@@ -38,7 +38,8 @@ log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-
   stopifnot(is.logical(quiet), length(quiet) == 1)
 
   # Join message with `sep` if multiple messages
-  message <- paste(message, collapse = sep)
+  original_message <- paste(messages, collapse = sep)
+  message = original_message # modify a copy so we can return the original
   
   # Get current timestamp
   timestamp <- Sys.time() |>
@@ -64,7 +65,7 @@ log_step <- function(message, header = FALSE, time = !header, time_format = "%Y-
     list(
       timestamp = as.POSIXct(timestamp, format = time_format, tz = tz),
       message = message,
-      text = original
+      text = original_message
     )
   )
 }
