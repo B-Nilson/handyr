@@ -4,18 +4,21 @@
 \alias{convert_units}
 \title{Convert between common units}
 \usage{
-convert_units(x, from, to, ...)
+convert_units(x, from, to, keep_units = FALSE, ...)
 }
 \arguments{
 \item{x}{A numeric vector.}
 
 \item{from, to}{A string indicating the current/desired unit of \code{x}.
-Run \code{\link[units:valid_udunits]{units::valid_udunits()}} for a list of valid units.}
+Run \code{\link[units:valid_udunits]{units::valid_udunits()}} for a list of valid units for your system.}
+
+\item{keep_units}{A logical value indicating whether to keep the units after conversion (default is \code{FALSE}).}
 
 \item{...}{Additional arguments passed on to \code{\link[units:units]{units::set_units()}}}
 }
 \value{
 A numeric vector with the same length/type as \code{x}.
+If \code{keep_units = TRUE}, the units attribute is preserved
 }
 \description{
 \code{convert_units} is a wrapper around \code{\link[units:units]{units::set_units()}} to switch between common measurement units.
