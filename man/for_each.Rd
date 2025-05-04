@@ -22,7 +22,7 @@ for_each(
 \arguments{
 \item{x}{Something iterable (a vector, list, etc).}
 
-\item{FUN}{A function to be applied to each entry in \code{input}.}
+\item{FUN}{A function to be applied to each entry in \code{x}.}
 
 \item{...}{Additional arguments to be passed to \code{FUN} or to \code{\link[future.apply:future_lapply]{future.apply::future_lapply()}} if \code{.parallel = TRUE}.}
 

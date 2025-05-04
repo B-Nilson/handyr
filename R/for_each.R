@@ -1,7 +1,7 @@
 #' Loop over a vector-like object and apply a function
 #'
 #' @param x Something iterable (a vector, list, etc).
-#' @param FUN A function to be applied to each entry in `input`.
+#' @param FUN A function to be applied to each entry in `x`.
 #' @param ... Additional arguments to be passed to `FUN` or to [future.apply::future_lapply()] if `.parallel = TRUE`.
 #' @param .enumerate A logical value indicating if `i` should be passed to `FUN` alongside `x`. 
 #'   Default is `FALSE`.
