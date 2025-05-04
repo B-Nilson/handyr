@@ -2,12 +2,13 @@
 % Please edit documentation in R/for_each.R
 \name{for_each}
 \alias{for_each}
-\title{Loop over a vector and apply a function with useful postprocessing}
+\title{Loop over a vector-like object and apply a function}
 \usage{
 for_each(
   x,
   FUN,
   ...,
+  .enumerate = FALSE,
   .bind = FALSE,
   .name = FALSE,
   .as_list = NULL,
@@ -24,6 +25,10 @@ for_each(
 \item{FUN}{A function to be applied to each entry in \code{input}.}
 
 \item{...}{Additional arguments to be passed to \code{FUN} or to \code{\link[future.apply:future_lapply]{future.apply::future_lapply()}} if \code{.parallel = TRUE}.}
+
+\item{.enumerate}{A logical value indicating if \code{i} should be passed to \code{FUN} alongside \code{x}.
+Default is \code{FALSE}.
+If \code{TRUE}, \code{FUN} is run as \code{FUN(x[[i]], i, ...)}, where \code{i} is the index of values in \code{x}.}
 
 \item{.bind}{A logical value indicating whether to apply \code{\link[dplyr:bind_rows]{dplyr::bind_rows()}}.
 Default is \code{FALSE}}
@@ -60,6 +65,7 @@ if \code{.quiet = TRUE}: is invisible
 }
 \examples{
 1:3 |> for_each(\(value) value + 1)
+c(7, 7, 7) |> for_each(\(value, i) value + i, .enumerate = TRUE)
 
 list(
   data.frame(x = 1:3),
