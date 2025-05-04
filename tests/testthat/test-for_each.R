@@ -12,6 +12,10 @@ test_that(".enumerate works", {
     values |> for_each(\(value, i) value + i, .enumerate = TRUE),
     expected = 6:8
   )
+  expect_equal(
+    values |> for_each(\(value, i) value + i, .enumerate = TRUE, .quiet = TRUE),
+    expected = 6:8
+  )
 })
 
 test_that(".bind works", {
