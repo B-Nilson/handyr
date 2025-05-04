@@ -6,6 +6,18 @@ test_that("basic case works", {
   )
 })
 
+test_that(".enumerate works", {
+  values <- c(5, 5, 5)
+  expect_equal(
+    values |> for_each(\(value, i) value + i, .enumerate = TRUE),
+    expected = 6:8
+  )
+  expect_equal(
+    values |> for_each(\(value, i) value + i, .enumerate = TRUE, .quiet = TRUE),
+    expected = 6:8
+  )
+})
+
 test_that(".bind works", {
   dats <- list(
     data.frame(x = 1:3),
@@ -56,15 +68,15 @@ test_that(".parallel/.workers/.plan/.clean works", {
     values |> for_each(\(value) value + 1, .parallel = TRUE, .workers = 2),
     expected = 2:4
   )
-  expect_true(is(future::plan(), "sequential")) 
+  expect_true(is(future::plan(), "sequential"))
   expect_equal(
-    values |> for_each(\(value) value + 1, .parallel = TRUE, .workers = 2, .plan = "multicore", .parallel_cleanup = FALSE) ,
+    values |> for_each(\(value) value + 1, .parallel = TRUE, .workers = 2, .plan = "multicore", .parallel_cleanup = FALSE),
     expected = 2:4
   )
   expect_true(is(future::plan(), "multicore"))
   future::plan("sequential")
 })
-  
+
 test_that(".quiet works", {
   values <- 1:3
   expect_no_message(expect_invisible(expect_equal(

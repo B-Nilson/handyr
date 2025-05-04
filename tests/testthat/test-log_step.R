@@ -8,12 +8,12 @@ test_that("... works", {
   expect_message(log_step("Hello", "world!"), "Hello world!")
   expect_message(
     log_step(
-      list(1, 2, 3), 
-      c("test", "test"),  
-      1:3, 
-      NA, NULL, Inf, 
-      data.frame(x = 1:3, y = as.character(1:3)), 
-      as.Date("2000-01-01"), 
+      list(1, 2, 3),
+      c("test", "test"),
+      1:3,
+      NA, NULL, Inf,
+      data.frame(x = 1:3, y = as.character(1:3)),
+      as.Date("2000-01-01"),
       sep = "-", time = FALSE
     ),
     "1-2-3-test-test-1-2-3-Inf-1-2-3-1-2-3-10957"

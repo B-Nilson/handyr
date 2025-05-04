@@ -1,8 +1,11 @@
-#' Loop over a vector and apply a function with useful postprocessing
+#' Loop over a vector-like object and apply a function
 #'
 #' @param x Something iterable (a vector, list, etc).
-#' @param FUN A function to be applied to each entry in `input`.
+#' @param FUN A function to be applied to each entry in `x`.
 #' @param ... Additional arguments to be passed to `FUN` or to [future.apply::future_lapply()] if `.parallel = TRUE`.
+#' @param .enumerate A logical value indicating if `i` should be passed to `FUN` alongside `x`. 
+#'   Default is `FALSE`.
+#'   If `TRUE`, `FUN` is run as `FUN(x[[i]], i, ...)`, where `i` is the index of values in `x`.
 #' @param .bind A logical value indicating whether to apply [dplyr::bind_rows()].
 #'   Default is `FALSE`
 #' @param .name A logical value indicating if the output should be named after `x`. (i.e `names(out) <- x`)
@@ -31,6 +34,7 @@
 #'
 #' @examples
 #' 1:3 |> for_each(\(value) value + 1)
+#' c(7, 7, 7) |> for_each(\(value, i) value + i, .enumerate = TRUE)
 #'
 #' list(
 #'   data.frame(x = 1:3),
@@ -52,9 +56,10 @@
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
+for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
+  stopifnot(is.logical(.enumerate), length(.enumerate) == 1)
   stopifnot(is.logical(.bind), length(.bind) == 1)
   stopifnot(is.logical(.name), length(.name) == 1)
   stopifnot(is.logical(.as_list) | is.null(.as_list))
@@ -81,13 +86,23 @@ for_each <- function(x, FUN, ..., .bind = FALSE, .name = FALSE, .as_list = NULL,
     apply_fun <- ifelse(.as_list, lapply,  sapply)
   }
 
-  # Run x through function
+  # Run x (and i if .enumerate) through function
   if (.quiet) {
-    out <- suppressWarnings(suppressMessages(invisible(
-      x |> apply_fun(FUN, ...)
-    )))
+    if(.enumerate) {
+      out <- suppressWarnings(suppressMessages(invisible(
+        seq_along(x) |> apply_fun(\(i) FUN(x[[i]], i, ...))
+      )))
+    } else {
+      out <- suppressWarnings(suppressMessages(invisible(
+        x |> apply_fun(FUN, ...)
+      )))
+    }
   } else {
-    out <- x |> apply_fun(FUN, ...)
+    if(.enumerate) {
+      out <- seq_along(x) |> apply_fun(\(i) FUN(x[[i]], i, ...))
+    } else {
+      out <- x |> apply_fun(FUN, ...)
+    }
   }
 
   # Stop running in parallel
