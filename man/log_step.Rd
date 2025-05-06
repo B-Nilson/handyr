@@ -38,7 +38,7 @@ Default is \code{FALSE}.}
 Default is " ".}
 }
 \value{
-an invisible list with the timestamp, output message, and original message.
+an invisible list with the timestamp (POSIXct), output message (character), and original message (character).
 If \code{header == TRUE} the return is wrapped with \code{list(.log_init = {...})} to aid in tracking for \code{\link[=summarise_logs]{summarise_logs()}}
 }
 \description{

@@ -16,7 +16,7 @@
 #' @param sep A character value indicating the separator to use between messages when combined if multiple messages are provided.
 #'   Default is " ".
 #'
-#' @return an invisible list with the timestamp, output message, and original message.
+#' @return an invisible list with the timestamp (POSIXct), output message (character), and original message (character).
 #'   If `header == TRUE` the return is wrapped with `list(.log_init = {...})` to aid in tracking for [summarise_logs()]
 #'
 #' @export
