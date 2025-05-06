@@ -45,10 +45,12 @@ If \code{header == TRUE} the return is wrapped with \code{list(.log_init = {...}
 Log a message for script progress tracking
 }
 \examples{
-log_step("My Awesome Script", time = FALSE, header = TRUE)
-log_step("Step 1...")
+logs <- log_step("My Awesome Script", time = FALSE, header = TRUE)
+logs$step_1 <- log_step("Step 1...")
 # Do something
-log_step("Step-", 2, "...", sep = "")
+logs$step_two <- log_step("Step-", 2, "...", sep = "")
 # Do something else
-log_step("Complete")
+logs$done <- log_step("Complete")
+# Summarise run times and save log to file
+summarise_logs(logs, save_to = tempfile())
 }
