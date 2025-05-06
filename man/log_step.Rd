@@ -38,7 +38,8 @@ Default is \code{FALSE}.}
 Default is " ".}
 }
 \value{
-a character vector of the formatted message
+an invisible list with the timestamp, output message, and original message.
+If \code{header == TRUE} the return is wrapped with \code{list(.log_init = {...})} to aid in tracking for \code{\link[=summarise_logs]{summarise_logs()}}
 }
 \description{
 Log a message for script progress tracking
