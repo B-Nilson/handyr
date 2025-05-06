@@ -43,6 +43,6 @@ data.frame(
     base_min_x = base::min(x, na.rm = TRUE), # for comparison
     max_x = max(x, na.rm = TRUE),
     min_x = min(x, na.rm = TRUE)
-   )
+  )
 
 }
