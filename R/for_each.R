@@ -3,7 +3,7 @@
 #' @param x Something iterable (a vector, list, etc).
 #' @param FUN A function to be applied to each entry in `x`.
 #' @param ... Additional arguments to be passed to `FUN` or to [future.apply::future_lapply()] if `.parallel = TRUE`.
-#' @param .enumerate A logical value indicating if `i` should be passed to `FUN` alongside `x`. 
+#' @param .enumerate A logical value indicating if `i` should be passed to `FUN` alongside `x`.
 #'   Default is `FALSE`.
 #'   If `TRUE`, `FUN` is run as `FUN(x[[i]], i, ...)`, where `i` is the index of values in `x`.
 #' @param .bind A logical value indicating whether to apply [dplyr::bind_rows()].
@@ -27,7 +27,7 @@
 #' `for_each` provides a simple way to loop over a vector and apply a function with useful postprocessing.
 #'
 #' @return a list of the output of `FUN` iterated over `x` which:
-#'   if `.bind = TRUE`: is bound rowwise into a data frame using [dplyr::bind_rows()] 
+#'   if `.bind = TRUE`: is bound rowwise into a data frame using [dplyr::bind_rows()]
 #'   if `.name = TRUE`: has names set to `x` using `names(out) <- x`
 #'   if `.quiet = TRUE`: is invisible
 #' @export
@@ -73,22 +73,22 @@ for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .name = FAL
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
 
   # Handle .as_list being NULL
-  if(is.null(.as_list)) .as_list <- !(is.vector(x) & !is.list(x)) # if x is vector, return vector, otherwise return list
+  if (is.null(.as_list)) .as_list <- !(is.vector(x) & !is.list(x)) # if x is vector, return vector, otherwise return list
 
   # Setup parallel if desired
   # TODO: handle potential side effect here if user already had a plan() going
   if (.parallel & length(x) > 1) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     if (is.null(.workers)) .workers <- parallel::detectCores()
-    if(!is.null(.plan)) future::plan(.plan, workers = .workers)
-    apply_fun <- ifelse(.as_list, future.apply::future_lapply,  future.apply::future_sapply)
+    if (!is.null(.plan)) future::plan(.plan, workers = .workers)
+    apply_fun <- ifelse(.as_list, future.apply::future_lapply, future.apply::future_sapply)
   } else {
-    apply_fun <- ifelse(.as_list, lapply,  sapply)
+    apply_fun <- ifelse(.as_list, lapply, sapply)
   }
 
   # Run x (and i if .enumerate) through function
   if (.quiet) {
-    if(.enumerate) {
+    if (.enumerate) {
       out <- suppressWarnings(suppressMessages(invisible(
         seq_along(x) |> apply_fun(\(i) FUN(x[[i]], i, ...))
       )))
@@ -98,7 +98,7 @@ for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .name = FAL
       )))
     }
   } else {
-    if(.enumerate) {
+    if (.enumerate) {
       out <- seq_along(x) |> apply_fun(\(i) FUN(x[[i]], i, ...))
     } else {
       out <- x |> apply_fun(FUN, ...)

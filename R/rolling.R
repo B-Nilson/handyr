@@ -1,11 +1,11 @@
 #' Apply a function over a rolling window
 #'
 #' `rolling` applies a funtion (`FUN`) over a moving window (see `.width` and `.direction`) for each element of `x` using [zoo::rollapply()].
-#' 
+#'
 #' * Be sure to fill any gaps in `x` and ensure `x` is sorted, otherwise the window may be applied incorrectly.
 #' * Values outside of the window are replaced with `.fill`.
 #' * `.min_non_na` is passed to [do_if_enough()] to only apply `FUN` if enough values are present in the window.
-#' 
+#'
 #' @param x A vector.
 #' @param FUN A function to be applied to each window of `x`.
 #'   Default is `mean`.
@@ -46,7 +46,7 @@ rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fi
       ifelse(.direction %in% c("center", 0), "center", NA)
     )
   )
-  
+
   # Apply rolling function with specified window/fill
   # using `do_if_enough` to only apply function if enough values
   x |>

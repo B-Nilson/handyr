@@ -1,6 +1,6 @@
 test_that("basic case works", {
   logs <- list(
-    log_step("Header", header = TRUE, quiet = TRUE),
+    log_step("Header", header = TRUE, quiet = TRUE)[[1]],
     log_step("test1", quiet = TRUE),
     log_step("test2", quiet = TRUE),
     log_step("test3", quiet = TRUE),
@@ -16,7 +16,7 @@ test_that("basic case works", {
 
 test_that("save_to works", {
   logs <- list(
-    log_step("Header", header = TRUE, quiet = TRUE),
+    log_step("Header", header = TRUE, quiet = TRUE)[[1]],
     log_step("test1", quiet = TRUE),
     log_step("test2", quiet = TRUE),
     log_step("test3", quiet = TRUE),

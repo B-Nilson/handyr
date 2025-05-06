@@ -19,15 +19,16 @@ a character vector indicating the summary of the time taken between each log cal
 \code{summarise_logs} takes a list of log entries from \code{\link[=log_step]{log_step()}} and outpus a message with a summary of the time taken between each log call.
 }
 \examples{
-logs <- list(
-  log_step("test", quiet = TRUE),
-  log_step("test", quiet = TRUE),
-  log_step("test", quiet = TRUE),
-  log_step("test", quiet = TRUE),
-  log_step("test", quiet = TRUE),
-  log_step("test", quiet = TRUE)
-)
-summarise_logs(logs)
+logs <- log_step("Example usage of log_summarise", header = TRUE)
+logs$step_one <- log_step("Step-1...")
+# Do something
+logs$step_two <- log_step("Step-2...")
+# Do something else
+logs$step_three <- log_step("Step-3...")
+# Do something else
+logs$done <- log_step("Complete")
+# Summarise run times and write to file
+summarise_logs(logs, save_to = tempfile())
 }
 \seealso{
 Other Utilities: 

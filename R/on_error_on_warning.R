@@ -1,7 +1,7 @@
 #' Control what happens when an error/warning occurs
 #'
 #' `on_error`/`on_warning` provide a simple way to handle errors/warnings by specifying a value to be returned instead as well as if a message or warning/error should be displayed instead.
-#' 
+#'
 #' @param ... Something to run and capture errors/warnings (if any).
 #' @param .return What is to be returned if an error/warning occurs.
 #'   Default is `NULL`
