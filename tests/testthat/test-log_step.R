@@ -62,7 +62,7 @@ test_that("tz works", {
 
 test_that("header works", {
   expect_message(log_step("Hello, world!", header = TRUE))
-  result <- log_step("Hello, world!", header = TRUE, time = FALSE, quiet = TRUE)
+  result <- log_step("Hello, world!", header = TRUE, time = FALSE, quiet = TRUE)[[1]]
   expect_equal(
     paste0("   ", result$text, "   "),
     gsub("[\\||-]", "", result$message)
