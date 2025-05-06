@@ -28,7 +28,7 @@ sf_as_df <- function(sf_obj, keep_coords = FALSE) {
   if (keep_coords) {
     sf_obj <- sf_obj |> extract_sf_coords()
   }
-  
+
   # Convert sf -> data.frame cleanly
   sf::st_geometry(sf_obj) <- NULL
   return(sf_obj)

@@ -10,7 +10,7 @@
 #'
 #' @return A numeric vector with the same length/type as `x`.
 #' If `keep_units = TRUE`, the units attribute is preserved
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -29,9 +29,9 @@ convert_units <- function(x, from, to, keep_units = FALSE, ...) {
   # convert units
   converted <- x |>
     units::set_units(from, mode = "standard", ...) |>
-    units::set_units(to, mode = "standard", ...) 
+    units::set_units(to, mode = "standard", ...)
   # drop units if desired
   if (!keep_units) converted <- converted |> as.numeric()
-  
+
   return(converted)
 }

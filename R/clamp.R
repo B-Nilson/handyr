@@ -1,19 +1,19 @@
 #' Replace out-of-range values with the nearest in-range value
-#' 
+#'
 #' `clamp` sets values less than `min(range)` to `min(range)` and values greater than `max(range)` to `max(range)`
 #'
 #' @param x A numeric vector.
-#' @param range A numeric vector of length two to clamp `x` to. 
-#'   * If `range[1]` is `NA` (default), then `min(x)` will be used. 
+#' @param range A numeric vector of length two to clamp `x` to.
+#'   * If `range[1]` is `NA` (default), then `min(x)` will be used.
 #'   * If `range[2]` is `NA` (default), then `max(x)` will be used.
-#' 
-#' @return 
+#'
+#' @return
 #' A numeric vector equal to `x` with:
 #'  * values less than `min(range)` set to `min(range)`
 #'  * values greater than `max(range)` set to `max(range)`
 #'
 #' @export
-#' 
+#'
 #' @examples
 #' clamp(1:5, range = c(2, NA)) # 2, 2, 3, 4, 5
 #' clamp(1:5, range = c(2, 4)) # 2, 2, 3, 4, 4
@@ -28,7 +28,7 @@ clamp <- function(x, range = c(NA, NA)) {
   if (is.na(range[2])) range[2] <- max(x, na.rm = TRUE)
   # ensure range is sorted
   range <- sort(range)
-  
+
   # clamp values
   x |>
     pmax(range[1]) |>

@@ -1,14 +1,14 @@
 #' Get the maximum/minimum value while handling NAs cleanly
 #'
-#' `max`/`min` provides a wrapper for the built-in functions [base::max]/[base::min] that handles NAs the same as [base::mean]. 
-#' 
+#' `max`/`min` provides a wrapper for the built-in functions [base::max]/[base::min] that handles NAs the same as [base::mean].
+#'
 #' This handles the case where all values provided to max/min are NA, which normally returns Inf/-Inf and throws a warning (see examples).
-#' 
+#'
 #' @param ... numeric or character vectors (see [base::max]).
 #' @param na.rm A logical value indicating whether NA values should be removed.
 #'
 #' @return A single value with the same type as `...`
-#' 
+#'
 #' @examples
 #' # Edge case where all values are NA
 #' base::max(c(NA, NA, NA)) # Returns NA
@@ -17,7 +17,7 @@
 #' max(c(NA, NA, NA)) # Returns NA
 #' max(c(NA, NA, NA), na.rm = TRUE) # Returns NA
 #' min(c(NA, NA, NA), na.rm = TRUE) # Returns NA
-#' 
+#'
 #' # Example usage with typical dplyr pipeline
 #' data.frame(
 #'   x = c(1, 2, 3, NA, NA, NA),
@@ -29,7 +29,7 @@
 #'     base_min_x = base::min(x, na.rm = TRUE), # for comparison
 #'     max_x = max(x, na.rm = TRUE),
 #'     min_x = min(x, na.rm = TRUE)
-#'    )
+#'   )
 #'
 #' @export
 max <- function(..., na.rm = FALSE) {
