@@ -74,8 +74,6 @@ jobs:
               | egrep --ignore-case '\.(R|[qR]md|Rmarkdown|Rnw|Rprofile)$'))
           then
             git commit ${FILES_TO_COMMIT[*]} -m "Style code (GHA)"
-            git pull --ff-only
-            git push origin
           else
             echo "No changes to commit."
           fi
