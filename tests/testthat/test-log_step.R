@@ -76,3 +76,10 @@ test_that("quiet works", {
 test_that("sep works", {
   expect_message(log_step(c("Hello", "world!"), sep = ", "), regexp = "Hello, world!")
 })
+
+test_that("header triggers wrapping in additional list", {
+  result <- log_step("Hello, world!", header = TRUE, quiet = TRUE)
+  expect_equal(names(result), ".log_init")
+  expect_type(result$.log_init, "list")
+  expect_type(result, "list")
+})
