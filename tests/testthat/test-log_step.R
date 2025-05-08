@@ -1,7 +1,7 @@
 test_that("basic case works", {
   expect_message(log_step("Hello, world!"))
   expect_type(log_step("Hello, world!"), "list")
-  expect_length(log_step("Hello, world!"), 3)
+  expect_length(log_step("Hello, world!"), 5)
 })
 
 test_that("... works", {
