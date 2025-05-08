@@ -71,7 +71,9 @@ log_step <- function(..., header = FALSE, time = !header, time_format = "%Y-%m-%
   log_entry <- list(
     timestamp = as.POSIXct(timestamp, format = time_format, tz = tz),
     message = message,
-    text = original_message
+    text = original_message,
+    is_header = header,
+    is_timestamped = time
   )
 
   # return list(log_entry) instead of log_entry if header
