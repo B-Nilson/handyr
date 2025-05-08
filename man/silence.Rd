@@ -43,7 +43,7 @@ This function wraps \code{tryCatch} and suppresses some or all of the following:
 }
 }
 \examples{
-silence(1/0)
+silence(1 / 0)
 silence(warning("test"))
 silence(message("test"))
 silence(print("test"))
