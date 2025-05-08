@@ -8,7 +8,7 @@
 #' - output from `cat()`
 #' - output from `writeLines()`
 #'
-#' @param this_please Some code to run silently. 
+#' @param this_please Some code to run silently.
 #'   If running multiple lines use `{....}`
 #' @param errors A logical value indicating if errors should be silenced.
 #'   Default is `TRUE`.
@@ -18,12 +18,12 @@
 #'   Default is `TRUE`.
 #' @param output A logical value indicating if output from `print()`, `cat()`, and `writeLines()` should be silenced.
 #'   Default is `TRUE`.
-#' 
+#'
 #' @return The output from `this_please`
 #' @export
-#' 
+#'
 #' @examples
-#' silence(1/0)
+#' silence(1 / 0)
 #' silence(warning("test"))
 #' silence(message("test"))
 #' silence(print("test"))
@@ -47,11 +47,12 @@ silence <- function(this_please, errors = TRUE, warnings = TRUE, messages = TRUE
   }
   # Build a string that wraps each silencer around `this_please`
   closing_parens <- ")" |>
-    rep(length(enabled_silencers)) |> 
+    rep(length(enabled_silencers)) |>
     paste(collapse = "")
   silencer <- paste0(
-    "enabled_silencers[[", 
-    seq_along(enabled_silencers), collapse = "",
+    "enabled_silencers[[",
+    seq_along(enabled_silencers),
+    collapse = "",
     "]]("
   ) |> paste0("this_please", closing_parens)
   # Evaluate that string invisibly

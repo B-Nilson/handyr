@@ -9,4 +9,3 @@ test_that("basic case works", {
     }))
   ))), expected = "")
 })
-
