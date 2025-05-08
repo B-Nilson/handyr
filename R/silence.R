@@ -43,7 +43,7 @@ silence <- function(this_please, errors = TRUE, warnings = TRUE, messages = TRUE
   ]
   # Run invisibly if no silencers
   if (length(enabled_silencers) == 0) {
-    return(invisible(eval(to_run)))
+    return(invisible(eval(this_please)))
   }
   # Build a string that wraps each silencer around `this_please`
   closing_parens <- ")" |>
