@@ -10,3 +10,8 @@ test_that("basic case works", {
   ))), expected = "")
 })
 
+test_that("all set to FALSE just returns invisible(...)", {
+  expect_equal(expect_invisible(
+    silence(1 + 2, errors = FALSE, warnings = FALSE, messages = FALSE, output = FALSE)
+  ), 3)
+})
