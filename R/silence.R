@@ -29,7 +29,7 @@
 #' silence(print("test"))
 #' silence(cat("test"))
 #' silence(1 + "a")
-silence <- function(this_please, errors = TRUE, warnings = TRUE, messages = TRUE, output = TRUE) {
+silence <- function(this_please, errors = TRUE, warnings = TRUE, messages = TRUE, output = FALSE) {
   # Functions for each level of silence
   silencers <- list(
     errors = suppressErrors,

@@ -6,8 +6,13 @@ test_that("basic case works", {
       print("test print")
       cat("test cat\n")
       writeLines("test writeLines")
-    }))
+    }, output = TRUE))
   ))), expected = "")
+
+  expect_equal(
+    silence("test"), 
+    expected = "test"
+  )
 })
 
 test_that("all set to FALSE just returns invisible(...)", {
