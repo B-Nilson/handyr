@@ -47,6 +47,11 @@ test_that(".bind and .bind_id work", {
       y = 2:7
     )
   )
+  # make sure .bind = TRUE works when non-list provided as input
+  expect_equal(
+    1:3 |> for_each(\(value) data.frame(value = value + 1), .bind = TRUE),
+    expected = data.frame(value = 2:4)
+  )
 })
 
 test_that(".name works", {
