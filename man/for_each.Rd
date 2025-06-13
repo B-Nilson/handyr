@@ -10,6 +10,7 @@ for_each(
   ...,
   .enumerate = FALSE,
   .bind = FALSE,
+  .bind_id = NULL,
   .name = FALSE,
   .as_list = NULL,
   .parallel = FALSE,
@@ -32,6 +33,9 @@ If \code{TRUE}, \code{FUN} is run as \code{FUN(x[[i]], i, ...)}, where \code{i} 
 
 \item{.bind}{A logical value indicating whether to apply \code{\link[dplyr:bind_rows]{dplyr::bind_rows()}}.
 Default is \code{FALSE}}
+
+\item{.bind_id}{A single character string indicating the column name to use for the row index if \code{.bind = TRUE}.
+Default is \code{NULL} (don't add a row index column).}
 
 \item{.name}{A logical value indicating if the output should be named after \code{x}. (i.e \code{names(out) <- x})
 Default is \code{FALSE}.}
