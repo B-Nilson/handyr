@@ -8,6 +8,8 @@
 #'   If `TRUE`, `FUN` is run as `FUN(x[[i]], i, ...)`, where `i` is the index of values in `x`.
 #' @param .bind A logical value indicating whether to apply [dplyr::bind_rows()].
 #'   Default is `FALSE`
+#' @param .bind_id A single character string indicating the column name to use for the row index if `.bind = TRUE`.
+#'   Default is `NULL` (don't add a row index column).
 #' @param .name A logical value indicating if the output should be named after `x`. (i.e `names(out) <- x`)
 #'   Default is `FALSE`.
 #' @param .as_list A logical value indicating if the output should be a list (see [lapply()] / [future.apply::future_lapply()]) or a vector (see[sapply()] / [future.apply::future_sapply()]).
@@ -56,11 +58,13 @@
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
+for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .bind_id = NULL, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.enumerate), length(.enumerate) == 1)
   stopifnot(is.logical(.bind), length(.bind) == 1)
+  stopifnot(is.character(.bind_id) | is.null(.bind_id))
+  stopifnot(length(.bind_id) == 1 | is.null(.bind_id))
   stopifnot(is.logical(.name), length(.name) == 1)
   stopifnot(is.logical(.as_list) | is.null(.as_list))
   stopifnot(length(.as_list) == 1 | is.null(.as_list))
@@ -71,6 +75,9 @@ for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .name = FAL
   stopifnot(length(.plan) == 1 | is.null(.plan))
   stopifnot(is.logical(.parallel_cleanup), length(.parallel_cleanup) == 1)
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
+
+  # Handle .bind being TRUE when .as_list is NULL
+  if (.bind & is.null(.as_list)) .as_list <- TRUE
 
   # Handle .as_list being NULL
   if (is.null(.as_list)) .as_list <- !(is.vector(x) & !is.list(x)) # if x is vector, return vector, otherwise return list
@@ -109,8 +116,8 @@ for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .name = FAL
   if (.parallel & .parallel_cleanup) future::plan(future::sequential)
   # Use x as names if desired
   if (.name) names(out) <- x
-  # Bind rowwise if desired
-  if (.bind) out <- out |> dplyr::bind_rows()
+  # Bind rowwise (and potentially add list index column) if desired
+  if (.bind) out <- out |> dplyr::bind_rows(.id = .bind_id)
 
   # Return if not quiet, otherwise return invisibly
   if (!.quiet) {

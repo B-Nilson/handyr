@@ -18,10 +18,10 @@ test_that(".enumerate works", {
   )
 })
 
-test_that(".bind works", {
+test_that(".bind and .bind_id work", {
   dats <- list(
-    data.frame(x = 1:3),
-    data.frame(x = 4:6)
+    one = data.frame(x = 1:3),
+    two = data.frame(x = 4:6)
   )
   expect_equal(
     dats |>
@@ -33,6 +33,24 @@ test_that(".bind works", {
       x = 1:6,
       y = 2:7
     )
+  )
+  expect_equal(
+    dats |>
+      for_each(
+        \(dat) dat |> dplyr::mutate(y = x + 1),
+        .bind = TRUE,
+        .bind_id = "id"
+      ),
+    expected = data.frame(
+      id = c("one", "one", "one", "two", "two", "two"),
+      x = 1:6,
+      y = 2:7
+    )
+  )
+  # make sure .bind = TRUE works when non-list provided as input
+  expect_equal(
+    1:3 |> for_each(\(value) data.frame(value = value + 1), .bind = TRUE),
+    expected = data.frame(value = 2:4)
   )
 })
 
