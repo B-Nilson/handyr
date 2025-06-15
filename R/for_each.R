@@ -76,6 +76,9 @@ for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .bind_id = 
   stopifnot(is.logical(.parallel_cleanup), length(.parallel_cleanup) == 1)
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
 
+  # Handle .bind being TRUE when .as_list is NULL
+  if (.bind & is.null(.as_list)) .as_list <- TRUE
+
   # Handle .as_list being NULL
   if (is.null(.as_list)) .as_list <- !(is.vector(x) & !is.list(x)) # if x is vector, return vector, otherwise return list
 
