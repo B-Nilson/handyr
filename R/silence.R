@@ -35,7 +35,7 @@ silence <- function(this_please, errors = TRUE, warnings = TRUE, messages = TRUE
     errors = suppressErrors,
     warnings = suppressWarnings,
     messages = suppressMessages,
-    output = capture.output
+    output = utils::capture.output
   )
   # Filter to desired silencers
   enabled_silencers <- silencers[
