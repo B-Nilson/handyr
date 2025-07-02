@@ -9,7 +9,7 @@ silence(
   errors = TRUE,
   warnings = TRUE,
   messages = TRUE,
-  output = TRUE
+  output = FALSE
 )
 }
 \arguments{
