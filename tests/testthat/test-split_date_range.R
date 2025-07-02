@@ -4,4 +4,7 @@ test_that("basic case works", {
   expect_snapshot(
     split_date_range(date_range, max_duration = "3 days")
   )
+  expect_snapshot(
+    split_date_range(date_range, max_duration = "3 days", as_list = TRUE)
+  )
 })
