@@ -10,8 +10,8 @@
 #'
 #' @export
 join_list <- function(df_list, by, mode = "full") {
-  join_fun_name <- paste0("dplyr::", mode, "_join")
-  join_fun <- get(join_fun_name)
+  join_fun <- mode |>
+    paste0("_join") |>
+    getExportedValue(ns = "dplyr")
   df_list |> Reduce(f = \(...) join_fun(..., by = by))
 }
-
