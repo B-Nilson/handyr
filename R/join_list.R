@@ -9,7 +9,7 @@
 #' @return A single data frame containing the joined data.
 #'
 #' @export
-join_list <- function(df_list, by, mode = "full") {
+join_list <- function(df_list, by = NULL, mode = "full") {
   # Handle input data list
   df_list <- df_list[which(!sapply(df_list, is.null))]
   if (length(df_list) == 1) {
@@ -17,7 +17,7 @@ join_list <- function(df_list, by, mode = "full") {
   } else if (length(df_list) == 0) {
     return(NULL)
   }
-  
+
   # Get relevant join function for `mode`
   join_fun <- mode |>
     paste0("_join") |>
