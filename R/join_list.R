@@ -29,9 +29,5 @@ join_list <- function(df_list, by = NULL, mode = "full") {
   df_list |> 
     Reduce(f = \(...) join_fun(..., by = by)) |>
     # Prevent the message when joining by matching columns
-    handyr::silence(
-      output = FALSE,
-      warnings = FALSE,
-      errors = FALSE
-    )
+    suppressMessages()
 }
