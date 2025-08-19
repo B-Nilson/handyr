@@ -26,5 +26,12 @@ join_list <- function(df_list, by = NULL, mode = "full") {
   if (is.null(join_fun)) {
     stop("`mode` must be one of 'full', 'inner', 'left', 'right', 'semi', 'anti', ... (see dplyr::join for possible options)")
   }
-  df_list |> Reduce(f = \(...) join_fun(..., by = by))
+  df_list |> 
+    Reduce(f = \(...) join_fun(..., by = by)) |>
+    # Prevent the message when joining by matching columns
+    handyr::silence(
+      output = FALSE,
+      warnings = FALSE,
+      errors = FALSE
+    )
 }
