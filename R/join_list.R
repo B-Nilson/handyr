@@ -10,6 +10,15 @@
 #'
 #' @export
 join_list <- function(df_list, by, mode = "full") {
+  # Handle input data list
+  df_list <- df_list[which(!sapply(df_list, is.null))]
+  if (length(df_list) == 1) {
+    return(df_list[[1]])
+  } else if (length(df_list) == 0) {
+    return(NULL)
+  }
+  
+  # Get relevant join function for `mode`
   join_fun <- mode |>
     paste0("_join") |>
     getExportedValue(ns = "dplyr") |>
