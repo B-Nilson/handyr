@@ -12,6 +12,10 @@
 join_list <- function(df_list, by, mode = "full") {
   join_fun <- mode |>
     paste0("_join") |>
-    getExportedValue(ns = "dplyr")
+    getExportedValue(ns = "dplyr") |>
+    handyr::on_error(.return = NULL)
+  if (is.null(join_fun)) {
+    stop("`mode` must be one of 'full', 'inner', 'left', 'right', 'semi', 'anti', ... (see dplyr::join for possible options)")
+  }
   df_list |> Reduce(f = \(...) join_fun(..., by = by))
 }
