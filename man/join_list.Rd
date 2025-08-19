@@ -4,12 +4,13 @@
 \alias{join_list}
 \title{Join a list of data frames}
 \usage{
-join_list(df_list, by, mode = "full")
+join_list(df_list, by = NULL, mode = "full")
 }
 \arguments{
 \item{df_list}{A list of data frames.}
 
-\item{by}{A character vector of column names to join on.}
+\item{by}{A character vector of column names to join on.
+Default (NULL) joins on all matching columns.}
 
 \item{mode}{A character string specifying the type of join to perform. Must be one of "full", "inner", "left", "right", ... (see \link[dplyr:mutate-joins]{dplyr::join}).}
 }
