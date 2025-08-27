@@ -58,7 +58,21 @@
 #'
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
-for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .bind_id = NULL, .name = FALSE, .as_list = NULL, .parallel = FALSE, .workers = NULL, .plan = "multisession", .parallel_cleanup = TRUE, .quiet = FALSE) {
+for_each <- function(
+  x,
+  FUN,
+  ...,
+  .enumerate = FALSE,
+  .bind = FALSE,
+  .bind_id = NULL,
+  .name = FALSE,
+  .as_list = NULL,
+  .parallel = FALSE,
+  .workers = NULL,
+  .plan = "multisession",
+  .parallel_cleanup = TRUE,
+  .quiet = FALSE
+) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.enumerate), length(.enumerate) == 1)
@@ -77,18 +91,30 @@ for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .bind_id = 
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
 
   # Handle .bind being TRUE when .as_list is NULL
-  if (.bind & is.null(.as_list)) .as_list <- TRUE
+  if (.bind & is.null(.as_list)) {
+    .as_list <- TRUE
+  }
 
   # Handle .as_list being NULL
-  if (is.null(.as_list)) .as_list <- !(is.vector(x) & !is.list(x)) # if x is vector, return vector, otherwise return list
+  if (is.null(.as_list)) {
+    .as_list <- !(is.vector(x) & !is.list(x))
+  } # if x is vector, return vector, otherwise return list
 
   # Setup parallel if desired
   # TODO: handle potential side effect here if user already had a plan() going
   if (.parallel & length(x) > 1) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
-    if (is.null(.workers)) .workers <- parallel::detectCores()
-    if (!is.null(.plan)) future::plan(.plan, workers = .workers)
-    apply_fun <- ifelse(.as_list, future.apply::future_lapply, future.apply::future_sapply)
+    if (is.null(.workers)) {
+      .workers <- parallel::detectCores()
+    }
+    if (!is.null(.plan)) {
+      future::plan(.plan, workers = .workers)
+    }
+    apply_fun <- ifelse(
+      .as_list,
+      future.apply::future_lapply,
+      future.apply::future_sapply
+    )
   } else {
     apply_fun <- ifelse(.as_list, lapply, sapply)
   }
@@ -113,11 +139,17 @@ for_each <- function(x, FUN, ..., .enumerate = FALSE, .bind = FALSE, .bind_id = 
   }
 
   # Stop running in parallel
-  if (.parallel & .parallel_cleanup) future::plan(future::sequential)
+  if (.parallel & .parallel_cleanup) {
+    future::plan(future::sequential)
+  }
   # Use x as names if desired
-  if (.name) names(out) <- x
+  if (.name) {
+    names(out) <- x
+  }
   # Bind rowwise (and potentially add list index column) if desired
-  if (.bind) out <- out |> dplyr::bind_rows(.id = .bind_id)
+  if (.bind) {
+    out <- out |> dplyr::bind_rows(.id = .bind_id)
+  }
 
   # Return if not quiet, otherwise return invisibly
   if (!.quiet) {

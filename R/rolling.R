@@ -30,19 +30,33 @@
 #' x |> rolling(mean, .width = 2)
 #' x |> rolling(mean, .width = 2, .direction = "forward", .fill = -1)
 #' @export
-rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fill = NA, .min_non_na = 0) {
+rolling <- function(
+  x,
+  FUN = mean,
+  ...,
+  .width = 3,
+  .direction = "backward",
+  .fill = NA,
+  .min_non_na = 0
+) {
   rlang::check_installed("zoo")
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.numeric(.width), length(.width) == 1)
-  stopifnot(is.numeric(.direction) | is.character(.direction), length(.direction) == 1)
+  stopifnot(
+    is.numeric(.direction) | is.character(.direction),
+    length(.direction) == 1
+  )
   stopifnot(length(.fill) == 1)
   stopifnot(is.numeric(.min_non_na), length(.min_non_na) == 1)
 
   # translate .direction -> align for zoo
   align <- ifelse(
-    .direction %in% c("backward", 1), "right",
-    ifelse(.direction %in% c("forward", -1), "left",
+    .direction %in% c("backward", 1),
+    "right",
+    ifelse(
+      .direction %in% c("forward", -1),
+      "left",
       ifelse(.direction %in% c("center", 0), "center", NA)
     )
   )
@@ -51,7 +65,9 @@ rolling <- function(x, FUN = mean, ..., .width = 3, .direction = "backward", .fi
   # using `do_if_enough` to only apply function if enough values
   x |>
     zoo::rollapply(
-      width = .width, align = align, fill = .fill,
+      width = .width,
+      align = align,
+      fill = .fill,
       FUN = \(x) do_if_enough(x, FUN, .min_non_na = .min_non_na)
     )
 }

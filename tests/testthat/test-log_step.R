@@ -11,10 +11,13 @@ test_that("... works", {
       list(1, 2, 3),
       c("test", "test"),
       1:3,
-      NA, NULL, Inf,
+      NA,
+      NULL,
+      Inf,
       data.frame(x = 1:3, y = as.character(1:3)),
       as.Date("2000-01-01"),
-      sep = "-", time = FALSE
+      sep = "-",
+      time = FALSE
     ),
     "1-2-3-test-test-1-2-3-Inf-1-2-3-1-2-3-10957"
   )
@@ -37,10 +40,15 @@ test_that("time_format works", {
     result$message
   )
   expect_message(log_step("Hello, world!", time_format = "%Y-%m-%d %H:%M"))
-  result <- log_step("Hello, world!", time_format = "%Y-%m-%d %H:%M", quiet = TRUE)
+  result <- log_step(
+    "Hello, world!",
+    time_format = "%Y-%m-%d %H:%M",
+    quiet = TRUE
+  )
   expect_equal(
     paste0(
-      format(result$timestamp, "%Y-%m-%d %H:%M"), ": ",
+      format(result$timestamp, "%Y-%m-%d %H:%M"),
+      ": ",
       result$text
     ),
     result$message
@@ -62,7 +70,12 @@ test_that("tz works", {
 
 test_that("header works", {
   expect_message(log_step("Hello, world!", header = TRUE))
-  result <- log_step("Hello, world!", header = TRUE, time = FALSE, quiet = TRUE)[[1]]
+  result <- log_step(
+    "Hello, world!",
+    header = TRUE,
+    time = FALSE,
+    quiet = TRUE
+  )[[1]]
   expect_equal(
     paste0("   ", result$text, "   "),
     gsub("[\\||-]", "", result$message)
@@ -74,7 +87,10 @@ test_that("quiet works", {
 })
 
 test_that("sep works", {
-  expect_message(log_step(c("Hello", "world!"), sep = ", "), regexp = "Hello, world!")
+  expect_message(
+    log_step(c("Hello", "world!"), sep = ", "),
+    regexp = "Hello, world!"
+  )
 })
 
 test_that("header triggers wrapping in additional list", {

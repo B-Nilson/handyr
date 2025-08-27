@@ -55,8 +55,11 @@ do_if_enough <- function(x, FUN, ..., .min_non_na = 1, .return = NA) {
   stopifnot(is.vector(x), !is.list(x))
   stopifnot(is.function(FUN))
   stopifnot(
-    is.numeric(.min_non_na), length(.min_non_na) == 1, .min_non_na >= 0,
-    !is.na(.min_non_na), is.finite(.min_non_na)
+    is.numeric(.min_non_na),
+    length(.min_non_na) == 1,
+    .min_non_na >= 0,
+    !is.na(.min_non_na),
+    is.finite(.min_non_na)
   )
 
   # Remove NAs
@@ -68,9 +71,11 @@ do_if_enough <- function(x, FUN, ..., .min_non_na = 1, .return = NA) {
   }
 
   # Return .return if too few values, apply function otherwise
-  x |> do_if(
-    .do = FUN, ...,
-    .if = length(x) >= .min_non_na,
-    .return = .return
-  )
+  x |>
+    do_if(
+      .do = FUN,
+      ...,
+      .if = length(x) >= .min_non_na,
+      .return = .return
+    )
 }

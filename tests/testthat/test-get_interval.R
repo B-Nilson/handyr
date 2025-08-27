@@ -26,7 +26,12 @@ test_that("basic case works", {
   )
   # Date
   expect_equal(
-    get_interval(as.Date(c("2020-01-01", "2020-01-03", "2020-01-05", "2020-01-06"))),
+    get_interval(as.Date(c(
+      "2020-01-01",
+      "2020-01-03",
+      "2020-01-05",
+      "2020-01-06"
+    ))),
     expected = as.difftime(2, units = "days")
   )
   expect_equal(
@@ -39,15 +44,28 @@ test_that("basic case works", {
   )
   # Datetime
   expect_equal(
-    get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04", "2020-01-01 00:00:05"))),
+    get_interval(as.POSIXct(c(
+      "2020-01-01 00:00:00",
+      "2020-01-01 00:00:02",
+      "2020-01-01 00:00:04",
+      "2020-01-01 00:00:05"
+    ))),
     expected = as.difftime(2, units = "secs")
   )
   expect_equal(
-    get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 01:00:00", "2020-01-01 02:00:00"))),
+    get_interval(as.POSIXct(c(
+      "2020-01-01 00:00:00",
+      "2020-01-01 01:00:00",
+      "2020-01-01 02:00:00"
+    ))),
     expected = as.difftime(1, units = "hours")
   )
   expect_equal(
-    get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:00", "2020-01-01 00:00:00"))),
+    get_interval(as.POSIXct(c(
+      "2020-01-01 00:00:00",
+      "2020-01-01 00:00:00",
+      "2020-01-01 00:00:00"
+    ))),
     expected = as.difftime(0, units = "secs")
   )
 })

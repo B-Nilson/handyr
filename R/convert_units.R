@@ -31,7 +31,9 @@ convert_units <- function(x, from, to, keep_units = FALSE, ...) {
     units::set_units(from, mode = "standard", ...) |>
     units::set_units(to, mode = "standard", ...)
   # drop units if desired
-  if (!keep_units) converted <- converted |> as.numeric()
+  if (!keep_units) {
+    converted <- converted |> as.numeric()
+  }
 
   return(converted)
 }

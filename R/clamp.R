@@ -24,8 +24,12 @@ clamp <- function(x, range = c(NA, NA)) {
   stopifnot(length(range) == 2, is.numeric(range) | all(is.na(range)))
 
   # set NA range values to min/max
-  if (is.na(range[1])) range[1] <- min(x, na.rm = TRUE)
-  if (is.na(range[2])) range[2] <- max(x, na.rm = TRUE)
+  if (is.na(range[1])) {
+    range[1] <- min(x, na.rm = TRUE)
+  }
+  if (is.na(range[2])) {
+    range[2] <- max(x, na.rm = TRUE)
+  }
   # ensure range is sorted
   range <- sort(range)
 

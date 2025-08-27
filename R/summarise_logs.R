@@ -38,25 +38,34 @@ summarise_logs <- function(logs, save_to = NULL) {
     dplyr::group_by(is_not_section = .data$is_header | !.data$is_timestamped) |>
     dplyr::mutate(
       run_time = .data$timestamp |> dplyr::lead() |> difftime(.data$timestamp),
-      run_time = dplyr::case_when(.data$is_not_section ~ NA, TRUE ~ .data$run_time),
+      run_time = dplyr::case_when(
+        .data$is_not_section ~ NA,
+        TRUE ~ .data$run_time
+      ),
       units = attr(.data$run_time, "units"),
       run_time_text = dplyr::case_when(
         .data$is_not_section ~ NA,
-        TRUE ~ .data$text |>
-          paste0(": ", .data$run_time, " ", .data$units)
+        TRUE ~
+          .data$text |>
+            paste0(": ", .data$run_time, " ", .data$units)
       )
     ) |>
     dplyr::ungroup()
 
   # Extract run times for each section
-  sections <- log_summary[!log_summary$is_not_section & log_summary$.id != max(log_summary$.id), ]
+  sections <- log_summary[
+    !log_summary$is_not_section & log_summary$.id != max(log_summary$.id),
+  ]
   total_time <- sum(sections$run_time, na.rm = TRUE)
   time_units <- total_time |> attr("units")
 
   # Log a summary of total time and each sections time
   time_summary <- log_step(
-    "\nTotal time:", total_time, time_units,
-    "\n-->", sections$run_time_text |> paste(collapse = "\n--> "),
+    "\nTotal time:",
+    total_time,
+    time_units,
+    "\n-->",
+    sections$run_time_text |> paste(collapse = "\n--> "),
     time = FALSE
   )
 
