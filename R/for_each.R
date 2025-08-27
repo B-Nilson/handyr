@@ -65,6 +65,8 @@ for_each <- function(
   .enumerate = FALSE,
   .bind = FALSE,
   .bind_id = NULL,
+  .join = FALSE,
+  .join_by = NULL,
   .name = FALSE,
   .as_list = NULL,
   .parallel = FALSE,
