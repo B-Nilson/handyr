@@ -54,6 +54,65 @@ test_that(".bind and .bind_id work", {
   )
 })
 
+test_that(".join, .join_by, and .join_mode work", {
+  # .join
+  outcome <- 1:3 |>
+    handyr::for_each(
+      .join = TRUE,
+      \(x) {
+        data.frame(x = x, y = x^2) |>
+          stats::setNames(c("x", paste0("y", x)))
+      }
+    )
+  expected <- data.frame(
+    x = 1:3,
+    y1 = c(1, NA, NA),
+    y2 = c(NA, 4, NA),
+    y3 = c(NA, NA, 9)
+  )
+  expect_equal(outcome, expected)
+
+  # .join_by
+  outcome <- 1:3 |>
+    handyr::for_each(
+      .join = TRUE,
+      .join_by = "x",
+      \(x) {
+        data.frame(x = x, x2 = x <= 2, y = x^2) |>
+          stats::setNames(c("x", "x2", paste0("y", x)))
+      }
+    )
+  expected <- data.frame(
+    x = 1:3,
+    x2.x = c(TRUE, NA, NA),
+    y1 = c(1, NA, NA),
+    x2.y = c(NA, TRUE, NA),
+    y2 = c(NA, 4, NA),
+    x2 = c(NA, NA, FALSE),
+    y3 = c(NA, NA, 9)
+  )
+  expect_equal(outcome, expected)
+
+  # .join_mode
+  outcome <- 1:3 |>
+    handyr::for_each(
+      .join = TRUE,
+      .join_mode = "left",
+      \(x) {
+        data.frame(x = x, x2 = x <= 2, y = x^2) |>
+          stats::setNames(c("x", "x2", paste0("y", x)))
+      }
+    )
+  expected <- data.frame(
+    x = 1,
+    x2 = TRUE,
+    y1 = 1,
+    y2 = NA_real_,
+    y3 = NA_real_
+  )
+  expect_equal(outcome, expected)
+})
+
 test_that(".name works", {
   expect_equal(
     c("bread", "jam") |>
