@@ -91,9 +91,19 @@ for_each <- function(
   stopifnot(length(.plan) == 1 | is.null(.plan))
   stopifnot(is.logical(.parallel_cleanup), length(.parallel_cleanup) == 1)
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
+  
+  # Handle .join_by provided when .join is FALSE
+  if (!is.null(.join_by) & !.join) {
+    .join <- TRUE
+  }
 
   # Handle .bind being TRUE when .as_list is NULL
   if (.bind & is.null(.as_list)) {
+    .as_list <- TRUE
+  }
+
+  # Handle .join being TRUE when .as_list is NULL
+  if (.join & is.null(.as_list)) {
     .as_list <- TRUE
   }
 
