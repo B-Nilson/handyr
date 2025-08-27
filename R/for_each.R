@@ -67,6 +67,7 @@ for_each <- function(
   .bind_id = NULL,
   .join = FALSE,
   .join_by = NULL,
+  .join_mode = "full",
   .name = FALSE,
   .as_list = NULL,
   .parallel = FALSE,
@@ -83,6 +84,7 @@ for_each <- function(
   stopifnot(length(.bind_id) == 1 | is.null(.bind_id))
   stopifnot(is.logical(.join), length(.join) == 1)
   stopifnot(is.character(.join_by) | is.null(.join_by))
+  stopifnot(is.character(.join_mode))
   stopifnot(!.join | !.bind)
   stopifnot(is.logical(.name), length(.name) == 1)
   stopifnot(is.logical(.as_list) | is.null(.as_list))
