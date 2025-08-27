@@ -10,6 +10,12 @@
 #'   Default is `FALSE`
 #' @param .bind_id A single character string indicating the column name to use for the row index if `.bind = TRUE`.
 #'   Default is `NULL` (don't add a row index column).
+#' @param .join A logical value indicating if the output should be joined using [join_list()].
+#'   Default is `FALSE`.
+#' @param .join_by One or more character values indicating the column name(s) to join by if `.join = TRUE`.
+#'   Default is `NULL`, which joins on all matching columns.
+#' @param .join_mode A character string specifying the type of join to perform if `.join = TRUE`. Must be one of "full", "inner", "left", "right", ... (see [join_list()] for all options).
+#'   Default is "full", which uses [dplyr::full_join()].
 #' @param .name A logical value indicating if the output should be named after `x`. (i.e `names(out) <- x`)
 #'   Default is `FALSE`.
 #' @param .as_list A logical value indicating if the output should be a list (see [lapply()] / [future.apply::future_lapply()]) or a vector (see[sapply()] / [future.apply::future_sapply()]).
