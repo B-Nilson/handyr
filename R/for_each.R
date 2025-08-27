@@ -167,6 +167,10 @@ for_each <- function(
   if (.bind) {
     out <- out |> dplyr::bind_rows(.id = .bind_id)
   }
+  # Join columnwise if desired
+  if (.join) {
+    out <- out |> handyr::join_list(by = .join_by, mode = .join_mode)
+  }
 
   # Return if not quiet, otherwise return invisibly
   if (!.quiet) {
