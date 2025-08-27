@@ -37,7 +37,9 @@ extract_sf_coords <- function(sf_obj, keep_sf = TRUE, add_crs = TRUE) {
   # Add columns to input
   sf_obj$x <- coords[, 1]
   sf_obj$y <- coords[, 2]
-  if (add_crs) sf_obj$crs <- crs
+  if (add_crs) {
+    sf_obj$crs <- crs
+  }
 
   # Return if sf typing desired
   if (keep_sf) {

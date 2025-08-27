@@ -26,7 +26,9 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
 
   # Handle NAs before calculating
-  if (na.rm) x <- x[!is.na(x)]
+  if (na.rm) {
+    x <- x[!is.na(x)]
+  }
 
   # Handle cases where get_interval doesn't need to be called
   if (length(x) == 0 | all(is.na(x))) {
@@ -35,7 +37,9 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
 
   # Get interval frequencies
   intervals <- diff(x)
-  if (is.numeric(intervals)) intervals <- round(intervals, digits = 14) # handle floating point errors
+  if (is.numeric(intervals)) {
+    intervals <- round(intervals, digits = 14)
+  } # handle floating point errors
   unique_intervals <- unique(intervals)
   frequencies <- match(intervals, unique_intervals) |>
     tabulate()
@@ -52,7 +56,9 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
       warning(paste0(
         "More than one interval has the same top frequency.",
         if (most_common) " Returning the first interval.",
-        if (most_common) "\nSet `most_common = FALSE` to see all intervals and their frequencies."
+        if (most_common) {
+          "\nSet `most_common = FALSE` to see all intervals and their frequencies."
+        }
       ))
     }
   }
@@ -61,7 +67,8 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
   if (most_common) {
     interval <- interval_freqs$interval[1]
     if (quiet) invisible(interval) else interval
-  } else { # or data frame of all intervals and frequencies
+  } else {
+    # or data frame of all intervals and frequencies
     if (quiet) invisible(interval_freqs) else interval_freqs
   }
 }

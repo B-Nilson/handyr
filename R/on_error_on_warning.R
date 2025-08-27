@@ -24,9 +24,13 @@ on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
   stopifnot(is.logical(.warn), length(.warn) == 1)
 
   # Run input, catch errors if any and control response
-  tryCatch(..., error = \(e){
-    if (.message) message(as.character(e))
-    if (.warn) warning(as.character(e))
+  tryCatch(..., error = \(e) {
+    if (.message) {
+      message(as.character(e))
+    }
+    if (.warn) {
+      warning(as.character(e))
+    }
     return(invisible(.return))
   })
 }
@@ -39,9 +43,13 @@ on_warning <- function(..., .return = NULL, .message = FALSE, .stop = FALSE) {
   stopifnot(is.logical(.stop), length(.stop) == 1)
 
   # Run input, catch warnings if any and control response
-  tryCatch(..., warning = \(e){
-    if (.message) message(as.character(e))
-    if (.stop) stop(as.character(e))
+  tryCatch(..., warning = \(e) {
+    if (.message) {
+      message(as.character(e))
+    }
+    if (.stop) {
+      stop(as.character(e))
+    }
     return(invisible(.return))
   })
 }

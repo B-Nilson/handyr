@@ -29,7 +29,13 @@
 #' silence(print("test"))
 #' silence(cat("test"))
 #' silence(1 + "a")
-silence <- function(this_please, errors = TRUE, warnings = TRUE, messages = TRUE, output = FALSE) {
+silence <- function(
+  this_please,
+  errors = TRUE,
+  warnings = TRUE,
+  messages = TRUE,
+  output = FALSE
+) {
   # Functions for each level of silence
   silencers <- list(
     errors = suppressErrors,
@@ -54,7 +60,8 @@ silence <- function(this_please, errors = TRUE, warnings = TRUE, messages = TRUE
     seq_along(enabled_silencers),
     collapse = "",
     "]]("
-  ) |> paste0("this_please", closing_parens)
+  ) |>
+    paste0("this_please", closing_parens)
   # Evaluate that string invisibly
   invisible(eval(parse(text = silencer)))
 }

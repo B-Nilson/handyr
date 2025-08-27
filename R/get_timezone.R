@@ -23,11 +23,16 @@ get_timezone <- function(lng, lat, method = "accurate", quiet = FALSE, ...) {
   rlang::check_installed("lutz")
   # Handle inputs
   stopifnot(
-    all(!is.na(lng)), all(!is.na(lat)),
-    is.numeric(lng), is.numeric(lat),
-    all(lng >= -180), all(lng <= 180),
-    all(lat >= -90), all(lat <= 90),
-    length(lng) > 0, length(lat) > 0,
+    all(!is.na(lng)),
+    all(!is.na(lat)),
+    is.numeric(lng),
+    is.numeric(lat),
+    all(lng >= -180),
+    all(lng <= 180),
+    all(lat >= -90),
+    all(lat <= 90),
+    length(lng) > 0,
+    length(lat) > 0,
     length(lng) == length(lat)
   )
   stopifnot(method %in% c("accurate", "fast"), length(method) == 1)

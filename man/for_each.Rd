@@ -11,6 +11,9 @@ for_each(
   .enumerate = FALSE,
   .bind = FALSE,
   .bind_id = NULL,
+  .join = FALSE,
+  .join_by = NULL,
+  .join_mode = "full",
   .name = FALSE,
   .as_list = NULL,
   .parallel = FALSE,
@@ -36,6 +39,15 @@ Default is \code{FALSE}}
 
 \item{.bind_id}{A single character string indicating the column name to use for the row index if \code{.bind = TRUE}.
 Default is \code{NULL} (don't add a row index column).}
+
+\item{.join}{A logical value indicating if the output should be joined using \code{\link[=join_list]{join_list()}}.
+Default is \code{FALSE}.}
+
+\item{.join_by}{One or more character values indicating the column name(s) to join by if \code{.join = TRUE}.
+Default is \code{NULL}, which joins on all matching columns.}
+
+\item{.join_mode}{A character string specifying the type of join to perform if \code{.join = TRUE}. Must be one of "full", "inner", "left", "right", ... (see \code{\link[=join_list]{join_list()}} for all options).
+Default is "full", which uses \code{\link[dplyr:mutate-joins]{dplyr::full_join()}}.}
 
 \item{.name}{A logical value indicating if the output should be named after \code{x}. (i.e \code{names(out) <- x})
 Default is \code{FALSE}.}

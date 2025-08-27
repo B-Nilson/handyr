@@ -5,9 +5,12 @@ test_that("basic case works", {
 })
 
 test_that(".return works", {
-  expect_equal(expect_no_error(
-    on_error(stop(), .return = -1)
-  ), expected = -1)
+  expect_equal(
+    expect_no_error(
+      on_error(stop(), .return = -1)
+    ),
+    expected = -1
+  )
 })
 
 test_that(".message works", {

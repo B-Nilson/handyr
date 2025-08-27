@@ -30,7 +30,15 @@
 #' logs$done <- log_step("Complete")
 #' # Summarise run times and save log to file
 #' summarise_logs(logs, save_to = tempfile())
-log_step <- function(..., header = FALSE, time = !header, time_format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone(), quiet = FALSE, sep = " ") {
+log_step <- function(
+  ...,
+  header = FALSE,
+  time = !header,
+  time_format = "%Y-%m-%d %H:%M:%S",
+  tz = Sys.timezone(),
+  quiet = FALSE,
+  sep = " "
+) {
   messages <- as.character(unlist(list(...)))
   messages <- messages[!is.na(messages)]
 
@@ -65,7 +73,9 @@ log_step <- function(..., header = FALSE, time = !header, time_format = "%Y-%m-%
   }
 
   # Print message for logging (if desired)
-  if (!quiet) message(message)
+  if (!quiet) {
+    message(message)
+  }
 
   # Create log entry for `summarise_logs()`
   log_entry <- list(
@@ -77,7 +87,9 @@ log_step <- function(..., header = FALSE, time = !header, time_format = "%Y-%m-%
   )
 
   # return list(log_entry) instead of log_entry if header
-  if (header) log_entry <- list(.log_init = log_entry)
+  if (header) {
+    log_entry <- list(.log_init = log_entry)
+  }
 
   invisible(log_entry)
 }
