@@ -12,10 +12,12 @@ Imports:
     dplyr,
     rlang
 Suggests: 
+    duckdb,
     future,
     future.apply,
     ggplot2,
     lutz,
+    RSQLite,
     sf,
     testthat (>= 3.0.0),
     units,
