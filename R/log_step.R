@@ -31,14 +31,13 @@
 #' # Summarise run times and save log to file
 #' summarise_logs(logs, save_to = tempfile())
 log_step <- function(
-  ...,
-  header = FALSE,
-  time = !header,
-  time_format = "%Y-%m-%d %H:%M:%S",
-  tz = Sys.timezone(),
-  quiet = FALSE,
-  sep = " "
-) {
+    ...,
+    header = FALSE,
+    time = !header,
+    time_format = "%Y-%m-%d %H:%M:%S",
+    tz = Sys.timezone(),
+    quiet = FALSE,
+    sep = " ") {
   messages <- as.character(unlist(list(...)))
   messages <- messages[!is.na(messages)]
 
