@@ -65,23 +65,22 @@
 #' values <- 1:3 |>
 #'   for_each(\(value) message(value + 1), .quiet = TRUE)
 for_each <- function(
-  x,
-  FUN,
-  ...,
-  .enumerate = FALSE,
-  .bind = FALSE,
-  .bind_id = NULL,
-  .join = FALSE,
-  .join_by = NULL,
-  .join_mode = "full",
-  .name = FALSE,
-  .as_list = NULL,
-  .parallel = FALSE,
-  .workers = NULL,
-  .plan = "multisession",
-  .parallel_cleanup = TRUE,
-  .quiet = FALSE
-) {
+    x,
+    FUN,
+    ...,
+    .enumerate = FALSE,
+    .bind = FALSE,
+    .bind_id = NULL,
+    .join = FALSE,
+    .join_by = NULL,
+    .join_mode = "full",
+    .name = FALSE,
+    .as_list = NULL,
+    .parallel = FALSE,
+    .workers = NULL,
+    .plan = "multisession",
+    .parallel_cleanup = TRUE,
+    .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
   stopifnot(is.logical(.enumerate), length(.enumerate) == 1)
@@ -102,7 +101,7 @@ for_each <- function(
   stopifnot(length(.plan) == 1 | is.null(.plan))
   stopifnot(is.logical(.parallel_cleanup), length(.parallel_cleanup) == 1)
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
-  
+
   # Handle .join_by provided when .join is FALSE
   if (!is.null(.join_by) & !.join) {
     .join <- TRUE

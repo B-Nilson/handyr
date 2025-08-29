@@ -1,9 +1,8 @@
 create_database <- function(
-  name,
-  type = "sqlite",
-  path = "./",
-  return_connection = FALSE
-) {
+    name,
+    type = "sqlite",
+    path = "./",
+    return_connection = FALSE) {
   dbi_drivers <- list(
     sqlite = c("RSQLite" = \() RSQLite::SQLite()),
     duckdb = c("duckdb" = \() duckdb::duckdb())

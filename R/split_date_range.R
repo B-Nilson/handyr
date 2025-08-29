@@ -10,10 +10,9 @@
 #'
 #' @export
 split_date_range <- function(
-  date_range,
-  max_duration = "90 days",
-  as_list = FALSE
-) {
+    date_range,
+    max_duration = "90 days",
+    as_list = FALSE) {
   starts <- date_range[1] |> seq(date_range[2], by = max_duration)
   ends <- starts |> dplyr::lead(default = date_range[2])
   combined <- data.frame(start = starts, end = ends)
