@@ -23,7 +23,9 @@ create_database <- function(
   }
 
   # Create database if it doesn't exist, connect otherwise
-  database_path <- paste0(path, "/", name, ".", type)
+  database_file <- stringr::str_detect(name, "\\.") |> 
+    ifelse(yes = name, no = paste0(name, ".", type))
+  database_path <- paste0(path, "/", database_file)
   db <- dbi_drivers[[type]][[1]]() |>
     DBI::dbConnect(dbname = database_path)
 
