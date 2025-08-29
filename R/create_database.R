@@ -27,7 +27,7 @@ create_database <- function(
     ifelse(yes = name, no = paste0(name, ".", type))
   database_path <- paste0(path, "/", database_file)
   db <- dbi_drivers[[type]][[1]]() |>
-    DBI::dbConnect(dbname = database_path)
+    DBI::dbConnect(database_path)
 
   # Return connection or path to db
   if (return_connection) {
