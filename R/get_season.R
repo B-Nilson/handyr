@@ -1,11 +1,13 @@
 get_season <- function(
   dates = Sys.time(),
+  as_factor = FALSE,
   include_year = FALSE,
   include_months = FALSE,
   use_autumn = FALSE
 ) {
   stopifnot(lubridate::is.POSIXct(dates) | lubridate::is.Date(dates))
   stopifnot(length(dates) >= 1)
+  stopifnot(is.logical(as_factor), length(as_factor) == 1)
   stopifnot(is.logical(include_year), length(include_year) == 1)
   stopifnot(is.logical(include_months), length(include_months) == 1)
   stopifnot(is.logical(use_autumn), length(use_autumn) == 1)
@@ -55,8 +57,32 @@ get_season <- function(
       stringr::str_sub(end = 1)
     season_month_letters <- months_in_seasons |>
       lapply(\(months) month_letters[months] |> paste(collapse = ""))
-    output <- output |>
-      paste0(" [", season_month_letters[[seasons]], "]")
+    season_months <- season_month_letters[[seasons]]
+    output <- output |> paste0(" [", season_months, "]")
   }
+
+  # Convert to factor if requested
+  if (as_factor) {
+    # Get factor levels in correct order
+    out_levels <- data.frame(
+      season = seasons,
+      year = if (include_year) season_years else NA,
+      months = if (include_months) season_months else NA
+    ) |>
+      dplyr::mutate(
+        season = factor(season, levels = names(months_in_seasons)),
+        year = factor(year),
+        months = ifelse(is.na(months), NA, paste0("[", months, "]"))
+      ) |>
+      dplyr::distinct() |> 
+      dplyr::arrange(year, season) |>
+      dplyr::select(dplyr::where(~ !all(is.na(.x)))) |> 
+      tidyr::unite("levels", dplyr::everything(), sep = " ") |> 
+      dplyr::pull(levels)
+    # Convert to factor
+    output <- output |>
+      factor(levels = out_levels)
+  }
+
   return(output)
 }
