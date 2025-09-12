@@ -1,5 +1,5 @@
-get_season <- function(dates = Sys.time(), use_autumn = FALSE) {
-  stopifnot(is.POSIXct(dates) | is.Date(dates))
+get_season <- function(dates = Sys.time(), include_months = FALSE, use_autumn = FALSE) {
+  stopifnot(lubridate::is.POSIXct(dates) | lubridate::is.Date(dates))
   stopifnot(length(dates) >= 1)
   stopifnot(is.logical(use_autumn), length(use_autumn) == 1)
   # TODO: default use_autumn based on system local?
@@ -34,6 +34,16 @@ get_season <- function(dates = Sys.time(), use_autumn = FALSE) {
   # Remove placeholder date if inserted earlier
   if (drop_last_date) {
     seasons <- seasons[-length(seasons)]
+  }
+
+  # Include months if requested
+  if (include_months) {
+    month_letters <- month.name |>
+      stringr::str_sub(end = 1)
+    season_month_letters <- months_in_seasons |>
+      lapply(\(months) month_letters[months] |> paste(collapse = ""))
+    seasons <- seasons |>
+      paste0(" [", season_month_letters[[seasons]], "]")
   }
   return(seasons)
 }
