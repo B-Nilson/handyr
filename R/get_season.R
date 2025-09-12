@@ -66,7 +66,8 @@ get_season <- function(
 
   # Include year if requested
   if (include_year) {
-    season_years <- lubridate::year(dates) - ifelse(seasons == "Winter", 1, 0)
+    year_mod <- ifelse(seasons == "Winter" & lubridate::month(dates) != 12, 1, 0)
+    season_years <- lubridate::year(dates) - year_mod
     output <- output |> paste(season_years)
   }
 
