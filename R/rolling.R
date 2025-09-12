@@ -31,14 +31,13 @@
 #' x |> rolling(mean, .width = 2, .direction = "forward", .fill = -1)
 #' @export
 rolling <- function(
-  x,
-  FUN = mean,
-  ...,
-  .width = 3,
-  .direction = "backward",
-  .fill = NA,
-  .min_non_na = 0
-) {
+    x,
+    FUN = mean,
+    ...,
+    .width = 3,
+    .direction = "backward",
+    .fill = NA,
+    .min_non_na = 0) {
   rlang::check_installed("zoo")
   # Handle inputs
   stopifnot(is.function(FUN))
