@@ -6,6 +6,8 @@ get_season <- function(
 ) {
   stopifnot(lubridate::is.POSIXct(dates) | lubridate::is.Date(dates))
   stopifnot(length(dates) >= 1)
+  stopifnot(is.logical(include_year), length(include_year) == 1)
+  stopifnot(is.logical(include_months), length(include_months) == 1)
   stopifnot(is.logical(use_autumn), length(use_autumn) == 1)
   # TODO: default use_autumn based on system local?
 
