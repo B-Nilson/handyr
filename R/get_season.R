@@ -1,4 +1,7 @@
 get_season <- function(dates = Sys.time(), use_autumn = FALSE) {
+  stopifnot(is.POSIXct(dates) | is.Date(dates))
+  stopifnot(length(dates) >= 1)
+  stopifnot(is.logical(use_autumn), length(use_autumn) == 1)
   # TODO: default use_autumn based on system local?
   # Need at least 2 for arr.ind to work right
   if (length(dates) == 1) {
