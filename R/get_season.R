@@ -47,8 +47,8 @@ get_season <- function(
 
   # Include year if requested
   if (include_year) {
-    season_year <- lubridate::year(dates) - ifelse(seasons == "Winter", 1, 0)
-    output <- output |> paste(season_year)
+    season_years <- lubridate::year(dates) - ifelse(seasons == "Winter", 1, 0)
+    output <- output |> paste(season_years)
   }
 
   # Include months if requested
@@ -74,10 +74,10 @@ get_season <- function(
         year = factor(year),
         months = ifelse(is.na(months), NA, paste0("[", months, "]"))
       ) |>
-      dplyr::distinct() |> 
+      dplyr::distinct() |>
       dplyr::arrange(year, season) |>
-      dplyr::select(dplyr::where(~ !all(is.na(.x)))) |> 
-      tidyr::unite("levels", dplyr::everything(), sep = " ") |> 
+      dplyr::select(dplyr::where(~ !all(is.na(.x)))) |>
+      tidyr::unite("levels", dplyr::everything(), sep = " ") |>
       dplyr::pull(levels)
     # Convert to factor
     output <- output |>
