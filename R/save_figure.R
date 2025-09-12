@@ -31,15 +31,14 @@
 #'   )
 #' # save_figure(gg, "./test.png", taller = 1)
 save_figure <- function(
-  gg,
-  out_path,
-  page_width = 6.5,
-  base_height = 5,
-  taller = 0,
-  units = "in",
-  quality = "high",
-  ...
-) {
+    gg,
+    out_path,
+    page_width = 6.5,
+    base_height = 5,
+    taller = 0,
+    units = "in",
+    quality = "high",
+    ...) {
   rlang::check_installed("ggplot2")
   # Handle inputs
   stopifnot(inherits(gg, "gg"))

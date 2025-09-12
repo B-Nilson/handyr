@@ -47,7 +47,7 @@ summarise_logs <- function(logs, save_to = NULL) {
         .data$is_not_section ~ NA,
         TRUE ~
           .data$text |>
-            paste0(": ", .data$run_time, " ", .data$units)
+          paste0(": ", .data$run_time, " ", .data$units)
       )
     ) |>
     dplyr::ungroup()
