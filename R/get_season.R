@@ -36,7 +36,7 @@ get_season <- function(
   which_season <- months_in_seasons |>
     sapply(\(months) lubridate::month(dates) %in% months) |>
     which(arr.ind = TRUE)
-  seasons <- names(months_in_seasons)[which_season[, 2]]
+  seasons <- names(months_in_seasons)[which_season[order(which_season[, 1]), 2]]
 
   # Remove placeholder date if inserted earlier
   if (last_date_is_placeholder) {
