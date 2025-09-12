@@ -1,4 +1,9 @@
-get_season <- function(dates = Sys.time(), include_months = FALSE, use_autumn = FALSE) {
+get_season <- function(
+  dates = Sys.time(),
+  include_year = FALSE,
+  include_months = FALSE,
+  use_autumn = FALSE
+) {
   stopifnot(lubridate::is.POSIXct(dates) | lubridate::is.Date(dates))
   stopifnot(length(dates) >= 1)
   stopifnot(is.logical(use_autumn), length(use_autumn) == 1)
@@ -35,6 +40,13 @@ get_season <- function(dates = Sys.time(), include_months = FALSE, use_autumn = 
   if (drop_last_date) {
     seasons <- seasons[-length(seasons)]
   }
+  output <- seasons # store for modifying as needed without side effects
+
+  # Include year if requested
+  if (include_year) {
+    season_year <- lubridate::year(dates) - ifelse(seasons == "Winter", 1, 0)
+    output <- output |> paste(season_year)
+  }
 
   # Include months if requested
   if (include_months) {
@@ -42,8 +54,8 @@ get_season <- function(dates = Sys.time(), include_months = FALSE, use_autumn = 
       stringr::str_sub(end = 1)
     season_month_letters <- months_in_seasons |>
       lapply(\(months) month_letters[months] |> paste(collapse = ""))
-    seasons <- seasons |>
+    output <- output |>
       paste0(" [", season_month_letters[[seasons]], "]")
   }
-  return(seasons)
+  return(output)
 }
