@@ -1,7 +1,7 @@
 #' Get the season from a date
 #'
 #' `get_season` takes a date (or set of dates) and returns the corresponding season(s).
-#' 
+#'
 #' @param dates A Date or POSIXct vector of dates to get the season for.
 #'   Defaults to `Sys.time()`.
 #' @param as_factor A logical indicating whether the output should be a factor or a character vector.
@@ -18,12 +18,11 @@
 #'   If `as_factor = TRUE`, a factor of the above with chronological levels.
 #' @export
 get_season <- function(
-  dates = Sys.time(),
-  as_factor = FALSE,
-  include_year = FALSE,
-  include_months = FALSE,
-  use_autumn = FALSE
-) {
+    dates = Sys.time(),
+    as_factor = FALSE,
+    include_year = FALSE,
+    include_months = FALSE,
+    use_autumn = FALSE) {
   stopifnot(lubridate::is.POSIXct(dates) | lubridate::is.Date(dates))
   stopifnot(length(dates) >= 1)
   stopifnot(is.logical(as_factor), length(as_factor) == 1)
