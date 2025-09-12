@@ -56,8 +56,8 @@ get_season <- function(
     month_letters <- month.name |>
       stringr::str_sub(end = 1)
     season_month_letters <- months_in_seasons |>
-      lapply(\(months) month_letters[months] |> paste(collapse = ""))
-    season_months <- season_month_letters[[seasons]]
+      sapply(\(months) month_letters[months] |> paste(collapse = ""))
+    season_months <- season_month_letters[match(seasons, names(season_month_letters))]
     output <- output |> paste0(" [", season_months, "]")
   }
 
