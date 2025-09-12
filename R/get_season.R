@@ -1,3 +1,22 @@
+#' Get the season from a date
+#'
+#' `get_season` takes a date (or set of dates) and returns the corresponding season(s).
+#' 
+#' @param dates A Date or POSIXct vector of dates to get the season for.
+#'   Defaults to `Sys.time()`.
+#' @param as_factor A logical indicating whether the output should be a factor or a character vector.
+#'   Defaults to `FALSE`.
+#' @param include_year A logical indicating whether the output should include the year of the season or not.
+#'   Defaults to `FALSE`.
+#' @param include_months A logical indicating whether the output should include the months of the season or not.
+#'   Defaults to `FALSE`.
+#' @param use_autumn A logical indicating whether "Autumn" should be used instead of "Fall".
+#'   Defaults to `FALSE`.
+#'
+#' @return
+#'   If `as_factor = FALSE` (default), a character vector with the season(s) and optionally the year/months.
+#'   If `as_factor = TRUE`, a factor of the above with chronological levels.
+#' @export
 get_season <- function(
   dates = Sys.time(),
   as_factor = FALSE,
