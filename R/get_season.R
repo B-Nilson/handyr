@@ -18,11 +18,9 @@ get_season <- function(
   )
 
   # Need at least 2 dates for arr.ind to work right
-  if (length(dates) == 1) {
-    drop_last_date <- TRUE
+  last_date_is_placeholder <- length(dates) == 1
+  if (last_date_is_placeholder) {
     dates <- c(dates, Sys.time())
-  } else {
-    drop_last_date <- FALSE
   }
 
   # Use Autumn instead of Fall if requested
@@ -37,7 +35,8 @@ get_season <- function(
   seasons <- names(months_in_seasons)[which_season[, 2]]
 
   # Remove placeholder date if inserted earlier
-  if (drop_last_date) {
+  if (last_date_is_placeholder) {
+    dates <- dates[-length(dates)]
     seasons <- seasons[-length(seasons)]
   }
   output <- seasons # store for modifying as needed without side effects
