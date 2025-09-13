@@ -12,6 +12,7 @@ Imports:
     dplyr,
     lubridate,
     rlang,
+    stringr,
     tidyr
 Suggests: 
     future,
