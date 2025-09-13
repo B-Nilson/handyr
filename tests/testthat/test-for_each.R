@@ -57,7 +57,7 @@ test_that(".bind and .bind_id work", {
 test_that(".join, .join_by, and .join_mode work", {
   # .join
   outcome <- 1:3 |>
-    handyr::for_each(
+    for_each(
       .join = TRUE,
       \(x) {
         data.frame(x = x, y = x^2) |>
@@ -74,7 +74,7 @@ test_that(".join, .join_by, and .join_mode work", {
 
   # .join_by
   outcome <- 1:3 |>
-    handyr::for_each(
+    for_each(
       .join = TRUE,
       .join_by = "x",
       \(x) {
@@ -95,7 +95,7 @@ test_that(".join, .join_by, and .join_mode work", {
 
   # .join_mode
   outcome <- 1:3 |>
-    handyr::for_each(
+    for_each(
       .join = TRUE,
       .join_mode = "left",
       \(x) {
