@@ -32,7 +32,7 @@ summarise_logs <- function(logs, save_to = NULL) {
 
   # Make log data frame with run times
   logs_bound <- logs |>
-    for_each(as.data.frame, .bind = TRUE) |>
+    for_each(as.data.frame, .bind = TRUE, .quiet = TRUE) |>
     dplyr::mutate(.id = dplyr::row_number())
   log_summary <- logs_bound |>
     dplyr::group_by(is_not_section = .data$is_header | !.data$is_timestamped) |>
