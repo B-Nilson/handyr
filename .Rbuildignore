@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^handyr\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
