@@ -72,8 +72,7 @@ get_season <- function(
 
   # Include months if requested
   if (include_months) {
-    month_letters <- month.name |>
-      stringr::str_sub(end = 1)
+    month_letters <- month.name |> substr(1, 1)
     season_month_letters <- months_in_seasons |>
       sapply(\(months) month_letters[months] |> paste(collapse = ""))
     season_months <- season_month_letters[match(seasons, names(season_month_letters))]
