@@ -20,6 +20,7 @@ for_each(
   .workers = NULL,
   .plan = "multisession",
   .parallel_cleanup = TRUE,
+  .show_progress = !.quiet,
   .quiet = FALSE
 )
 }
@@ -66,6 +67,9 @@ Default is \code{"multisession"} (see \code{\link[future:plan]{future::plan()}})
 
 \item{.parallel_cleanup}{A logical value indicating if the parallel plan should be reset to sequential using \code{future::plan("sequential")} if \code{.parallel = TRUE}.
 Default is \code{TRUE}.}
+
+\item{.show_progress}{A logical value indicating if the progress bar (see \code{\link[pbapply:pbapply]{pbapply::pbsapply()}}) should be shown if \code{.parallel = TRUE}.
+Default is \code{!.quiet}.}
 
 \item{.quiet}{A logical value indicating if the output should be invisible (no messages/warnings).
 Default is \code{FALSE}.}
