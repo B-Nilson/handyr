@@ -6,8 +6,10 @@
 #' @param .return What is to be returned if an error/warning occurs.
 #'   Default is `NULL`
 #' @param .message A logical value indicating if the error message should be displayed as a message instead.
+#'   If a single character string is provided, it will be used as the message instead.
 #'   Default is `FALSE`
 #' @param .warn,.stop A logical value indicating if the error/warning message should be displayed as a warning/error instead.
+#'   If a single character string is provided, it will be used as the warning/error message instead.
 #'   Default is `FALSE`
 #'
 #' @return the output of `...` unless an error/warning occurs, then `invisible(.return)` instead.
@@ -20,16 +22,20 @@
 #' on_warning(base::max(NA, na.rm = TRUE), .return = NULL)
 on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
   # Handle inputs
-  stopifnot(is.logical(.message), length(.message) == 1)
-  stopifnot(is.logical(.warn), length(.warn) == 1)
+  stopifnot(is.logical(.message) | is.character(.message), length(.message) == 1)
+  stopifnot(is.logical(.warn) | is.character(.warn), length(.warn) == 1)
 
   # Run input, catch errors if any and control response
   tryCatch(..., error = \(e) {
-    if (.message) {
+    if (.message == TRUE) {
       message(as.character(e))
+    } else if (is.character(.message)) {
+      message(.message)
     }
-    if (.warn) {
+    if (.warn == TRUE) {
       warning(as.character(e))
+    } else if (is.character(.warn)) {
+      warning(.warn)
     }
     return(invisible(.return))
   })
@@ -39,16 +45,20 @@ on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
 #' @export
 on_warning <- function(..., .return = NULL, .message = FALSE, .stop = FALSE) {
   # Handle inputs
-  stopifnot(is.logical(.message), length(.message) == 1)
-  stopifnot(is.logical(.stop), length(.stop) == 1)
+  stopifnot(is.logical(.message) | is.character(.message), length(.message) == 1)
+  stopifnot(is.logical(.stop) | is.character(.stop), length(.stop) == 1)
 
   # Run input, catch warnings if any and control response
   tryCatch(..., warning = \(e) {
-    if (.message) {
+    if (.message == TRUE) {
       message(as.character(e))
+    } else if (is.character(.message)) {
+      message(.message)
     }
-    if (.stop) {
+    if (.stop == TRUE) {
       stop(as.character(e))
+    } else if (is.character(.stop)) {
+      stop(.stop)
     }
     return(invisible(.return))
   })
