@@ -49,7 +49,7 @@ rolling <- function(
     is.numeric(.direction) | is.character(.direction),
     length(.direction) == 1
   )
-  stopifnot(length(.fill) == 1)
+  stopifnot(is.null(.fill) | length(.fill) == 1)
   stopifnot(is.numeric(.min_non_na), length(.min_non_na) == 1)
 
   # Handle FUN
@@ -177,7 +177,7 @@ roll_maxmin <- function(
     build_roll_matrix(
       width = width,
       direction = direction,
-      fill = ifelse(is.null(fill), NA, fill)
+      fill = fill
     )
   FUN <- ifelse(type == "max", pmax, pmin)
   rolling_maxmin <- do.call(
@@ -195,6 +195,7 @@ roll_maxmin <- function(
 }
 
 build_roll_matrix <- function(x, width = 3, direction = "backward", fill = NA) {
+  fill <- ifelse(is.null(fill), NA, fill)
   value_matrix <- matrix(fill, nrow = length(x), ncol = width)
   for (i in 0:(width - 1)) {
     if (direction == "backward") {
