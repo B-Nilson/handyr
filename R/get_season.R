@@ -84,17 +84,13 @@ get_season <- function(
   if (as_factor) {
     # Get factor levels in correct order
     out_levels <- data.frame(
-      season = seasons,
-      year = if (include_year) season_years else NA,
-      months = if (include_months) season_months else NA
+      season = seasons |>
+        factor(levels = names(months_in_seasons)),
+      year = if (include_year) factor(season_years) else NA,
+      months = if (include_months) paste0("[", season_months, "]") else NA
     ) |>
-      dplyr::mutate(
-        season = factor(season, levels = names(months_in_seasons)),
-        year = factor(year),
-        months = ifelse(is.na(months), NA, paste0("[", months, "]"))
-      ) |>
       dplyr::distinct() |>
-      dplyr::arrange(year, season) |>
+      dplyr::arrange("year", "season") |>
       dplyr::select(dplyr::where(~ !all(is.na(.x)))) |>
       tidyr::unite("levels", dplyr::everything(), sep = " ") |>
       dplyr::pull(levels)
