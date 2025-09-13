@@ -76,5 +76,5 @@ summarise_logs <- function(logs, save_to = NULL) {
   if (!is.null(save_to)) {
     log_text |> writeLines(save_to)
   }
-  return(invisible(log_text))
+  return(invisible(log_summary))
 }
