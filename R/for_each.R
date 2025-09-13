@@ -28,6 +28,8 @@
 #'   Default is `"multisession"` (see [future::plan()]).
 #' @param .parallel_cleanup A logical value indicating if the parallel plan should be reset to sequential using `future::plan("sequential")` if `.parallel = TRUE`.
 #'   Default is `TRUE`.
+#' @param .show_progress A logical value indicating if the progress bar (see [pbapply::pbsapply()]) should be shown if `.parallel = TRUE`.
+#'   Default is `!.quiet`.
 #' @param .quiet A logical value indicating if the output should be invisible (no messages/warnings).
 #'   Default is `FALSE`.
 #'
@@ -80,6 +82,7 @@ for_each <- function(
     .workers = NULL,
     .plan = "multisession",
     .parallel_cleanup = TRUE,
+    .show_progress = !.quiet,
     .quiet = FALSE) {
   # Handle inputs
   stopifnot(is.function(FUN))
@@ -100,6 +103,7 @@ for_each <- function(
   stopifnot(is.character(.plan) | is.function(.plan) | is.null(.plan)) # TODO: restrict inputs more?
   stopifnot(length(.plan) == 1 | is.null(.plan))
   stopifnot(is.logical(.parallel_cleanup), length(.parallel_cleanup) == 1)
+  stopifnot(is.logical(.show_progress), length(.show_progress) == 1)
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
 
   # Handle .join_by provided when .join is FALSE
@@ -122,6 +126,10 @@ for_each <- function(
     .as_list <- !(is.vector(x) & !is.list(x))
   } # if x is vector, return vector, otherwise return list
 
+  if (.show_progress) {
+    rlang::check_installed("pbapply", reason = "`.show_progress` set to `TRUE`")
+  }
+
   # Setup parallel if desired
   # TODO: handle potential side effect here if user already had a plan() going
   if (.parallel & length(x) > 1) {
@@ -132,13 +140,27 @@ for_each <- function(
     if (!is.null(.plan)) {
       future::plan(.plan, workers = .workers)
     }
-    apply_fun <- ifelse(
-      .as_list,
-      future.apply::future_lapply,
-      future.apply::future_sapply
-    )
+    if (.show_progress) {
+      apply_fun <- .as_list |>
+        ifelse(
+          \(...) pbapply::pblapply(..., cl = "future"),
+          \(...) pbapply::pbsapply(..., cl = "future")
+        )
+    } else {
+      apply_fun <- .as_list |>
+        ifelse(
+          future.apply::future_lapply,
+          future.apply::future_sapply
+        )
+    }
   } else {
-    apply_fun <- ifelse(.as_list, lapply, sapply)
+    if (.show_progress) {
+      apply_fun <- .as_list |>
+        ifelse(pbapply::pblapply, pbapply::pbsapply)
+    } else {
+      apply_fun <- .as_list |>
+        ifelse(lapply, sapply)
+    }
   }
 
   # Run x (and i if .enumerate) through function
