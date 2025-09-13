@@ -16,6 +16,7 @@ Suggests:
     future.apply,
     ggplot2,
     lutz,
+    matrixStats,
     pbapply,
     sf,
     testthat (>= 3.0.0),

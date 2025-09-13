@@ -55,7 +55,7 @@ rolling <- function(
   # Handle FUN
   if (is.character(FUN)) {
     # Use built in vectorized (faster) implementations where available
-    built_ins <- c("sum", "mean", "max", "min")
+    built_ins <- c("sum", "mean", "max", "min", "quantile", "median")
     if (FUN %in% built_ins & .direction != "center") {
       roll_fun <- paste0("roll_", FUN) |> get()
       rolling_val <- x |>
@@ -63,7 +63,8 @@ rolling <- function(
           width = .width,
           direction = .direction,
           fill = .fill,
-          min_non_na = .min_non_na
+          min_non_na = .min_non_na,
+          ...
         )
       return(rolling_val)
     }
@@ -88,7 +89,7 @@ rolling <- function(
       width = .width,
       align = align,
       fill = .fill,
-      FUN = \(x) do_if_enough(x, FUN, .min_non_na = .min_non_na)
+      FUN = \(x) do_if_enough(x, FUN, ..., .min_non_na = .min_non_na)
     )
 }
 
@@ -192,6 +193,51 @@ roll_maxmin <- function(
     rolling_maxmin[1:(width - 1)] <- fill
   }
   return(rolling_maxmin)
+}
+
+roll_quantile <- function(
+  x,
+  probs = seq(0, 1, 0.25),
+  width = 3,
+  direction = "backward",
+  fill = NULL,
+  min_non_na = 0
+) {
+  rlang::check_installed("matrixStats")
+  value_matrix <- x |>
+    build_roll_matrix(
+      width = width,
+      direction = direction,
+      fill = fill
+    )
+  rolling_quantile <- value_matrix |>
+    matrixStats::rowQuantiles(probs = probs, na.rm = TRUE)
+
+  if (!is.null(fill)) {
+    if (length(probs) == 1) {
+      rolling_quantile[1:(width - 1)] <- fill
+    } else {
+      rolling_quantile[1:(width - 1), ] <- fill
+    }
+  }
+  return(rolling_quantile)
+}
+
+roll_median <- function(
+  x,
+  width = 3,
+  direction = "backward",
+  fill = NULL,
+  min_non_na = 0
+) {
+  roll_quantile(
+    x,
+    probs = 0.5,
+    width = width,
+    direction = direction,
+    fill = fill,
+    min_non_na = min_non_na
+  )
 }
 
 build_roll_matrix <- function(x, width = 3, direction = "backward", fill = NA) {
