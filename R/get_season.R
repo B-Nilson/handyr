@@ -89,7 +89,7 @@ get_season <- function(
       months = if (include_months) paste0("[", season_months, "]") else NA
     ) |>
       dplyr::distinct() |>
-      dplyr::arrange("year", "season") |>
+      dplyr::arrange(.data$year, .data$season) |>
       dplyr::select(dplyr::where(~ !all(is.na(.x)))) |>
       tidyr::unite("levels", dplyr::everything(), sep = " ") |>
       dplyr::pull(levels)
