@@ -10,6 +10,13 @@ test_that("duckdb works", {
   file.remove(db_path)
 })
 
+test_that("postgresql works", {
+  skip("Skipping PostgreSQL tests as they download/invoke external binaries")
+  db <- create_database("__test.postgresql")
+  expect_true(DBI::dbIsValid(db))
+  DBI::dbDisconnect(db)
+})
+
 test_that("setting path works", {
   db_path <- create_database("__test.sqlite", path = tempdir(), return_connection = FALSE)
   expect_true(file.exists(db_path))

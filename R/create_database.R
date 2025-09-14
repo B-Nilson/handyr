@@ -32,6 +32,9 @@ create_database <- function(
   stopifnot(is.character(type) & length(type) == 1 | is.null(type))
   stopifnot(type %in% .dbi_creatable | is.null(type))
   stopifnot(is.character(path) & length(path) == 1 | is.null(path))
+  stopifnot(is.character(version) & length(version) == 1 | is.null(version))
+  stopifnot(is.character(credentials), length(credentials) == 2)
+  stopifnot(is.numeric(port), length(port) == 1)
   stopifnot(is.logical(return_connection), length(return_connection) == 1)
 
   # If no type specified, use file extension - if none assume sqlite
@@ -53,17 +56,16 @@ create_database <- function(
     name |>
       setup_postgres_db(
         version = version,
-        path = path,
+        port = port,
         user = credentials[1],
-        password = credentials[2],
-        port = port
+        password = credentials[2]
       )
     db <- name |>
       connect_to_postgres_db(
         version = version,
+        port = port,
         user = credentials[1],
-        password = credentials[2],
-        port = port
+        password = credentials[2]
       )
     return(db)
   }
@@ -172,8 +174,8 @@ setup_postgres_db <- function(
     pwfile <- tempfile("pgpw_")
     writeLines(password, pwfile)
     # Run initialize database command
-    args <- "-A md5" |>
-      c("-U", user, "-D", data_dir, "--pwfile", pwfile)
+    args <- c("-A", "md5", "--pwfile", pwfile) |>
+      c("-U", user, "-D", data_dir)
     initdb |> system2(args = args, wait = TRUE)
     # remove temp. password file
     file_removed <- file.remove(pwfile)
@@ -183,11 +185,14 @@ setup_postgres_db <- function(
 
 start_postgres_server <- function(
   db_name = "mydb",
-  version = "15.3-1",
+  version = NULL,
   port = 5432,
   user = "postgres",
   password = "postgres"
 ) {
+  if (is.null(version)) {
+    version <- "17.0-1"
+  }
   # Define persistent folders
   base_dir <- rappdirs::user_data_dir("postgres_handyr") |>
     file.path(version)
@@ -214,11 +219,14 @@ start_postgres_server <- function(
 
 connect_to_postgres_db <- function(
   db_name = "mydb",
-  version = "15.3-1",
+  version = NULL,
   port = 5432,
   user = "postgres",
   password = "postgres"
 ) {
+  if (is.null(version)) {
+    version <- "17.0-1"
+  }
   # Start server if not running
   db_name |>
     start_postgres_server(
@@ -228,12 +236,12 @@ connect_to_postgres_db <- function(
       password = password
     )
   # Wait for readiness
-  log_step("Waiting for PostgreSQL to accept connections…")
+  log_step("Ensuring PostgreSQL can accept connections…")
   for (i in seq_len(15)) {
-    Sys.sleep(1)
     ok <- {
       con <- .dbi_drivers$postgresql[[1]]() |>
         DBI::dbConnect(
+          dbname = "postgres",
           host = "127.0.0.1",
           port = port,
           user = user,
@@ -248,10 +256,12 @@ connect_to_postgres_db <- function(
       break
     }
     if (i == 15) stop("Timeout: PostgreSQL did not become ready.")
+    Sys.sleep(1)
   }
 
   .dbi_drivers$postgresql[[1]]() |>
     DBI::dbConnect(
+      dbname = "postgres",
       host = "127.0.0.1",
       port = port,
       user = user,
