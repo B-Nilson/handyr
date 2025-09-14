@@ -1,3 +1,17 @@
+#' Create a file-based database
+#'
+#' This function creates a new database using either sqlite or duckdb.
+#' See [DBI::dbConnect()] for more details.
+#'
+#' @param name The name of (and optionally path to) the database to create. 
+#'   If the file extension does not match the type, it will be added.
+#' @param type The type of database to create. 
+#'   If NULL (the default), the type will be derived from `name`, defaulting to "sqlite".
+#' @param path The location to save the database file to. 
+#'   If NULL (the default), the path will be derived from `name`, defaulting to the current working directory.
+#' @param return_connection A logical value indicating whether to return the database connection instead of the path to the database file.
+#'   Default is `TRUE`.
+#' @export
 create_database <- function(
   name,
   type = NULL,
