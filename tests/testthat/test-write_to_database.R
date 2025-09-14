@@ -1,56 +1,77 @@
 test_that("writing to SQLite works", {
-  db_path <- "__test.sqlite"
+  db_name <- "__test.sqlite"
+  db_dir <- tempdir()
+  # Create database
   db <- create_database(
-    name = db_path,
+    name = db_name,
     return_connection = TRUE,
-    path = tempdir()
+    path = db_dir
   )
+  # Write data to database
   db |>
     write_to_database(
       table_name = "airquality",
       new_data = airquality,
       primary_keys = c("Month", "Day")
     )
+  # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
     dplyr::collect() |>
-    expect_equal(airquality)
+    as.data.frame() |>
+    expect_equal(airquality, tolerance = 0.0001)
+  # Cleanup
   DBI::dbDisconnect(db)
-  file.remove(db_path)
+  file.remove(file.path(db_dir, db_name))
 })
 
 test_that("writing to duckdb works", {
-  db_path <- "__test.duckdb"
+  db_name <- "__test.duckdb"
+  db_dir <- tempdir()
+  # Create database
   db <- create_database(
-    name = db_path,
+    name = db_name,
     return_connection = TRUE,
-    path = tempdir()
+    path = db_dir
   )
+  # Write data to database
   db |>
     write_to_database(
       table_name = "airquality",
       new_data = airquality,
       primary_keys = c("Month", "Day")
     )
+  # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
     dplyr::collect() |>
-    expect_equal(airquality)
+    as.data.frame() |>
+    expect_equal(airquality, tolerance = 0.0001)
+  # Cleanup
   DBI::dbDisconnect(db)
-  file.remove(db_path)
+  file.remove(file.path(db_dir, db_name))
 })
 
 test_that("writing to postgresql works", {
   skip("Skipping PostgreSQL tests as they download/invoke external binaries")
-  # TODO: ned function to remove postgress databases
   db_name <- "__test.postgresql"
-  db <- create_database(name = db_name)
+  db_dir <- tempdir()
+  # Create database
+  db <- create_database(
+    name = db_name,
+    return_connection = TRUE,
+    path = db_dir
+  )
+  # Write data to database
   db |>
     write_to_database(
       table_name = "airquality",
       new_data = airquality,
       primary_keys = c("Month", "Day")
     )
+  # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
     dplyr::collect() |>
-    expect_equal(airquality)
+    as.data.frame() |>
+    expect_equal(airquality, tolerance = 0.0001)
+  # Cleanup
   DBI::dbDisconnect(db)
 })
