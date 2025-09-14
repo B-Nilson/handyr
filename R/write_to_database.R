@@ -19,20 +19,18 @@ write_to_database <- function(
         DBI::dbRemoveTable(table_name_staged) |>
         on_error(.return = NULL)
 
-    # Create the staged table
-    staged <- db |>
-        db_create_table(
-            new_data = new_data,
-            table_name = table_name_staged,
-            primary_keys = primary_keys,
-            unique_indexes = unique_indexes,
-            overwrite = TRUE
-        ) |>
-        on_error(.return = NULL, .warn = TRUE) # TODO: handle differently?
-
     # Merged overlaps/new data as needed from staged to exisiting table
     result <- db |>
         db_transaction({
+            # Create the staged table
+            db |>
+                db_create_table(
+                    new_data = new_data,
+                    table_name = table_name_staged,
+                    primary_keys = primary_keys,
+                    unique_indexes = unique_indexes,
+                    overwrite = TRUE
+                )
             # Update values already in database
             if (update_duplicates) {
                 db |>
@@ -47,15 +45,14 @@ write_to_database <- function(
             # Insert values not already there
             db |>
                 db_insert_new(
-                    new_data = new_data,
                     table_name_a = table_name,
                     table_name_b = table_name_staged,
                     primary_keys = primary_keys
                 )
+            # Remove "_staged" table
+            db |>
+                DBI::dbRemoveTable(table_name_staged)
         })
-
-    # Remove "_staged" table
-    db |> DBI::dbRemoveTable(table_name_staged)
     invisible(db)
 }
 
