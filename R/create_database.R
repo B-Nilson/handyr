@@ -13,11 +13,10 @@
 #'   Default is `TRUE`.
 #' @export
 create_database <- function(
-  name,
-  type = NULL,
-  path = NULL,
-  return_connection = TRUE
-) {
+    name,
+    type = NULL,
+    path = NULL,
+    return_connection = TRUE) {
   # Handle inputs
   stopifnot(is.character(name), length(name) == 1, name != "")
   stopifnot(is.character(type) & length(type) == 1 | is.null(type))
@@ -53,7 +52,7 @@ create_database <- function(
       yes = file_name,
       no = paste0(path, "/", file_name)
     )
-  
+
   # Create database if it doesn't exist, connect otherwise
   db <- db_driver[[1]]() |>
     DBI::dbConnect(database_path)
