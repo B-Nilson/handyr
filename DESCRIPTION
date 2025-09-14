@@ -19,6 +19,7 @@ Suggests:
     future.apply,
     ggplot2,
     lutz,
+    rappdirs,
     RSQLite,
     sf,
     testthat (>= 3.0.0),
