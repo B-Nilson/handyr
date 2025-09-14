@@ -43,8 +43,7 @@ write_to_database <- function(
       new_data = new_data,
       table_name = table_name_staged,
       primary_keys = primary_keys,
-      unique_indexes = unique_indexes,
-      overwrite = TRUE
+      unique_indexes = unique_indexes
     )
   
   # Merged overlaps/new data as needed from staged to exisiting table
@@ -77,13 +76,12 @@ write_to_database <- function(
 }
 
 db_create_table <- function(
-    db,
-    table_name,
-    new_data,
-    primary_keys,
-    unique_indexes = NULL,
-    overwrite = FALSE,
-    temporary = FALSE) {
+  db,
+  table_name,
+  new_data,
+  primary_keys,
+  unique_indexes = NULL
+) {
   if (is.character(db)) {
     type <- tools::file_ext(db)
     db <- .dbi_drivers[[type]][[1]]() |>
@@ -143,15 +141,43 @@ db_create_table <- function(
 
   # insert rows if provided
   if (nrow(new_data)) {
-    db |>
-      dplyr::copy_to(
-        df = new_data,
-        name = table_name,
-        overwrite = overwrite,
-        temporary = temporary
-      )
+    db |> db_insert_rows(new_data = new_data, table_name = table_name)
   }
   invisible(dplyr::tbl(db, table_name))
+}
+
+db_insert_rows <- function(db, table_name, new_data) {
+  insert_template <- "INSERT INTO %s (%s)\nVALUES\n%s;"
+
+  # Make values SQL
+  values_sql <- new_data |>
+    dplyr::mutate(
+      # Replace NAs with -Inf (swapped with NULL later)
+      dplyr::across(dplyr::everything(), ~ swap(., NA, -Inf)),
+      # Wrap strings in quotes in case they contain commas/spaces etc
+      # TODO: what about strings with quotes in them?
+      # TODO: what about dates/times?
+      dplyr::across(dplyr::where(is.character), ~ paste0("'", ., "'"))
+    ) |>
+    tidyr::unite("values", sep = ", ") |>
+    dplyr::mutate(
+      values = paste0("(", values, ")") |>
+        # Replace -Inf placeholder with NULL
+        stringr::str_replace_all("'-Inf'|-Inf", "NULL")
+    ) |>
+    dplyr::pull(values) |>
+    paste(collapse = ",\n")
+
+  # Build insert query
+  insert_query <- insert_template |>
+    sprintf(
+      table_name,
+      paste0('"', names(new_data), '"') |> paste(collapse = ", "),
+      values_sql
+    )
+
+  # Insert values, return n rows inserted
+  db |> DBI::dbExecute(insert_query) |> invisible()
 }
 
 get_sql_column_types <- function(new_data, unique_indexes = NULL) {
