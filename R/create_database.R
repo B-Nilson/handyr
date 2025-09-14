@@ -8,7 +8,8 @@ create_database <- function(
   stopifnot(is.character(name), length(name) == 1)
   stopifnot(is.character(type) & length(type) == 1 | is.null(type))
   stopifnot(type %in% .dbi_creatable | is.null(type))
-  stopifnot(is.character(path), length(path) == 1)
+  stopifnot(is.character(path) & length(path) == 1 | is.null(path))
+  stopifnot(is.logical(return_connection), length(return_connection) == 1)
 
   # If no type specified, use file extension - if none assume sqlite
   if (is.null(type)) {
