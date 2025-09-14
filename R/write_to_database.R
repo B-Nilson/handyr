@@ -13,6 +13,13 @@ write_to_database <- function(
     stopifnot(is.list(unique_indexes) | is.null(unique_indexes))
     stopifnot(is.logical(update_duplicates), length(update_duplicates) == 1)
 
+    # Handle db path instead of connection
+    if (is.character(db)) {
+        type <- tools::file_ext(db)
+        db <- .dbi_drivers[[type]][[1]]() |>
+            DBI::dbConnect(db)
+    }
+
     # Try removing staging table in case it already exists
     table_name_staged <- paste0("_", table_name, "_staged")
     db |>
