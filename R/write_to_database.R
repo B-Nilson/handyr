@@ -186,3 +186,27 @@ db_insert_new <- function(
     db |> DBI::dbExecute(sql_query)
 }
 
+db_transaction <- function(db, ...) {
+    # Begin a transaction
+    DBI::dbBegin(db)
+    # run code block passed to function, capture error as warning
+    result <- on_error(
+        .return = NULL,
+        .warn = TRUE,
+        ...
+    )
+    # Rollback the transaction if failed
+    if (is.null(result)) {
+        DBI::dbRollback(db)
+    } else {
+        # Commit the transaction, capture error if needed
+        result2 <- DBI::dbCommit(db) |>
+            on_error(.return = NULL, .warn = TRUE)
+        # Rollback the transaction if failed
+        if (is.null(result2)) {
+            DBI::dbRollback(db)
+        }
+    }
+
+    return(invisible())
+}
