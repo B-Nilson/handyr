@@ -166,7 +166,7 @@ setup_postgres_db <- function(
 
   # Initialize database
   if (!dir.exists(data_dir)) {
-    log_step("Initializing PostgreSQL database…")
+    log_step("Initializing PostgreSQL database...")
     # Ensure data directory exists
     data_dir |> dir.create(recursive = TRUE, showWarnings = FALSE)
     # Create temp. password file to pass to initdb
@@ -208,7 +208,7 @@ start_postgres_server <- function(
   is_running <- "server is running" |>
     grepl(paste(status, collapse = "\n"))
   if (!is_running) {
-    log_step("Starting PostgreSQL server…")
+    log_step("Starting PostgreSQL server...")
     args <- c("-D", data_dir, "-o", shQuote(paste0("-p ", port)), "start")
     pg_ctl |>
       system2(args = args, wait = TRUE)
@@ -233,7 +233,7 @@ connect_to_postgres_db <- function(
       password = password
     )
   # Wait for readiness
-  log_step("Ensuring PostgreSQL can accept connections…")
+  log_step("Ensuring PostgreSQL can accept connections...")
   for (i in seq_len(15)) {
     ok <-
       {
