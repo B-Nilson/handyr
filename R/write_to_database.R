@@ -140,3 +140,49 @@ db_merge_overlap <- function(
     db |> DBI::dbExecute(merge_query)
 }
 
+db_insert_new <- function(
+    db,
+    tbl_name_a,
+    tbl_name_b,
+    primary_key
+) {
+    # Build header insert sql
+    col_names <- dplyr::tbl(db, tbl_name_a) |> 
+        head(1) |>
+        dplyr::collect() |>
+        colnames()
+    col_names <- col_names[col_names != primary_key]
+    header_insert_sql <- paste0('"', col_names, '"') |> 
+        paste(collapse = ", ")
+
+    # Build header select sql
+    header_select_sql <- paste0('s."', col_names, '"') |>
+        paste(collapse = ", ")
+
+    # Build overlap test sql
+    overlap_test_template <- 's."%s" = o."%s"'
+    overlap_test_sql <- overlap_test_template |>
+        sprintf(primary_key, primary_key) |>
+        paste(collapse = " AND ")
+
+    # Build not overlap test sql
+    not_overlap_test_template <- 'o."%s" IS NULL'
+    not_overlap_test_sql <- not_overlap_test_template |>
+        sprintf(primary_key) |>
+        paste(collapse = " AND ")
+
+    # Build insert query
+    insert_template <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s s LEFT JOIN %s o ON %s\nWHERE %s;"
+    sql_query <- insert_template |> 
+        sprintf(
+            tbl_name_a,
+            header_insert_sql,
+            header_select_sql,
+            tbl_name_b,
+            tbl_name_a,
+            overlap_test_sql,
+            not_overlap_test_sql
+        )
+    db |> DBI::dbExecute(sql_query)
+}
+
