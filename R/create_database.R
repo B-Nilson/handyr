@@ -22,8 +22,10 @@ create_database <- function(
   rlang::check_installed(names(db_driver))
 
   # Create database directory if it doesn't exist
-  if (!dir.exists(path)) {
-    dir.create(path, recursive = TRUE)
+  if (!is.null(path)) {
+    if (!dir.exists(path)) {
+      dir.create(path, recursive = TRUE)
+    }
   }
 
   # Use name/path/type as needed to build database path
