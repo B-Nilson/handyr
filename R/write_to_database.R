@@ -6,6 +6,12 @@ db_create_table <- function(
     overwrite = FALSE,
     temporary = FALSE
 ) {
+    if (is.character(db)) {  
+        type <- tools::file_ext(db)
+        db <- .dbi_drivers[[type]][[1]]() |>
+            DBI::dbConnect(db)
+    }
+
     # Initialize table
     db |>
         DBI::dbCreateTable(
