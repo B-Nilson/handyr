@@ -135,11 +135,12 @@ db_insert_rows <- function(db, table_name, new_data) {
       dplyr::across(dplyr::where(is.character), ~ paste0("'", ., "'"))
     ) |>
     tidyr::unite("values", sep = ", ") |>
+    # Replace -Inf placeholder with NULL
     dplyr::mutate(
-      values = paste0("(", values, ")") |>
-        # Replace -Inf placeholder with NULL
-        stringr::str_replace_all("'-Inf'|-Inf", "NULL")
+      values = paste0("(", .data$values, ")") |>
+        gsub(pattern = "'-Inf'|-Inf", replacement = "NULL")
     ) |>
+    # Combine into single string
     dplyr::pull(values) |>
     paste(collapse = ",\n")
 
