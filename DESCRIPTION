@@ -12,6 +12,8 @@ Imports:
     dplyr,
     rlang
 Suggests: 
+    DBI,
+    dbplyr,
     duckdb,
     future,
     future.apply,

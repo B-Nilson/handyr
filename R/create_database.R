@@ -36,6 +36,8 @@ create_database <- function(
   stopifnot(is.character(credentials), length(credentials) == 2)
   stopifnot(is.numeric(port), length(port) == 1)
   stopifnot(is.logical(return_connection), length(return_connection) == 1)
+  rlang::check_installed("DBI")
+  rlang::check_installed("dbplyr")
 
   # If no type specified, use file extension - if none assume sqlite
   if (is.null(type)) {

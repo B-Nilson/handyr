@@ -13,6 +13,8 @@ write_to_database <- function(
   stopifnot(is.list(unique_indexes) | is.null(unique_indexes))
   stopifnot(is.logical(insert_new), length(insert_new) == 1)
   stopifnot(is.logical(update_duplicates), length(update_duplicates) == 1)
+  rlang::check_installed("DBI")
+  rlang::check_installed("dbplyr")
 
   # Handle db path instead of connection
   # TODO: wont work for postgres
