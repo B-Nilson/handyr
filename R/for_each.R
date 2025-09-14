@@ -174,7 +174,7 @@ for_each <- function(
   }
   # Join columnwise if desired
   if (.join) {
-    out <- out |> handyr::join_list(by = .join_by, mode = .join_mode)
+    out <- out |> join_list(by = .join_by, mode = .join_mode)
   }
 
   # Return if not quiet, otherwise return invisibly

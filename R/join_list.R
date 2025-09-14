@@ -23,7 +23,7 @@ join_list <- function(df_list, by = NULL, mode = "full") {
   join_fun <- mode |>
     paste0("_join") |>
     getExportedValue(ns = "dplyr") |>
-    handyr::on_error(.return = NULL)
+    on_error(.return = NULL)
   if (is.null(join_fun)) {
     stop(
       "`mode` must be one of 'full', 'inner', 'left', 'right', 'semi', 'anti', ... (see dplyr::join for possible options)"
