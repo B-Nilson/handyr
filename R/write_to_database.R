@@ -6,6 +6,12 @@ write_to_database <- function(
     unique_indexes = NULL,
     update_duplicates = FALSE
 ) {
+    stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
+    stopifnot(is.character(tbl_name) & length(tbl_name) == 1)
+    stopifnot(is.data.frame(new_data))
+    stopifnot(is.character(primary_key),  length(primary_key) == 1)
+    stopifnot(is.list(unique_indexes) | is.null(unique_indexes))
+    stopifnot(is.logical(update_duplicates), length(update_duplicates) == 1)
     # Try removing staging table in case it already exists
     tbl_name_staged <- paste0("_", tbl_name, "_staged")
     db |>
@@ -263,4 +269,8 @@ db_transaction <- function(db, ...) {
     }
 
     return(invisible())
+}
+
+is_db_connection <- function(db) {
+    on_error(DBI::dbIsValid(db), .return = FALSE)
 }
