@@ -214,7 +214,7 @@ db_merge_overlap <- function(
   col_names <- head(dplyr::tbl(db, table_name_a), 1) |>
     dplyr::collect() |>
     colnames()
-  match_header_sql <- new_header_template |>
+  match_header_sql <- match_header_template |>
     sprintf(
       col_names[!col_names %in% primary_keys],
       col_names[!col_names %in% primary_keys]
