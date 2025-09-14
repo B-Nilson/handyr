@@ -104,14 +104,13 @@ db_create_table <- function(
   if (is.null(unique_indexes)) {
     unique_constraint_sql <- ""
   } else {
-    unique_indexes <- unique_indexes |>
+    unique_constraint_sql <- unique_indexes |>
       sapply(\(unique_ids) {
         unique_ids <- paste0('"', unique_ids, '"') |>
           paste0(collapse = ", ")
         unique_constraint_template |>
           sprintf(unique_ids)
-      })
-    unique_constraint_sql <- unique_constraints |>
+      }) |>
       paste(collapse = ",\n")
   }
 
