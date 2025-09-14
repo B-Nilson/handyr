@@ -38,6 +38,7 @@ write_to_database <- function(
     # Otherwise, merge/insert new data as needed
     db |>
       db_combine_tables(
+        new_data = new_data,
         table_name_a = table_name,
         table_name_b = table_name_staged,
         primary_keys = primary_keys,
@@ -158,6 +159,7 @@ db_insert_rows <- function(db, table_name, new_data) {
 
 db_combine_tables <- function(
   db,
+  new_data,
   table_name_a,
   table_name_b,
   primary_keys,
