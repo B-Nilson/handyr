@@ -110,12 +110,11 @@ create_database <- function(
 )
 
 setup_postgres_db <- function(
-  db_name = "mydb",
-  version = NULL,
-  port = 5432,
-  user = "postgres",
-  password = "postgres"
-) {
+    db_name = "mydb",
+    version = NULL,
+    port = 5432,
+    user = "postgres",
+    password = "postgres") {
   if (is.null(version)) {
     version <- "17.0-1"
   }
@@ -184,12 +183,11 @@ setup_postgres_db <- function(
 }
 
 start_postgres_server <- function(
-  db_name = "mydb",
-  version = NULL,
-  port = 5432,
-  user = "postgres",
-  password = "postgres"
-) {
+    db_name = "mydb",
+    version = NULL,
+    port = 5432,
+    user = "postgres",
+    password = "postgres") {
   if (is.null(version)) {
     version <- "17.0-1"
   }
@@ -218,12 +216,11 @@ start_postgres_server <- function(
 }
 
 connect_to_postgres_db <- function(
-  db_name = "mydb",
-  version = NULL,
-  port = 5432,
-  user = "postgres",
-  password = "postgres"
-) {
+    db_name = "mydb",
+    version = NULL,
+    port = 5432,
+    user = "postgres",
+    password = "postgres") {
   if (is.null(version)) {
     version <- "17.0-1"
   }
@@ -238,18 +235,19 @@ connect_to_postgres_db <- function(
   # Wait for readiness
   log_step("Ensuring PostgreSQL can accept connections…")
   for (i in seq_len(15)) {
-    ok <- {
-      con <- .dbi_drivers$postgresql[[1]]() |>
-        DBI::dbConnect(
-          dbname = "postgres",
-          host = "127.0.0.1",
-          port = port,
-          user = user,
-          password = password
-        )
-      DBI::dbDisconnect(con)
-      TRUE
-    } |>
+    ok <-
+      {
+        con <- .dbi_drivers$postgresql[[1]]() |>
+          DBI::dbConnect(
+            dbname = "postgres",
+            host = "127.0.0.1",
+            port = port,
+            user = user,
+            password = password
+          )
+        DBI::dbDisconnect(con)
+        TRUE
+      } |>
       on_error(.return = FALSE)
 
     if (ok) {
