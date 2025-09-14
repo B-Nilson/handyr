@@ -1,3 +1,57 @@
+write_to_database <- function(
+    db,
+    tbl_name,
+    new_data,
+    primary_key,
+    unique_indexes = NULL,
+    update_duplicates = FALSE
+) {
+    # Try removing staging table in case it already exists
+    tbl_name_staged <- paste0("_", tbl_name, "_staged")
+    db |>
+        DBI::dbRemoveTable(tbl_name_staged) |>
+        on_error(.return = NULL)
+
+    # Create the staged table
+    staged <- db |>
+        db_create_table(
+            new_data = new_data,
+            tbl_name = tbl_name_staged,
+            primary_key = primary_key,
+            unique_indexes = unique_indexes,
+            overwrite = TRUE
+        ) |>
+        on_error(.return = NULL, .warn = TRUE) # TODO: handle differently?
+
+    # Merged overlaps/new data as needed from staged to exisiting table
+    # TODO: primary key?
+    result <- db |>
+        db_transaction({
+            # Update values already in database
+            if (update_duplicates) {
+                db |>
+                    db_merge_overlap(
+                        new_data = new_data,
+                        tbl_name_a = tbl_name,
+                        tbl_name_b = tbl_name_staged,
+                        primary_key = primary_key
+                    )
+            }
+
+            # Insert values not already there
+            db |>
+                db_insert_new(
+                    new_data = new_data,
+                    tbl_name_a = tbl_name,
+                    tbl_name_b = tbl_name_staged,
+                    primary_key = primary_key
+                )
+        })
+
+    # Remove "_staged" table
+    db |> DBI::dbRemoveTable(tbl_name_staged)
+}
+
 db_create_table <- function(
     db,
     tbl_name,
