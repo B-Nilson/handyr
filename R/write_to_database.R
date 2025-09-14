@@ -92,3 +92,51 @@ get_sql_column_types <- function(new_data, unique_indexes = NULL) {
     }
     return(sql_types)
 }
+
+db_merge_overlap <- function(
+    db,
+    tbl_name_a,
+    tbl_name_b,
+    primary_key
+) {
+    # Handle db path instead of connection
+    if (is.character(db)) {
+        type <- tools::file_ext(db)
+        db <- .dbi_drivers[[type]][[1]]() |>
+            DBI::dbConnect(db)
+    }
+
+    # Builder header renaming sql
+    match_header_template <- '\t"%s" = s."%s"'
+    col_names <- head(dplyr::tbl(db, tbl_name_a), 1) |>
+        dplyr::collect() |>
+        colnames()
+    match_header_sql <- new_header_template |>
+        sprintf(
+            col_names[col_names != primary_key],
+            col_names[col_names != primary_key]
+        ) |>
+        paste(collapse = ",\n")
+
+    # Build overlap test sql
+    overlap_test_template <- '%s."%s" = s."%s"'
+    overlap_test_sql <- overlap_test_template |>
+        sprintf(
+            rep(tbl_name_a, length(primary_key)),
+            primary_key,
+            primary_key
+        ) |>
+        paste(collapse = " AND ")
+
+    merge_template <- "UPDATE %s\nSET\n%s\nFROM %s s\nWHERE %s;"
+    merge_query <- merge_template |>
+        sprintf(
+            tbl_name_a,
+            match_header_sql,
+            tbl_name_b,
+            overlap_test_sql
+        )
+
+    db |> DBI::dbExecute(merge_query)
+}
+
