@@ -1,43 +1,64 @@
 db_create_table <- function(
     db,
     tbl_name,
-    new_data = data.frame(id = 1),
-    unique_indexes = list("id"),
+    new_data,
+    primary_key,
+    unique_indexes = NULL,
     overwrite = FALSE,
     temporary = FALSE
 ) {
-    if (is.character(db)) {  
+    if (is.character(db)) {
         type <- tools::file_ext(db)
         db <- .dbi_drivers[[type]][[1]]() |>
             DBI::dbConnect(db)
     }
 
-    # Initialize table
-    db |>
-        DBI::dbCreateTable(
-            name = tbl_name,
-            overwrite = overwrite,
-            temporary = temporary,
-            fields = new_data
+    # Define SQL templates
+    create_template <- "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
+    primary_key_template <- "\tPRIMARY KEY (%s)"
+    column_def_template <- '\t"%s" %s'
+    unique_constraint_template <- "\tUNIQUE (%s)"
+
+    # Build primary key SQL
+    # TODO: quotes dont work for MySQL (backticks) or SQL server (sqr brackets)
+    primary_key_sql <- paste0('"', primary_key, '"') |>
+        paste0(collapse = ", ")
+    primary_key_sql <- primary_key_template |>
+        sprintf(primary_key_sql)
+
+    # Build column definition SQL
+    column_types <- new_data |>
+        get_sql_column_types(unique_indexes = unique_indexes)
+    column_def_sql <- column_def_template |>
+        sprintf(
+            names(new_data),
+            column_types
+        ) |>
+        paste(collapse = ",\n")
+
+    # Build unique constraint SQL
+    unique_constraints <- unique_indexes |>
+        sapply(\(unique_ids) {
+            # TODO: quotes dont work for MySQL (backticks) or SQL server (sqr brackets)
+            unique_ids <- paste0('"', unique_ids, '"') |>
+                paste0(collapse = ", ")
+            unique_constraint_template |>
+                sprintf(unique_ids)
+        })
+    unique_constraint_sql <- unique_constraints |>
+        paste(collapse = ",\n")
+
+    # Build table creation query
+    create_query <- create_template |>
+        sprintf(
+            tbl_name,
+            column_def_sql,
+            primary_key_sql,
+            unique_constraint_sql
         )
 
-    # Add unique restraint(s) # TODO: fails for sqlite....
-    sql_queries <- unique_indexes |>
-        sapply(\(unique_ids) {
-            constraint_name <- paste0(
-                "unique_",
-                unique_ids |> paste0(collapse = "_")
-            )
-            "ALTER TABLE %s ADD CONSTRAINT %s UNIQUE (%s);" |>
-                sprintf(
-                    tbl_name,
-                    constraint_name,
-                    unique_ids |> paste0(collapse = ", ")
-                )
-        })
-    for (sql_query in sql_queries) {
-        db |> DBI::dbExecute(sql_query)
-    }
+    # Create table
+    db |> DBI::dbExecute(create_query)
 
     # insert rows if provided
     if (nrow(new_data)) {
@@ -49,4 +70,22 @@ db_create_table <- function(
                 temporary = temporary
             )
     }
+    invisible(dplyr::tbl(db, tbl_name))
+}
+
+get_sql_column_types <- function(new_data, unique_indexes = NULL) {
+    column_types <- new_data |>
+        sapply(class)
+    sql_types <- dplyr::case_when(
+        column_types %in%
+            c("integer", "logical", "Date", "POSIXct", "POSIXlt", "POSIXt") ~
+            "INTEGER",
+        column_types == "numeric" ~ "REAL",
+        TRUE ~ "TEXT"
+    )
+    if (!is.null(unique_indexes)) {
+        is_unique <- names(new_data) %in% unlist(unique_indexes)
+        sql_types[is_unique] <- paste(sql_types[is_unique], "NOT NULL")
+    }
+    return(sql_types)
 }
