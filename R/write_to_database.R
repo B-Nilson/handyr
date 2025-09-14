@@ -45,8 +45,8 @@ write_to_database <- function(
       primary_keys = primary_keys,
       unique_indexes = unique_indexes
     )
-  
-  # Merged overlaps/new data as needed from staged to exisiting table
+
+  # Merged overlaps/new data as needed from staged to existing table
   result <- db |>
     db_transaction({
       # Update values already in database
@@ -70,7 +70,7 @@ write_to_database <- function(
     })
   # Remove "_staged" table
   db |>
-    DBI::dbRemoveTable(table_name_staged) |> 
+    DBI::dbRemoveTable(table_name_staged) |>
     on_error(.return = NULL)
   invisible(db)
 }
