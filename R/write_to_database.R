@@ -253,7 +253,6 @@ db_insert_new <- function(
     head(1) |>
     dplyr::collect() |>
     colnames()
-  col_names <- col_names[!col_names %in% primary_keys]
   header_insert_sql <- paste0('"', col_names, '"') |>
     paste(collapse = ", ")
 
