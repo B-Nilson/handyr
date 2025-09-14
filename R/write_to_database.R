@@ -79,7 +79,11 @@ db_create_table <- function(
     }
 
     # Define SQL templates
-    create_template <- "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
+    if (is.null(unique_indexes)) {
+        create_template <- "CREATE TABLE %s (\n%s,\n%s\n);"
+    } else {
+        create_template <- "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
+    }
     primary_key_template <- "\tPRIMARY KEY (%s)"
     column_def_template <- '\t"%s" %s'
     unique_constraint_template <- "\tUNIQUE (%s)"
@@ -95,10 +99,7 @@ db_create_table <- function(
     column_types <- new_data |>
         get_sql_column_types(unique_indexes = unique_indexes)
     column_def_sql <- column_def_template |>
-        sprintf(
-            names(new_data),
-            column_types
-        ) |>
+        sprintf(names(new_data), column_types) |>
         paste(collapse = ",\n")
 
     # Build unique constraint SQL
@@ -123,7 +124,8 @@ db_create_table <- function(
             column_def_sql,
             primary_key_sql,
             unique_constraint_sql
-        )
+        ) |> 
+        suppressWarnings() # handle no unique indexes
 
     # Create table
     db |> DBI::dbExecute(create_query)
