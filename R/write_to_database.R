@@ -15,19 +15,14 @@ write_to_database <- function(
   stopifnot(is.logical(update_duplicates), length(update_duplicates) == 1)
 
   # Handle db path instead of connection
+  # TODO: wont work for postgres
   if (is.character(db)) {
     type <- tools::file_ext(db)
     db <- .dbi_drivers[[type]][[1]]() |>
       DBI::dbConnect(db)
   }
 
-  # Try removing staging table in case it already exists
-  table_name_staged <- paste0("_", table_name, "_staged")
-  db |>
-    DBI::dbRemoveTable(table_name_staged) |>
-    on_error(.return = NULL)
-
-  # Create initial table and return if not already existing
+  # Create initial table if not already existing
   if (!DBI::dbExistsTable(db, table_name)) {
     db |>
       db_create_table(
