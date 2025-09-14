@@ -23,6 +23,7 @@ Suggests:
     pbapply,
     sf,
     testthat (>= 3.0.0),
+    tidygeocoder,
     units,
     zoo
 Config/testthat/edition: 3
