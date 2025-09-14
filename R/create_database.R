@@ -154,7 +154,7 @@ setup_postgres_db <- function(
       stop("Download cancelled.")
     }
     # Download zip
-    download.file(
+    utils::download.file(
       url = zip_src,
       destfile = zip_path,
       mode = "wb"
@@ -164,7 +164,7 @@ setup_postgres_db <- function(
   # Unpack binaries if needed
   if (!file.exists(initdb)) {
     log_step("Unpacking PostgreSQL binaries...")
-    unzip(zip_path, exdir = base_dir)
+    utils::unzip(zip_path, exdir = base_dir)
   }
 
   # Initialize database

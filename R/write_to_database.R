@@ -227,7 +227,7 @@ db_merge_overlap <- function(
 
   # Builder header renaming sql
   match_header_template <- '\t"%s" = s."%s"'
-  col_names <- head(dplyr::tbl(db, table_name_a), 1) |>
+  col_names <- utils::head(dplyr::tbl(db, table_name_a), 1) |>
     dplyr::collect() |>
     colnames()
   match_header_sql <- match_header_template |>
@@ -266,7 +266,7 @@ db_insert_new <- function(
     primary_keys) {
   # Build header insert sql
   col_names <- dplyr::tbl(db, table_name_a) |>
-    head(1) |>
+    utils::head(1) |>
     dplyr::collect() |>
     colnames()
   header_insert_sql <- paste0('"', col_names, '"') |>
