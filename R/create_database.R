@@ -5,7 +5,7 @@ create_database <- function(
   return_connection = TRUE
 ) {
   # Handle inputs
-  stopifnot(is.character(name), length(name) == 1)
+  stopifnot(is.character(name), length(name) == 1, name != "")
   stopifnot(is.character(type) & length(type) == 1 | is.null(type))
   stopifnot(type %in% .dbi_creatable | is.null(type))
   stopifnot(is.character(path) & length(path) == 1 | is.null(path))
