@@ -40,7 +40,7 @@ write_to_database <- function(
       db_combine_tables(
         new_data = new_data,
         table_name_a = table_name,
-        table_name_b = table_name_staged,
+        table_name_b = paste0("_", table_name, "_staged"),
         primary_keys = primary_keys,
         unique_indexes = unique_indexes,
         insert_new = insert_new,
@@ -195,7 +195,7 @@ db_combine_tables <- function(
   }
   # Remove "_staged" table
   db |>
-    DBI::dbRemoveTable(table_name_staged)
+    DBI::dbRemoveTable(table_name_b)
 }
 
 get_sql_column_types <- function(new_data, unique_indexes = NULL) {
