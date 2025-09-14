@@ -4,7 +4,15 @@
 \alias{create_database}
 \title{Create a file-based database}
 \usage{
-create_database(name, type = NULL, path = NULL, return_connection = TRUE)
+create_database(
+  name,
+  type = NULL,
+  path = NULL,
+  version = NULL,
+  credentials = c("USER", "PASSWORD"),
+  port = 5432,
+  return_connection = TRUE
+)
 }
 \arguments{
 \item{name}{The name of (and optionally path to) the database to create.
@@ -15,6 +23,16 @@ If NULL (the default), the type will be derived from \code{name}, defaulting to 
 
 \item{path}{The location to save the database file to.
 If NULL (the default), the path will be derived from \code{name}, defaulting to the current working directory.}
+
+\item{version}{The version of the database to create. Currently only used for \code{type = "postgresql"}.
+Default is \code{NULL} which uses \code{"17.0-1"}.}
+
+\item{credentials}{A vector of length 2 containing the username and password for the database.
+Currently only used for \code{type = "postgresql"}.
+Default is \code{c("USER", "PASSWORD")}.}
+
+\item{port}{The port to use for the database server. Currently only used for \code{type = "postgresql"}.
+Default is \code{5432}.}
 
 \item{return_connection}{A logical value indicating whether to return the database connection instead of the path to the database file.
 Default is \code{TRUE}.}
