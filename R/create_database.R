@@ -3,11 +3,11 @@
 #' This function creates a new database using either sqlite or duckdb.
 #' See [DBI::dbConnect()] for more details.
 #'
-#' @param name The name of (and optionally path to) the database to create. 
+#' @param name The name of (and optionally path to) the database to create.
 #'   If the file extension does not match the type, it will be added.
-#' @param type The type of database to create. 
+#' @param type The type of database to create.
 #'   If NULL (the default), the type will be derived from `name`, defaulting to "sqlite".
-#' @param path The location to save the database file to. 
+#' @param path The location to save the database file to.
 #'   If NULL (the default), the path will be derived from `name`, defaulting to the current working directory.
 #' @param version The version of the database to create. Currently only used for `type = "postgresql"`.
 #'   Default is `NULL` which uses `"17.0-1"`.
@@ -255,7 +255,9 @@ connect_to_postgres_db <- function(
     if (ok) {
       break
     }
-    if (i == 15) stop("Timeout: PostgreSQL did not become ready.")
+    if (i == 15) {
+      stop("Timeout: PostgreSQL did not become ready.")
+    }
     Sys.sleep(1)
   }
 
