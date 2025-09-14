@@ -1,9 +1,8 @@
 create_database <- function(
-  name,
-  type = "sqlite",
-  path = "./",
-  return_connection = FALSE
-) {
+    name,
+    type = "sqlite",
+    path = "./",
+    return_connection = FALSE) {
   # Handle inputs
   stopifnot(is.character(name), length(name) == 1)
   stopifnot(is.character(type), length(type) == 1)
