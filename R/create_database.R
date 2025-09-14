@@ -29,10 +29,10 @@ create_database <- function(
   }
 
   # Use name/path/type as needed to build database path
-  file_name <- (tools::file_ext(name) == "") |>
+  file_name <- (tools::file_ext(name) == type) |>
     ifelse(
-      yes = paste0(name, ".", type),
-      no = name
+      yes = name,
+      no = paste0(name, ".", type)
     )
   database_path <- is.null(path) |>
     ifelse(
