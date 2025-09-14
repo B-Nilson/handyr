@@ -1,28 +1,29 @@
 write_to_database <- function(
     db,
-    tbl_name,
+    table_name,
     new_data,
     primary_key,
     unique_indexes = NULL,
     update_duplicates = FALSE
 ) {
     stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
-    stopifnot(is.character(tbl_name) & length(tbl_name) == 1)
+    stopifnot(is.character(table_name) & length(table_name) == 1)
     stopifnot(is.data.frame(new_data))
-    stopifnot(is.character(primary_key),  length(primary_key) == 1)
+    stopifnot(is.character(primary_key), length(primary_key) == 1)
     stopifnot(is.list(unique_indexes) | is.null(unique_indexes))
     stopifnot(is.logical(update_duplicates), length(update_duplicates) == 1)
+
     # Try removing staging table in case it already exists
-    tbl_name_staged <- paste0("_", tbl_name, "_staged")
+    table_name_staged <- paste0("_", table_name, "_staged")
     db |>
-        DBI::dbRemoveTable(tbl_name_staged) |>
+        DBI::dbRemoveTable(table_name_staged) |>
         on_error(.return = NULL)
 
     # Create the staged table
     staged <- db |>
         db_create_table(
             new_data = new_data,
-            tbl_name = tbl_name_staged,
+            table_name = table_name_staged,
             primary_key = primary_key,
             unique_indexes = unique_indexes,
             overwrite = TRUE
@@ -30,7 +31,6 @@ write_to_database <- function(
         on_error(.return = NULL, .warn = TRUE) # TODO: handle differently?
 
     # Merged overlaps/new data as needed from staged to exisiting table
-    # TODO: primary key?
     result <- db |>
         db_transaction({
             # Update values already in database
@@ -38,8 +38,8 @@ write_to_database <- function(
                 db |>
                     db_merge_overlap(
                         new_data = new_data,
-                        tbl_name_a = tbl_name,
-                        tbl_name_b = tbl_name_staged,
+                        table_name_a = table_name,
+                        table_name_b = table_name_staged,
                         primary_key = primary_key
                     )
             }
@@ -48,19 +48,20 @@ write_to_database <- function(
             db |>
                 db_insert_new(
                     new_data = new_data,
-                    tbl_name_a = tbl_name,
-                    tbl_name_b = tbl_name_staged,
+                    table_name_a = table_name,
+                    table_name_b = table_name_staged,
                     primary_key = primary_key
                 )
         })
 
     # Remove "_staged" table
-    db |> DBI::dbRemoveTable(tbl_name_staged)
+    db |> DBI::dbRemoveTable(table_name_staged)
+    invisible(db)
 }
 
 db_create_table <- function(
     db,
-    tbl_name,
+    table_name,
     new_data,
     primary_key,
     unique_indexes = NULL,
@@ -114,7 +115,7 @@ db_create_table <- function(
     # Build table creation query
     create_query <- create_template |>
         sprintf(
-            tbl_name,
+            table_name,
             column_def_sql,
             primary_key_sql,
             unique_constraint_sql
@@ -128,12 +129,12 @@ db_create_table <- function(
         db |>
             dplyr::copy_to(
                 df = new_data,
-                name = tbl_name,
+                name = table_name,
                 overwrite = overwrite,
                 temporary = temporary
             )
     }
-    invisible(dplyr::tbl(db, tbl_name))
+    invisible(dplyr::tbl(db, table_name))
 }
 
 get_sql_column_types <- function(new_data, unique_indexes = NULL) {
@@ -155,8 +156,8 @@ get_sql_column_types <- function(new_data, unique_indexes = NULL) {
 
 db_merge_overlap <- function(
     db,
-    tbl_name_a,
-    tbl_name_b,
+    table_name_a,
+    table_name_b,
     primary_key
 ) {
     # Handle db path instead of connection
@@ -168,7 +169,7 @@ db_merge_overlap <- function(
 
     # Builder header renaming sql
     match_header_template <- '\t"%s" = s."%s"'
-    col_names <- head(dplyr::tbl(db, tbl_name_a), 1) |>
+    col_names <- head(dplyr::tbl(db, table_name_a), 1) |>
         dplyr::collect() |>
         colnames()
     match_header_sql <- new_header_template |>
@@ -182,7 +183,7 @@ db_merge_overlap <- function(
     overlap_test_template <- '%s."%s" = s."%s"'
     overlap_test_sql <- overlap_test_template |>
         sprintf(
-            rep(tbl_name_a, length(primary_key)),
+            rep(table_name_a, length(primary_key)),
             primary_key,
             primary_key
         ) |>
@@ -191,9 +192,9 @@ db_merge_overlap <- function(
     merge_template <- "UPDATE %s\nSET\n%s\nFROM %s s\nWHERE %s;"
     merge_query <- merge_template |>
         sprintf(
-            tbl_name_a,
+            table_name_a,
             match_header_sql,
-            tbl_name_b,
+            table_name_b,
             overlap_test_sql
         )
 
@@ -202,17 +203,17 @@ db_merge_overlap <- function(
 
 db_insert_new <- function(
     db,
-    tbl_name_a,
-    tbl_name_b,
+    table_name_a,
+    table_name_b,
     primary_key
 ) {
     # Build header insert sql
-    col_names <- dplyr::tbl(db, tbl_name_a) |> 
+    col_names <- dplyr::tbl(db, table_name_a) |>
         head(1) |>
         dplyr::collect() |>
         colnames()
     col_names <- col_names[col_names != primary_key]
-    header_insert_sql <- paste0('"', col_names, '"') |> 
+    header_insert_sql <- paste0('"', col_names, '"') |>
         paste(collapse = ", ")
 
     # Build header select sql
@@ -233,13 +234,13 @@ db_insert_new <- function(
 
     # Build insert query
     insert_template <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s s LEFT JOIN %s o ON %s\nWHERE %s;"
-    sql_query <- insert_template |> 
+    sql_query <- insert_template |>
         sprintf(
-            tbl_name_a,
+            table_name_a,
             header_insert_sql,
             header_select_sql,
-            tbl_name_b,
-            tbl_name_a,
+            table_name_b,
+            table_name_a,
             overlap_test_sql,
             not_overlap_test_sql
         )
