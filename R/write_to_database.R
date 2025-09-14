@@ -167,8 +167,8 @@ db_merge_overlap <- function(
         colnames()
     match_header_sql <- new_header_template |>
         sprintf(
-            col_names[col_names != primary_key],
-            col_names[col_names != primary_key]
+            col_names[!col_names %in% primary_key],
+            col_names[!col_names %in% primary_key]
         ) |>
         paste(collapse = ",\n")
 
