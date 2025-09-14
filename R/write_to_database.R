@@ -37,19 +37,20 @@ write_to_database <- function(
     return(invisible(db))
   }
 
-  # Create the staged table
-  db |>
-    db_create_table(
-      new_data = new_data,
-      table_name = table_name_staged,
-      primary_keys = primary_keys,
-      unique_indexes = unique_indexes
-    )
 
   # Merged overlaps/new data as needed from staged to existing table
   result <- db |>
     db_transaction({
-      # Update values already in database
+      # Create the staged table
+      db |>
+        db_create_table(
+          new_data = new_data,
+          table_name = table_name_staged,
+          primary_keys = primary_keys,
+          unique_indexes = unique_indexes
+        )
+      
+      # Merge overlaps between staged and existing if requested
       if (update_duplicates) {
         db |>
           db_merge_overlap(
@@ -67,11 +68,11 @@ write_to_database <- function(
           table_name_b = table_name_staged,
           primary_keys = primary_keys
         )
+      
+      # Remove "_staged" table
+      db |>
+        DBI::dbRemoveTable(table_name_staged)
     })
-  # Remove "_staged" table
-  db |>
-    DBI::dbRemoveTable(table_name_staged) |>
-    on_error(.return = NULL)
   invisible(db)
 }
 
