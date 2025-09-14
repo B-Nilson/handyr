@@ -37,16 +37,19 @@ db_create_table <- function(
         paste(collapse = ",\n")
 
     # Build unique constraint SQL
-    unique_constraints <- unique_indexes |>
-        sapply(\(unique_ids) {
-            # TODO: quotes dont work for MySQL (backticks) or SQL server (sqr brackets)
-            unique_ids <- paste0('"', unique_ids, '"') |>
-                paste0(collapse = ", ")
-            unique_constraint_template |>
-                sprintf(unique_ids)
-        })
-    unique_constraint_sql <- unique_constraints |>
-        paste(collapse = ",\n")
+    if (is.null(unique_indexes)) {
+        unique_constraint_sql <- ""
+    } else {
+        unique_indexes <- unique_indexes |>
+            sapply(\(unique_ids) {
+                unique_ids <- paste0('"', unique_ids, '"') |>
+                    paste0(collapse = ", ")
+                unique_constraint_template |>
+                    sprintf(unique_ids)
+            })
+        unique_constraint_sql <- unique_constraints |>
+            paste(collapse = ",\n")
+    }
 
     # Build table creation query
     create_query <- create_template |>
