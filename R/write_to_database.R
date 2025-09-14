@@ -25,6 +25,18 @@ write_to_database <- function(
     DBI::dbRemoveTable(table_name_staged) |>
     on_error(.return = NULL)
 
+  # Create initial table and return if not already existing
+  if (!DBI::dbExistsTable(db, table_name)) {
+    db |>
+      db_create_table(
+        new_data = new_data,
+        table_name = table_name,
+        primary_keys = primary_keys,
+        unique_indexes = unique_indexes
+      )
+    return(invisible(db))
+  }
+
   # Create the staged table
   db |>
     db_create_table(
