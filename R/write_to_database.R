@@ -2,14 +2,14 @@ write_to_database <- function(
     db,
     table_name,
     new_data,
-    primary_key,
+    primary_keys,
     unique_indexes = NULL,
     update_duplicates = FALSE
 ) {
     stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
     stopifnot(is.character(table_name) & length(table_name) == 1)
     stopifnot(is.data.frame(new_data))
-    stopifnot(is.character(primary_key), length(primary_key) == 1)
+    stopifnot(is.character(primary_keys), length(primary_keys) >= 1)
     stopifnot(is.list(unique_indexes) | is.null(unique_indexes))
     stopifnot(is.logical(update_duplicates), length(update_duplicates) == 1)
 
@@ -24,7 +24,7 @@ write_to_database <- function(
         db_create_table(
             new_data = new_data,
             table_name = table_name_staged,
-            primary_key = primary_key,
+            primary_keys = primary_keys,
             unique_indexes = unique_indexes,
             overwrite = TRUE
         ) |>
@@ -40,7 +40,7 @@ write_to_database <- function(
                         new_data = new_data,
                         table_name_a = table_name,
                         table_name_b = table_name_staged,
-                        primary_key = primary_key
+                        primary_keys = primary_keys
                     )
             }
 
@@ -50,7 +50,7 @@ write_to_database <- function(
                     new_data = new_data,
                     table_name_a = table_name,
                     table_name_b = table_name_staged,
-                    primary_key = primary_key
+                    primary_keys = primary_keys
                 )
         })
 
@@ -63,7 +63,7 @@ db_create_table <- function(
     db,
     table_name,
     new_data,
-    primary_key,
+    primary_keys,
     unique_indexes = NULL,
     overwrite = FALSE,
     temporary = FALSE
@@ -82,7 +82,7 @@ db_create_table <- function(
 
     # Build primary key SQL
     # TODO: quotes dont work for MySQL (backticks) or SQL server (sqr brackets)
-    primary_key_sql <- paste0('"', primary_key, '"') |>
+    primary_key_sql <- paste0('"', primary_keys, '"') |>
         paste0(collapse = ", ")
     primary_key_sql <- primary_key_template |>
         sprintf(primary_key_sql)
@@ -158,7 +158,7 @@ db_merge_overlap <- function(
     db,
     table_name_a,
     table_name_b,
-    primary_key
+    primary_keys
 ) {
     # Handle db path instead of connection
     if (is.character(db)) {
@@ -174,8 +174,8 @@ db_merge_overlap <- function(
         colnames()
     match_header_sql <- new_header_template |>
         sprintf(
-            col_names[!col_names %in% primary_key],
-            col_names[!col_names %in% primary_key]
+            col_names[!col_names %in% primary_keys],
+            col_names[!col_names %in% primary_keys]
         ) |>
         paste(collapse = ",\n")
 
@@ -183,9 +183,9 @@ db_merge_overlap <- function(
     overlap_test_template <- '%s."%s" = s."%s"'
     overlap_test_sql <- overlap_test_template |>
         sprintf(
-            rep(table_name_a, length(primary_key)),
-            primary_key,
-            primary_key
+            rep(table_name_a, length(primary_keys)),
+            primary_keys,
+            primary_keys
         ) |>
         paste(collapse = " AND ")
 
@@ -205,14 +205,14 @@ db_insert_new <- function(
     db,
     table_name_a,
     table_name_b,
-    primary_key
+    primary_keys
 ) {
     # Build header insert sql
     col_names <- dplyr::tbl(db, table_name_a) |>
         head(1) |>
         dplyr::collect() |>
         colnames()
-    col_names <- col_names[col_names != primary_key]
+    col_names <- col_names[!col_names %in% primary_keys]
     header_insert_sql <- paste0('"', col_names, '"') |>
         paste(collapse = ", ")
 
@@ -223,13 +223,13 @@ db_insert_new <- function(
     # Build overlap test sql
     overlap_test_template <- 's."%s" = o."%s"'
     overlap_test_sql <- overlap_test_template |>
-        sprintf(primary_key, primary_key) |>
+        sprintf(primary_keys, primary_keys) |>
         paste(collapse = " AND ")
 
     # Build not overlap test sql
     not_overlap_test_template <- 'o."%s" IS NULL'
     not_overlap_test_sql <- not_overlap_test_template |>
-        sprintf(primary_key) |>
+        sprintf(primary_keys) |>
         paste(collapse = " AND ")
 
     # Build insert query
