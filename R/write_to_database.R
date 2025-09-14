@@ -174,7 +174,6 @@ db_combine_tables <- function(
   if (update_duplicates) {
     db |>
       db_merge_overlap(
-        new_data = new_data,
         table_name_a = table_name_a,
         table_name_b = table_name_b,
         primary_keys = primary_keys
