@@ -4,12 +4,14 @@ write_to_database <- function(
     new_data,
     primary_keys,
     unique_indexes = NULL,
+    insert_new = TRUE,
     update_duplicates = FALSE) {
   stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
   stopifnot(is.character(table_name) & length(table_name) == 1)
   stopifnot(is.data.frame(new_data))
   stopifnot(is.character(primary_keys), length(primary_keys) >= 1)
   stopifnot(is.list(unique_indexes) | is.null(unique_indexes))
+  stopifnot(is.logical(insert_new), length(insert_new) == 1)
   stopifnot(is.logical(update_duplicates), length(update_duplicates) == 1)
 
   # Handle db path instead of connection
@@ -33,46 +35,21 @@ write_to_database <- function(
         table_name = table_name,
         primary_keys = primary_keys,
         unique_indexes = unique_indexes
-      )
-    return(invisible(db))
+      ) |>
+      db_transaction(db = db)
+  } else {
+    # Otherwise, merge/insert new data as needed
+    db |>
+      db_combine_tables(
+        table_name_a = table_name,
+        table_name_b = table_name_staged,
+        primary_keys = primary_keys,
+        unique_indexes = unique_indexes,
+        insert_new = insert_new,
+        update_duplicates = update_duplicates
+      ) |>
+      db_transaction(db = db)
   }
-
-
-  # Merged overlaps/new data as needed from staged to existing table
-  result <- db |>
-    db_transaction({
-      # Create the staged table
-      db |>
-        db_create_table(
-          new_data = new_data,
-          table_name = table_name_staged,
-          primary_keys = primary_keys,
-          unique_indexes = unique_indexes
-        )
-      
-      # Merge overlaps between staged and existing if requested
-      if (update_duplicates) {
-        db |>
-          db_merge_overlap(
-            new_data = new_data,
-            table_name_a = table_name,
-            table_name_b = table_name_staged,
-            primary_keys = primary_keys
-          )
-      }
-
-      # Insert values not already there
-      db |>
-        db_insert_new(
-          table_name_a = table_name,
-          table_name_b = table_name_staged,
-          primary_keys = primary_keys
-        )
-      
-      # Remove "_staged" table
-      db |>
-        DBI::dbRemoveTable(table_name_staged)
-    })
   invisible(db)
 }
 
@@ -179,6 +156,47 @@ db_insert_rows <- function(db, table_name, new_data) {
 
   # Insert values, return n rows inserted
   db |> DBI::dbExecute(insert_query) |> invisible()
+}
+
+db_combine_tables <- function(
+  db,
+  table_name_a,
+  table_name_b,
+  primary_keys,
+  unique_indexes = NULL,
+  insert_new = TRUE,
+  update_duplicates = FALSE
+) {
+  # Create a staging table
+  db |>
+    db_create_table(
+      new_data = new_data,
+      table_name = table_name_b,
+      primary_keys = primary_keys,
+      unique_indexes = unique_indexes
+    )
+  # Merge overlaps between staged and existing if requested
+  if (update_duplicates) {
+    db |>
+      db_merge_overlap(
+        new_data = new_data,
+        table_name_a = table_name_a,
+        table_name_b = table_name_b,
+        primary_keys = primary_keys
+      )
+  }
+  # Insert non-overlapping values if requested
+  if (insert_new) {
+    db |>
+      db_insert_new(
+        table_name_a = table_name_a,
+        table_name_b = table_name_b,
+        primary_keys = primary_keys
+      )
+  }
+  # Remove "_staged" table
+  db |>
+    DBI::dbRemoveTable(table_name_staged)
 }
 
 get_sql_column_types <- function(new_data, unique_indexes = NULL) {
