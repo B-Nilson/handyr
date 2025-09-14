@@ -41,7 +41,7 @@ create_database <- function(
     )
   
   # Create database if it doesn't exist, connect otherwise
-  db <- db_driver() |>
+  db <- db_driver[[1]]() |>
     DBI::dbConnect(database_path)
 
   # Return connection or path to db
