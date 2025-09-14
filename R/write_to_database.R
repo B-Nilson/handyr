@@ -142,7 +142,7 @@ db_insert_rows <- function(db, table_name, new_data) {
         gsub(pattern = "'-Inf'|-Inf", replacement = "NULL")
     ) |>
     # Combine into single string
-    dplyr::pull(values) |>
+    dplyr::pull("values") |>
     paste(collapse = ",\n")
 
   # Build insert query
