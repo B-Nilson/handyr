@@ -43,8 +43,10 @@ db_transaction <- function(db, ...) {
   return(invisible(result))
 }
 
+# Check if db is a valid database connection or not
 is_db_connection <- function(db) {
-  on_error(DBI::dbIsValid(db), .return = FALSE)
+  DBI::dbIsValid(db) |> 
+    on_error(.return = FALSE)
 }
 
 get_sql_column_types <- function(new_data, unique_indexes = NULL) {
