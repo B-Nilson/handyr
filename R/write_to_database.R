@@ -74,17 +74,20 @@ write_to_database <- function(
   invisible(db)
 }
 
+# Create connection from path to a file-based database
 db_conn_from_path <- function(db_path) {
-  # TODO: wont work for postgres
-  if (is.character(db)) {
-    type <- tools::file_ext(db)
-    if (!type %in% .dbi_creatable) {
-      stop("Could not detect a supported backend for ", db_path, "(based on file extension)")
-    }
-    rlang::check_installed(names(.dbi_drivers[[type]]))
-    db <- .dbi_drivers[[type]][[1]]() |>
-      DBI::dbConnect(db)
+  # Determine backend from file extension
+  # TODO: handle variations of extensions
+  type <- tools::file_ext(db_path)
+  # Handle unsupported backends
+  if (!type %in% .dbi_creatable) {
+    stop("Could not detect a supported backend for ", db_path, "(based on file extension)")
   }
+  # Check if driver package is installed
+  rlang::check_installed(names(.dbi_drivers[[type]]))
+  # Create connection
+  .dbi_drivers[[type]][[1]]() |>
+    DBI::dbConnect(db_path)
 }
 
 db_create_table <- function(
