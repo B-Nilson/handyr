@@ -90,6 +90,7 @@ db_conn_from_path <- function(db_path) {
     DBI::dbConnect(db_path)
 }
 
+# Create table if not already existing
 db_create_table <- function(
   db,
   table_name,
@@ -98,32 +99,20 @@ db_create_table <- function(
   unique_indexes = NULL
 ) {
   if (is.character(db)) {
-    type <- tools::file_ext(db)
-    db <- .dbi_drivers[[type]][[1]]() |>
-      DBI::dbConnect(db)
+    db <- db_conn_from_path(db)
   }
-
-  # Define SQL templates
-  if (is.null(unique_indexes)) {
-    create_template <- "CREATE TABLE %s (\n%s,\n%s\n);"
-  } else {
-    create_template <- "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
-  }
-  primary_key_template <- "\tPRIMARY KEY (%s)"
-  column_def_template <- '\t"%s" %s'
-  unique_constraint_template <- "\tUNIQUE (%s)"
 
   # Build primary key SQL
   # TODO: quotes dont work for MySQL (backticks) or SQL server (sqr brackets)
-  primary_key_sql <- paste0('"', primary_keys, '"') |>
-    paste0(collapse = ", ")
-  primary_key_sql <- primary_key_template |>
-    sprintf(primary_key_sql)
+  primary_keys_safe <- paste0('"', primary_keys, '"')
+  primary_key_sql <- "\tPRIMARY KEY (%s)" |>
+    sprintf(paste0(primary_keys_safe, collapse = ", "))
 
   # Build column definition SQL
+  # TODO: handle more data types
   column_types <- new_data |>
     get_sql_column_types(unique_indexes = unique_indexes)
-  column_def_sql <- column_def_template |>
+  column_def_sql <- '\t"%s" %s' |>
     sprintf(names(new_data), column_types) |>
     paste(collapse = ",\n")
 
@@ -133,16 +122,18 @@ db_create_table <- function(
   } else {
     unique_constraint_sql <- unique_indexes |>
       sapply(\(unique_ids) {
-        unique_ids <- paste0('"', unique_ids, '"') |>
-          paste0(collapse = ", ")
-        unique_constraint_template |>
-          sprintf(unique_ids)
+        unique_ids_safe <- paste0('"', unique_ids, '"')
+        "\tUNIQUE (%s)" |> sprintf(paste0(unique_ids_safe, collapse = ", "))
       }) |>
       paste(collapse = ",\n")
   }
 
   # Build table creation query
-  create_query <- create_template |>
+  create_query <- is.null(unique_indexes) |> 
+    ifelse(
+      "CREATE TABLE %s (\n%s,\n%s\n);",
+      "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
+    ) |>
     sprintf(
       table_name,
       column_def_sql,
@@ -156,9 +147,12 @@ db_create_table <- function(
 
   # insert rows if provided
   if (nrow(new_data)) {
-    db |> db_insert_rows(new_data = new_data, table_name = table_name)
+    n_rows_inserted <- db |> 
+      db_insert_rows(new_data = new_data, table_name = table_name)
+  }else {
+    n_rows_inserted <- 0
   }
-  invisible(dplyr::tbl(db, table_name))
+  invisible(n_rows_inserted)
 }
 
 db_insert_rows <- function(db, table_name, new_data) {
