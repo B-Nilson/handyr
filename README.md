@@ -17,7 +17,9 @@ You can install the development version of handyr from [GitHub](https://github.c
 pak::pak("B-Nilson/handyr")
 ```
 
-## Databases
+## Examples
+
+### Create and write/read/delete from Databases
 
 ``` r
 library(handyr)
@@ -54,7 +56,7 @@ db |>
 
 ```
 
-## Logging
+### Record/log Steps in a Workflow
 
 ``` r
 library(handyr)
@@ -75,7 +77,7 @@ summarise_logs(logs)
 
 ```
 
-## Spatial / Temporal
+### Spatial / Temporal Data Manipulation
 
 ``` r
 
@@ -100,14 +102,14 @@ extract_sf_coords(cities_sf)
 
 ```
 
-## Miscellaneous
+### Miscellaneous Quality of Life Improvments
 
 ``` r
 library(handyr)
 
 # Vector operations
 x <- c(1:10 + 0.123, NA) |>
-  clamp(range = c(2, 9)) |> # replcae values outside range with nearest value
+  clamp(range = c(2, 9)) |> # replace values outside range with nearest value
   swap(2, with = NA) |> # swap out all "2"s with NA
   rolling("mean", width = 3, direction = "backwards", .min_non_na = 2) |> # 3-point (fast) rolling mean
   truncate(digits = 1) |> # drop all digits after the first
