@@ -20,6 +20,11 @@ read_from_database <- function(
   query_fun = \(df) df,
   collect = TRUE
 ) {
+  stopifnot((is.character(db) & length(db) == 1) | is_db_connection(db))
+  stopifnot(is.character(table_name), length(table_name) == 1)
+  stopifnot(is.function(query_fun))
+  stopifnot(is.logical(collect), length(collect) == 1)
+  
   # Handle db path instead of connection
   # TODO: wont work for postgres
   if (is.character(db)) {
