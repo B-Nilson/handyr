@@ -181,7 +181,7 @@ db_combine_tables <- function(
   insert_new = TRUE,
   update_duplicates = FALSE
 ) {
-  table_name_staging <- paste0("_", table_name, "_staged"),
+  table_name_staging <- paste0("_", table_name, "_staged")
   # Create a staging table
   db |>
     db_create_table(
