@@ -1,4 +1,34 @@
-read_from_database <- function(db, table_name, query_fun = \(df) df, collect = TRUE) {
+#' Read data from a database
+#'
+#' `read_from_database` takes a database connection and table name, applies a dplyr-based query, and returns either a lazy-table or a data frame of the query results.
+#'
+#' @param db A database connection or the path to a database file (if \*.sqlite or \*.duckdb).
+#' @param table_name A character string specifying the table to read from.
+#' @param query_fun A function taking a single argument (the data.frame-like object to be queried) and returning a data frame.
+#'   Default is the identity function, which simply returns the input data frame.
+#'   Most `dplyr` functions will be implemented here (see [dbplyr] for details).
+#'   (e.g. `query_fun = \(df) df |> dplyr::select(column1, column2)`)
+#'   Anything else beyond variable names needs to be prefaced with `!!` (e.g. `... |>  dplyr::filter(month |> dplyr::between(!!select_months[1], !!select_months[2]))`).
+#' @param collect A logical value indicating whether to use [dplyr::collect()] to fetch the data from the database.
+#'   Default is `TRUE`.
+#'
+#' @return A data frame containing the data from the specified table in the database.
+#' @export
+#' @examples
+#' # Connect to a database
+#' db <- create_database("test.sqlite")
+#'
+#' # Read data from a table
+#' output <- read_from_database(db, "airquality")
+#'
+#' # Disconnect from database
+#' DBI::dbDisconnect(db)
+read_from_database <- function(
+  db,
+  table_name,
+  query_fun = \(df) df,
+  collect = TRUE
+) {
   # Handle db path instead of connection
   # TODO: wont work for postgres
   if (is.character(db)) {
@@ -6,16 +36,16 @@ read_from_database <- function(db, table_name, query_fun = \(df) df, collect = T
     db <- .dbi_drivers[[type]][[1]]() |>
       DBI::dbConnect(db)
   }
-  
+
   # Connect to table and build query
-  query <- db |> 
-    dplyr::tbl(table_name) |> 
+  query <- db |>
+    dplyr::tbl(table_name) |>
     query_fun()
-  
+
   # Either collect results or return lazy table of query
   if (collect) {
     output <- dplyr::collect(query)
-  }else {
+  } else {
     output <- query
   }
   return(output)
