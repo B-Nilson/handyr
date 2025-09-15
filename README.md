@@ -77,12 +77,28 @@ summarise_logs(logs)
 
 ```
 
+### Forget about for loops
+
+``` r
+
+# TODO: examples showcasing for_each
+
+```
+
 ### Spatial / Temporal Data Manipulation
 
 ``` r
 
 # Local timezone lookup
 get_timezone(lng = -105.053144, lat = 69.116178)
+
+# Detailed season description
+c(Sys.time() - 10^7, Sys.time()) |>
+  get_season(as_factor = TRUE, include_year = TRUE, include_months = TRUE)
+
+# Split large date ranges into specific-size chunks
+c(Sys.time() - 10^8, Sys.time()) |>
+  split_date_range(max_duration = "120 days")
 
 # Get most likely data interval (useful for when occasional gaps may exist)
 get_interval(c(1:10, 12, 14, 16:20)
@@ -130,6 +146,10 @@ your_data <- 1:5 |> for_each(
   \(x) load_your_data(x) |> on_error(.return = NULL, .warn = TRUE)
   .bind = TRUE
 )
+
+# TODO: showcase join_list, do_if, save_figure, silence
+# TODO: showcase max/min NA handling improvements
+# TODO: showcase rolling built-ins speed improvements
 
 ```
 
