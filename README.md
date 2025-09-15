@@ -43,8 +43,9 @@ db |>
 db |>
   read_from_database(
     table_name = "airquality",
-    query_fun = \(df) df |> dplyr::filter(Month == 5, Day == 5)
-    collect = TRUE # Set to FALSE to return a lazy tbl of the query instead of loading full results into memory
+    query_fun = \(df) df |> dplyr::filter(Month == 5, Day == 5),
+    # Set to FALSE to return a lazy tbl of the query instead of loading full results into memory
+    collect = TRUE 
   )
 
 # Delete matching entries in a database table
