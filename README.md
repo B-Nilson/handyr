@@ -24,19 +24,19 @@ pak::pak("B-Nilson/handyr")
 ``` r
 library(handyr)
 
-# Create a file-based (or setup postgresql server if on Windows) database
+# Create a file-based database (or setup postgresql server if on Windows)
 db <- create_database("test", type = "sqlite")
 # or type = "duckdb"
 # or type = "postgresql" (if on Windows)
 
-# Write data to an exisiting database
+# Write data to an existing database
 db |> 
   write_to_database(
     new_data = datasets::airquality,
     table_name = "airquality",
     primary_keys = c("Month", "Day"),
     insert_new = TRUE, # set to FALSE to ignore entries not already in db
-    update_duplicates = FALSE # set to TRUE to update existing entries in db where overl ap exists
+    update_duplicates = FALSE # set to TRUE to update existing entries in db where overlap exists
   )
 
 # Read data from a database, leverage dplyr for common sql queries
