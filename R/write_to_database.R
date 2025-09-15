@@ -1,3 +1,27 @@
+#' Write data to a database
+#'
+#' Write data to a database, with options to insert new data, update existing data, and create a new table.
+#' 
+#' It will create the table and insert `new_data` if the table does not already exist.
+#' Otherwise:
+#'   * If `insert_new = TRUE`, `new_data` will be inserted into the existing table.
+#'   * If `update_duplicates = TRUE`, existing data will be updated with the overlap of `new_data`.
+#' @param db A database connection or path to database (if \*.sqlite or \*.duckdb).
+#' @param primary_keys A character vector of column names to use as the primary key, the main identifier of individual rows in a table. 
+#'   Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
+#'   (e.g. `primary_keys = c("col1", "col2")` will add a primary key on the combination of `col1` and `col2`).
+#' @param unique_indexes A list of character vector(s) of column names to use as unique indexes.
+#'   These will be added to the table, in addition to the primary key.
+#'   Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
+#'   (e.g. `unique_indexes = list(c("col1", "col2"))` will add a unique index on the combination of `col1` and `col2`.).
+#'   If `NULL` (the default), no unique indexes will be added.
+#' @param insert_new A logical value indicating if new data should be inserted into the existing table.
+#'   If `FALSE`, no new data will be inserted, only existing rows will be updated if `update_duplicates = TRUE`.
+#' @param update_duplicates A logical value indicating if existing rows should be updated with new data.
+#'   If `FALSE`, no existing rows will be updated. Only new data will be inserted if `insert_new = TRUE`.
+#' 
+#' @return An invisible db connection.
+#' @export
 write_to_database <- function(
     db,
     table_name,
