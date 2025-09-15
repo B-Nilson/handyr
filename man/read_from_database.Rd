@@ -7,7 +7,7 @@
 read_from_database(db, table_name, query_fun = function(df) df, collect = TRUE)
 }
 \arguments{
-\item{db}{A database connection or the path to a database file (if \\emph{.sqlite or \}.duckdb).}
+\item{db}{A database connection or the path to a database file (if sqlite or duckdb file extension).}
 
 \item{table_name}{A character string specifying the table to read from.}
 
@@ -25,14 +25,4 @@ A data frame containing the data from the specified table in the database.
 }
 \description{
 \code{read_from_database} takes a database connection and table name, applies a dplyr-based query, and returns either a lazy-table or a data frame of the query results.
-}
-\examples{
-# Connect to a database
-db <- create_database("test.sqlite")
-
-# Read data from a table
-output <- read_from_database(db, "airquality")
-
-# Disconnect from database
-DBI::dbDisconnect(db)
 }

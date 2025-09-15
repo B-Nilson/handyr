@@ -15,7 +15,7 @@ write_to_database(
 )
 }
 \arguments{
-\item{db}{A database connection or path to database (if \\emph{.sqlite or \}.duckdb).}
+\item{db}{A database connection or path to database (if sqlite or duckdb file extension).}
 
 \item{primary_keys}{A character vector of column names to use as the primary key, the main identifier of individual rows in a table.
 Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
