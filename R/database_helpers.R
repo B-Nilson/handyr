@@ -14,30 +14,33 @@ db_conn_from_path <- function(db_path) {
     DBI::dbConnect(db_path)
 }
 
-
+# Run code block in a database transaction (rollback on error)
 db_transaction <- function(db, ...) {
   # Begin a transaction
   DBI::dbBegin(db)
+
   # run code block passed to function, capture error as warning
-  result <- on_error(
-    .return = NULL,
-    .warn = TRUE,
-    ...
-  )
+  transaction_failed <- ... |> 
+    on_error(.return = NULL, .warn = TRUE) |> 
+    is.null()
+
+  # Rollback the transaction and quit if failed
+  if (transaction_failed) {
+    DBI::dbRollback(db)
+    stop("Transaction failed.")
+  }
+
+  # Commit the transaction, capture error if needed
+  result <- DBI::dbCommit(db) |>
+    on_error(.return = NULL, .warn = TRUE)
+
   # Rollback the transaction if failed
   if (is.null(result)) {
     DBI::dbRollback(db)
-  } else {
-    # Commit the transaction, capture error if needed
-    result2 <- DBI::dbCommit(db) |>
-      on_error(.return = NULL, .warn = TRUE)
-    # Rollback the transaction if failed
-    if (is.null(result2)) {
-      DBI::dbRollback(db)
-    }
+    stop("Transaction failed.")
   }
 
-  return(invisible())
+  return(invisible(result))
 }
 
 is_db_connection <- function(db) {
