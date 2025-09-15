@@ -24,11 +24,14 @@ read_from_database <- function(
   stopifnot(is.character(table_name), length(table_name) == 1)
   stopifnot(is.function(query_fun))
   stopifnot(is.logical(collect), length(collect) == 1)
-  
+  rlang::check_installed("DBI")
+  rlang::check_installed("dbplyr")
+
   # Handle db path instead of connection
   # TODO: wont work for postgres
   if (is.character(db)) {
     type <- tools::file_ext(db)
+    rlang::check_installed(names(.dbi_drivers[[type]]))
     db <- .dbi_drivers[[type]][[1]]() |>
       DBI::dbConnect(db)
   }

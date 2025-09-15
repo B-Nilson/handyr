@@ -44,6 +44,7 @@ write_to_database <- function(
   # TODO: wont work for postgres
   if (is.character(db)) {
     type <- tools::file_ext(db)
+    rlang::check_installed(names(.dbi_drivers[[type]]))
     db <- .dbi_drivers[[type]][[1]]() |>
       DBI::dbConnect(db)
   }
