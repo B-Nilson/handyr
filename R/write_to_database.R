@@ -155,9 +155,8 @@ db_create_table <- function(
   invisible(n_rows_inserted)
 }
 
+# Insert new_data into existing table
 db_insert_rows <- function(db, table_name, new_data) {
-  insert_template <- "INSERT INTO %s (%s)\nVALUES\n%s;"
-
   # Make values SQL
   values_sql <- new_data |>
     dplyr::mutate(
@@ -179,12 +178,9 @@ db_insert_rows <- function(db, table_name, new_data) {
     paste(collapse = ",\n")
 
   # Build insert query
-  insert_query <- insert_template |>
-    sprintf(
-      table_name,
-      paste0('"', names(new_data), '"') |> paste(collapse = ", "),
-      values_sql
-    )
+  col_names_safe <- paste0('"', names(new_data), '"')
+  insert_query <- "INSERT INTO %s (%s)\nVALUES\n%s;" |>
+    sprintf(table_name, paste(col_names_safe, collapse = ", "), values_sql)
 
   # Insert values, return n rows inserted
   db |> DBI::dbExecute(insert_query) |> invisible()
