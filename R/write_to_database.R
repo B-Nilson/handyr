@@ -223,7 +223,7 @@ db_combine_tables <- function(
   # Insert non-overlapping values if requested
   if (insert_new) {
     db |>
-      db_insert_new(
+      db_merge_new(
         table_name_a = table_name_a,
         table_name_b = table_name_b,
         primary_keys = primary_keys
@@ -297,42 +297,42 @@ db_merge_overlap <- function(
   db |> DBI::dbExecute(merge_query)
 }
 
-db_insert_new <- function(
+# Insert non-overlapping values into table a from table b based on primary keys
+db_merge_new <- function(
     db,
     table_name_a,
     table_name_b,
     primary_keys) {
-  # Build header insert sql
-  col_names <- dplyr::tbl(db, table_name_a) |>
+  # Determine columns to insert
+  col_names <- dplyr::tbl(db, table_name_b) |>
     utils::head(1) |>
     dplyr::collect() |>
     colnames()
-  header_insert_sql <- paste0('"', col_names, '"') |>
-    paste(collapse = ", ")
+  col_names_safe <- paste0('"', col_names, '"')
 
-  # Build header select sql
-  header_select_sql <- paste0('s."', col_names, '"') |>
+  # Build header sql for each table
+  a_header_sql <- col_names_safe |>
+    paste(collapse = ", ")
+  b_header_sql <- paste0("_b.", col_names_safe) |>
     paste(collapse = ", ")
 
   # Build overlap test sql
-  overlap_test_template <- 's."%s" = o."%s"'
-  overlap_test_sql <- overlap_test_template |>
+  overlap_test_sql <- '_b."%s" = _a."%s"' |>
     sprintf(primary_keys, primary_keys) |>
     paste(collapse = " AND ")
 
-  # Build not overlap test sql
-  not_overlap_test_template <- 'o."%s" IS NULL'
-  not_overlap_test_sql <- not_overlap_test_template |>
+  # Build not overlap test sql (so we can exclude in left join)
+  not_overlap_test_sql <- '_a."%s" IS NULL' |>
     sprintf(primary_keys) |>
     paste(collapse = " AND ")
 
   # Build insert query
-  insert_template <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s s LEFT JOIN %s o ON %s\nWHERE %s;"
+  insert_template <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s _b LEFT JOIN %s _a ON %s\nWHERE %s;"
   sql_query <- insert_template |>
     sprintf(
       table_name_a,
-      header_insert_sql,
-      header_select_sql,
+      a_header_sql,
+      b_header_sql,
       table_name_b,
       table_name_a,
       overlap_test_sql,
