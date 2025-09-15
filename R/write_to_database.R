@@ -56,7 +56,8 @@ write_to_database <- function(
         primary_keys = primary_keys,
         unique_indexes = unique_indexes
       ) |>
-      db_transaction(db = db)
+      db_transaction(db = db) |> 
+      on_error(.warn = "Failed to create table.")
   } else {
     # Otherwise, merge/insert new data as needed
     db |>
@@ -68,7 +69,8 @@ write_to_database <- function(
         insert_new = insert_new,
         update_duplicates = update_duplicates
       ) |>
-      db_transaction(db = db)
+      db_transaction(db = db) |> 
+      on_error(.warn = "Failed to merge/insert data.")
   }
   invisible(db)
 }
