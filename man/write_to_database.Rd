@@ -17,6 +17,10 @@ write_to_database(
 \arguments{
 \item{db}{A database connection or path to database (if sqlite or duckdb file extension).}
 
+\item{table_name}{A character string specifying the table to write to.}
+
+\item{new_data}{A data frame to write to the table.}
+
 \item{primary_keys}{A character vector of column names to use as the primary key, the main identifier of individual rows in a table.
 Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
 (e.g. \code{primary_keys = c("col1", "col2")} will add a primary key on the combination of \code{col1} and \code{col2}).}

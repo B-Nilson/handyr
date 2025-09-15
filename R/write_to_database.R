@@ -7,6 +7,8 @@
 #'   * If `insert_new = TRUE`, `new_data` will be inserted into the existing table.
 #'   * If `update_duplicates = TRUE`, existing data will be updated with the overlap of `new_data`.
 #' @param db A database connection or path to database (if sqlite or duckdb file extension).
+#' @param table_name A character string specifying the table to write to.
+#' @param new_data A data frame to write to the table.
 #' @param primary_keys A character vector of column names to use as the primary key, the main identifier of individual rows in a table. 
 #'   Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
 #'   (e.g. `primary_keys = c("col1", "col2")` will add a primary key on the combination of `col1` and `col2`).
