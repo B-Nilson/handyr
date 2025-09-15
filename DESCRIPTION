@@ -16,12 +16,18 @@ Imports:
     stringr,
     tidyr
 Suggests: 
+    DBI,
+    dbplyr,
+    duckdb,
     future,
     future.apply,
     ggplot2,
     lutz,
     matrixStats,
     pbapply,
+    rappdirs,
+    RPostgres,
+    RSQLite,
     sf,
     testthat (>= 3.0.0),
     units,
