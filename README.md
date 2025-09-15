@@ -17,6 +17,37 @@ You can install the development version of handyr from [GitHub](https://github.c
 pak::pak("B-Nilson/handyr")
 ```
 
+## Databases
+
+``` r
+library(handyr)
+
+# Create a file-based (or setup postgresql server if on Windows) database
+db <- create_database("test", type = "sqlite")
+# or type = "duckdb"
+# or type = "postgresql" (if on Windows)
+
+# Write data to an exisiting database
+db |> 
+  write_to_database(
+    new_data = datasets::airquality,
+    table_name = "airquality",
+    primary_keys = c("Month", "Day"),
+    insert_new = TRUE, # set to FALSE to ignore entries not already in db
+    update_duplicates = FALSE # set to TRUE to update existing entries in db where overl ap exists
+  )
+
+# Read data from a database, leverage dplyr for common sql queries
+db |>
+  read_from_database(
+    table_name = "airquality",
+    query_fun = \(df) df |> dplyr::filter(Month == 5, Day == 5)
+  )
+
+
+```
+
+
 ## Examples
 
 ``` r
