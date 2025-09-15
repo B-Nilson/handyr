@@ -32,3 +32,19 @@ test_that("custom query works", {
   DBI::dbDisconnect(db)
   file.remove(db_path)
 })
+
+test_that("collect works", {
+  # Create temp db to work with
+  db_list <- init_airquality_sqlite_test()
+  db_path <- names(db_list)
+  db <- db_list[[1]]
+
+  # Read data from database as lazy tbl
+  output <- db |>
+    read_from_database(table_name = "airquality", collect = FALSE)
+  expect_true("tbl_lazy" %in% class(output))
+
+  # Cleanup
+  DBI::dbDisconnect(db)
+  file.remove(db_path)
+})
