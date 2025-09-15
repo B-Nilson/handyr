@@ -6,7 +6,7 @@
 \usage{
 rolling(
   x,
-  FUN = mean,
+  FUN = "mean",
   ...,
   .width = 3,
   .direction = "backward",
@@ -18,7 +18,9 @@ rolling(
 \item{x}{A vector.}
 
 \item{FUN}{A function to be applied to each window of \code{x}.
-Default is \code{mean}.}
+If is a character string, it will be converted to a function using \code{\link[=get]{get()}},
+unless it is in "sum", "mean", "min", or "max" which have built-in vectorized (faster) implementations.
+Default is \code{"mean"}.}
 
 \item{...}{Additional arguments to be passed to \code{FUN}.}
 

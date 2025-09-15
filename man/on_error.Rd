@@ -16,9 +16,11 @@ on_warning(..., .return = NULL, .message = FALSE, .stop = FALSE)
 Default is \code{NULL}}
 
 \item{.message}{A logical value indicating if the error message should be displayed as a message instead.
+If a single character string is provided, it will be used as the message instead.
 Default is \code{FALSE}}
 
 \item{.warn, .stop}{A logical value indicating if the error/warning message should be displayed as a warning/error instead.
+If a single character string is provided, it will be used as the warning/error message instead.
 Default is \code{FALSE}}
 }
 \value{

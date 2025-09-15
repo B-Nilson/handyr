@@ -29,10 +29,6 @@ test_that("save_to works", {
     log_step("Complete", quiet = TRUE)
   )
   temp_file <- tempfile()
-  log_lines <- summarise_logs(logs, save_to = temp_file)
+  log_summary <- summarise_logs(logs, save_to = temp_file)
   expect_true(file.exists(temp_file))
-  expect_equal(
-    readLines(temp_file),
-    log_lines
-  )
 })

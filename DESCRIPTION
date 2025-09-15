@@ -10,7 +10,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports: 
     dplyr,
+    lubridate,
+    prettyunits,
     rlang,
+    stringr,
     tidyr
 Suggests: 
     DBI,
@@ -20,7 +23,10 @@ Suggests:
     future.apply,
     ggplot2,
     lutz,
+    matrixStats,
+    pbapply,
     rappdirs,
+    RPostgres,
     RSQLite,
     sf,
     testthat (>= 3.0.0),

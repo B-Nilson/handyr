@@ -175,3 +175,29 @@ test_that(".quiet works", {
     expected = 2:4
   )))
 })
+
+test_that(".show_progress works", {
+  skip("For manual testing only")
+  values <- 1:3
+  expect_equal(
+    values |>
+      for_each(
+        \(value) {
+          value + 1
+        },
+        .show_progress = TRUE
+      ),
+    expected = 2:4
+  )
+  expect_equal(
+    values |>
+      for_each(
+        \(value) {
+          value + 1
+        },
+        .show_progress = TRUE,
+        .parallel = TRUE
+      ),
+    expected = 2:4
+  )
+})
