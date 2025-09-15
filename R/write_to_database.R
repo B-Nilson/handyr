@@ -210,7 +210,7 @@ db_combine_tables <- function(
   }
   # Remove "_staged" table
   db |>
-    DBI::dbRemoveTable(table_name_b)
+    DBI::dbRemoveTable(table_name_staging)
 }
 
 # Merge overlapping data from table b into table a based on primary key(s)
