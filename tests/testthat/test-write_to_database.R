@@ -1,19 +1,9 @@
 test_that("writing to SQLite works", {
-  db_name <- "__test.sqlite"
-  db_dir <- tempdir()
-  # Create database
-  db <- create_database(
-    name = db_name,
-    return_connection = TRUE,
-    path = db_dir
-  )
-  # Write data to database
-  db |>
-    write_to_database(
-      table_name = "airquality",
-      new_data = airquality,
-      primary_keys = c("Month", "Day")
-    )
+  # Create temp db to work with
+  db_list <- init_airquality_sqlite_test()
+  db_path <- names(db_list)
+  db <- db_list[[1]]
+
   # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
     dplyr::collect() |>
@@ -21,7 +11,7 @@ test_that("writing to SQLite works", {
     expect_equal(airquality, tolerance = 0.0001)
   # Cleanup
   DBI::dbDisconnect(db)
-  file.remove(file.path(db_dir, db_name))
+  file.remove(db_path)
 })
 
 test_that("writing to duckdb works", {
