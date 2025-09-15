@@ -17,14 +17,17 @@ delete_database_entries <- function(db, table_name, entry_keys) {
   }
 
   # Build sql for determining which entries to delete
-  entry_sql <- entry_keys |> 
+  entry_sql <- entry_keys |>
     as.data.frame() |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), ~ paste0(dplyr::cur_column(), " = ", .))) |> 
-    tidyr::unite("entry_keys", sep = " AND ") |> 
-    dplyr::mutate(entry_keys = paste0("(", .data$entry_keys, ")")) |> 
-    dplyr::pull("entry_keys") |> 
+    dplyr::mutate(dplyr::across(
+      dplyr::everything(),
+      ~ paste0(dplyr::cur_column(), " = ", .)
+    )) |>
+    tidyr::unite("entry_keys", sep = " AND ") |>
+    dplyr::mutate(entry_keys = paste0("(", .data$entry_keys, ")")) |>
+    dplyr::pull("entry_keys") |>
     paste(collapse = " OR ")
-    
+
   # Build delete query and submit. Return n rows deleted if successful
   delete_query <- "DELETE FROM %s WHERE %s" |>
     sprintf(table_name, entry_sql)
