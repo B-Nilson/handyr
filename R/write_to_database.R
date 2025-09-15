@@ -259,10 +259,8 @@ db_merge_new <- function(
     table_name_b,
     primary_keys) {
   # Determine columns to insert
-  col_names <- dplyr::tbl(db, table_name_b) |>
-    utils::head(1) |>
-    dplyr::collect() |>
-    colnames()
+  col_names <- db |> 
+    db_get_tbl_col_names(table_name = table_name_b)
   col_names_safe <- paste0('"', col_names, '"')
 
   # Build header sql for each table
@@ -281,9 +279,8 @@ db_merge_new <- function(
     sprintf(primary_keys) |>
     paste(collapse = " AND ")
 
-  # Build insert query
-  insert_template <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s _b LEFT JOIN %s _a ON %s\nWHERE %s;"
-  sql_query <- insert_template |>
+  # Build insert query and execute, return n_rows inserted
+  sql_query <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s _b LEFT JOIN %s _a ON %s\nWHERE %s;" |>
     sprintf(
       table_name_a,
       a_header_sql,
