@@ -5,10 +5,12 @@ delete_database_entries <- function(db, table_name, entry_keys) {
   rlang::check_installed("DBI")
   rlang::check_installed("dbplyr")
 
+  # Handle db path instead of connection
   if (is.character(db)) {
     db <- db_conn_from_path(db)
   }
 
+  # Build sql for determining which entries to delete
   entry_sql <- entry_keys |> 
     as.data.frame() |>
     dplyr::mutate(dplyr::across(dplyr::everything(), ~ paste0(dplyr::cur_column(), " = ", .))) |> 
@@ -17,8 +19,8 @@ delete_database_entries <- function(db, table_name, entry_keys) {
     dplyr::pull("entry_keys") |> 
     paste(collapse = " OR ")
     
-  delete_template <- "DELETE FROM %s WHERE %s"
-  delete_query <- delete_template |>
+  # Build delete query and submit
+  delete_query <- "DELETE FROM %s WHERE %s" |>
     sprintf(table_name, entry_sql)
   db |> DBI::dbExecute(delete_query)
 }
