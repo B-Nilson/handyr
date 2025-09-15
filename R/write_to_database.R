@@ -213,6 +213,7 @@ db_combine_tables <- function(
     DBI::dbRemoveTable(table_name_b)
 }
 
+# Merge overlapping data from table b into table a based on primary key(s)
 db_merge_overlap <- function(
     db,
     table_name_a,
@@ -220,26 +221,19 @@ db_merge_overlap <- function(
     primary_keys) {
   # Handle db path instead of connection
   if (is.character(db)) {
-    type <- tools::file_ext(db)
-    db <- .dbi_drivers[[type]][[1]]() |>
-      DBI::dbConnect(db)
+    db <- db_conn_from_path(db)
   }
 
-  # Builder header renaming sql
-  match_header_template <- '\t"%s" = s."%s"'
-  col_names <- utils::head(dplyr::tbl(db, table_name_a), 1) |>
-    dplyr::collect() |>
-    colnames()
-  match_header_sql <- match_header_template |>
-    sprintf(
-      col_names[!col_names %in% primary_keys],
-      col_names[!col_names %in% primary_keys]
-    ) |>
+  # Builder header matching sql
+  col_names <- db |> 
+    db_get_tbl_col_names(table_name = table_name_a)
+  col_names <- col_names[!col_names %in% primary_keys]
+  match_header_sql <- '\t"%s" = _b."%s"' |>
+    sprintf(col_names, col_names) |>
     paste(collapse = ",\n")
 
-  # Build overlap test sql
-  overlap_test_template <- '%s."%s" = s."%s"'
-  overlap_test_sql <- overlap_test_template |>
+  # Build key overlap test sql
+  overlap_test_sql <- '%s."%s" = _b."%s"' |>
     sprintf(
       rep(table_name_a, length(primary_keys)),
       primary_keys,
@@ -247,15 +241,14 @@ db_merge_overlap <- function(
     ) |>
     paste(collapse = " AND ")
 
-  merge_template <- "UPDATE %s\nSET\n%s\nFROM %s s\nWHERE %s;"
-  merge_query <- merge_template |>
+  # Build and execute merge query, return n_rows updated
+  merge_query <- "UPDATE %s\nSET\n%s\nFROM %s _b\nWHERE %s;" |>
     sprintf(
       table_name_a,
       match_header_sql,
       table_name_b,
       overlap_test_sql
     )
-
   db |> DBI::dbExecute(merge_query)
 }
 

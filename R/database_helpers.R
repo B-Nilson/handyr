@@ -71,3 +71,11 @@ get_sql_column_types <- function(new_data, unique_indexes = NULL) {
   }
   return(sql_types)
 }
+
+# Get column names of a database table
+db_get_tbl_col_names <- function(db, table_name) {
+  dplyr::tbl(db, table_name) |> 
+    utils::head(1) |>
+    dplyr::collect() |>
+    colnames()
+}
