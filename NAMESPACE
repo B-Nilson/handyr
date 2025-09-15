@@ -3,6 +3,7 @@
 export(clamp)
 export(convert_units)
 export(create_database)
+export(delete_database_entries)
 export(do_if)
 export(do_if_enough)
 export(extract_sf_coords)

@@ -1,3 +1,9 @@
+#' Delete specific entries from a database table.
+#'
+#' @param db The database connection or path to the database file (if sqlite or duckdb file extension).
+#' @param table_name The name of the table to delete entries from.
+#' @param entry_keys A data frame or named vector with names matching those in the table and entries equal to the those in the rows to delete.
+#' @export
 delete_database_entries <- function(db, table_name, entry_keys) {
   stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
   stopifnot(is.character(table_name) & length(table_name) == 1)
