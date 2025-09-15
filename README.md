@@ -44,6 +44,12 @@ db |>
     query_fun = \(df) df |> dplyr::filter(Month == 5, Day == 5)
   )
 
+# Delete matching entries in a database table
+db |>
+  delete_database_entries(
+    table_name = "airquality",
+    entry_keys = data.frame(Month = 5, Day = 5:8)
+  )
 
 ```
 
