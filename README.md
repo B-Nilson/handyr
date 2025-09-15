@@ -47,16 +47,32 @@ db |>
 
 ```
 
-
-## Examples
+## Logging
 
 ``` r
 library(handyr)
 
 # Initiate logging entry
 logs = list(log_step("handyr Examples", header = TRUE, time = FALSE))
+
 # Then log each step
-logs$summaries <- log_step("Vector Functions")
+logs$something <- log_step("doing something")
+
+# do something 
+
+# End logging
+logs$complete <- log_step("done")
+
+# Summarise logs timing
+summarise_logs(logs)
+
+```
+
+## Examples
+
+``` r
+library(handyr)
+
 x <- c(1:10 + 0.123, NA) |>
   clamp(range = c(2, 9)) |> # replcae values outside range with nearest value
   swap(2, with = NA) |> # swap out all "2"s with NA
@@ -65,7 +81,6 @@ x <- c(1:10 + 0.123, NA) |>
   convert_units(from = "m", to = "km") |> # convert from metres to kilometres
   max(na.rm = TRUE) # take the max (or `min()` or `mode()`)
 
-logs$others <- log_step("Location Functions")
 tz <- get_timezone(lng = -105.053144, lat = 69.116178)
 
 cities <- data.frame(
@@ -78,7 +93,6 @@ cities_sf <- cities |>
 sf_as_df(cities_sf)
 extract_sf_coords(cities_sf)
 
-logs$others <- log_step("QOL Functions")
 load_your_data <- function(x) {
   if(x %in% c(2, 4)) {
     stop("Something went wrong") # simulate file not existing or some other error
@@ -91,10 +105,6 @@ your_data <- 1:5 |> for_each(
   .bind = TRUE
 )
 get_interval(your_data$x)
-
-# End logging and summarise
-logs$complete = log_step("Completed Successfully")
-summarise_logs(logs)
 
 ```
 
