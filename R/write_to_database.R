@@ -61,9 +61,8 @@ write_to_database <- function(
     # Otherwise, merge/insert new data as needed
     db |>
       db_combine_tables(
+        table_name = table_name,
         new_data = new_data,
-        table_name_a = table_name,
-        table_name_b = paste0("_", table_name, "_staged"),
         primary_keys = primary_keys,
         unique_indexes = unique_indexes,
         insert_new = insert_new,
@@ -186,21 +185,22 @@ db_insert_rows <- function(db, table_name, new_data) {
   db |> DBI::dbExecute(insert_query) |> invisible()
 }
 
+# Merge new and/or overlapping data 
 db_combine_tables <- function(
   db,
+  table_name,
   new_data,
-  table_name_a,
-  table_name_b,
   primary_keys,
   unique_indexes = NULL,
   insert_new = TRUE,
   update_duplicates = FALSE
 ) {
+  table_name_staging <- paste0("_", table_name, "_staged"),
   # Create a staging table
   db |>
     db_create_table(
       new_data = new_data,
-      table_name = table_name_b,
+      table_name = table_name_staging,
       primary_keys = primary_keys,
       unique_indexes = unique_indexes
     )
@@ -208,8 +208,8 @@ db_combine_tables <- function(
   if (update_duplicates) {
     db |>
       db_merge_overlap(
-        table_name_a = table_name_a,
-        table_name_b = table_name_b,
+        table_name_a = table_name,
+        table_name_b = table_name_staging,
         primary_keys = primary_keys
       )
   }
@@ -217,8 +217,8 @@ db_combine_tables <- function(
   if (insert_new) {
     db |>
       db_merge_new(
-        table_name_a = table_name_a,
-        table_name_b = table_name_b,
+        table_name_a = table_name,
+        table_name_b = table_name_staging,
         primary_keys = primary_keys
       )
   }
