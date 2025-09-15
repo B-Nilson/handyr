@@ -41,12 +41,8 @@ write_to_database <- function(
   rlang::check_installed("dbplyr")
 
   # Handle db path instead of connection
-  # TODO: wont work for postgres
   if (is.character(db)) {
-    type <- tools::file_ext(db)
-    rlang::check_installed(names(.dbi_drivers[[type]]))
-    db <- .dbi_drivers[[type]][[1]]() |>
-      DBI::dbConnect(db)
+    db <- db_conn_from_path(db)
   }
 
   # Create initial table if not already existing
@@ -74,6 +70,19 @@ write_to_database <- function(
       db_transaction(db = db)
   }
   invisible(db)
+}
+
+db_conn_from_path <- function(db_path) {
+  # TODO: wont work for postgres
+  if (is.character(db)) {
+    type <- tools::file_ext(db)
+    if (!type %in% .dbi_creatable) {
+      stop("Could not detect a supported backend for ", db_path, "(based on file extension)")
+    }
+    rlang::check_installed(names(.dbi_drivers[[type]]))
+    db <- .dbi_drivers[[type]][[1]]() |>
+      DBI::dbConnect(db)
+  }
 }
 
 db_create_table <- function(

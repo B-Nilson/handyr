@@ -28,12 +28,8 @@ read_from_database <- function(
   rlang::check_installed("dbplyr")
 
   # Handle db path instead of connection
-  # TODO: wont work for postgres
   if (is.character(db)) {
-    type <- tools::file_ext(db)
-    rlang::check_installed(names(.dbi_drivers[[type]]))
-    db <- .dbi_drivers[[type]][[1]]() |>
-      DBI::dbConnect(db)
+    db <- db_conn_from_path(db)
   }
 
   # Connect to table and build query
