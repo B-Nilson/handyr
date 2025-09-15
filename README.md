@@ -68,21 +68,17 @@ summarise_logs(logs)
 
 ```
 
-## Examples
+## Spatial / Temporal
 
 ``` r
-library(handyr)
 
-x <- c(1:10 + 0.123, NA) |>
-  clamp(range = c(2, 9)) |> # replcae values outside range with nearest value
-  swap(2, with = NA) |> # swap out all "2"s with NA
-  rolling(mean, width = 3, direction = "backwards", .min_non_na = 2) |> # 3-point rolling mean
-  truncate(digits = 1) |> # drop all digits after the first
-  convert_units(from = "m", to = "km") |> # convert from metres to kilometres
-  max(na.rm = TRUE) # take the max (or `min()` or `mode()`)
+# Local timezone lookup
+get_timezone(lng = -105.053144, lat = 69.116178)
 
-tz <- get_timezone(lng = -105.053144, lat = 69.116178)
+# Get most likely data interval (useful for when occasional gaps may exist)
+get_interval(c(1:10, 12, 14, 16:20)
 
+# Convert sf objects back to data frames cleanly
 cities <- data.frame(
     name = c("Nanaimo", "Port Moody", "Prince George"),
     x = c(-124.0531, -122.8519, -122.7949),
@@ -91,8 +87,27 @@ cities <- data.frame(
 cities_sf <- cities |>
   sf::st_as_sf(coords = c("x", "y"), crs = "WGS84")
 sf_as_df(cities_sf)
+
+# Or just get the x/y coordinates as a data.frame
 extract_sf_coords(cities_sf)
 
+```
+
+## Miscellaneous
+
+``` r
+library(handyr)
+
+# Vector operations
+x <- c(1:10 + 0.123, NA) |>
+  clamp(range = c(2, 9)) |> # replcae values outside range with nearest value
+  swap(2, with = NA) |> # swap out all "2"s with NA
+  rolling("mean", width = 3, direction = "backwards", .min_non_na = 2) |> # 3-point (fast) rolling mean
+  truncate(digits = 1) |> # drop all digits after the first
+  convert_units(from = "m", to = "km") |> # convert from metres to kilometres
+  max(na.rm = TRUE) # take the max (or `min()` or `mode()`) with consistent NA handling
+
+# Error handling
 load_your_data <- function(x) {
   if(x %in% c(2, 4)) {
     stop("Something went wrong") # simulate file not existing or some other error
@@ -101,10 +116,11 @@ load_your_data <- function(x) {
   } 
 }
 your_data <- 1:5 |> for_each(
-  \(x) load_your_data(x) |> on_error(.return = NULL), 
+  # Capture error, convert to warning, return NULL, keep going
+  # or use a custom warning message instead (i.e. `.warn = "Failed to load data."`)
+  \(x) load_your_data(x) |> on_error(.return = NULL, .warn = TRUE)
   .bind = TRUE
 )
-get_interval(your_data$x)
 
 ```
 
