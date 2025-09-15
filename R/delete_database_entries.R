@@ -19,8 +19,8 @@ delete_database_entries <- function(db, table_name, entry_keys) {
     dplyr::pull("entry_keys") |> 
     paste(collapse = " OR ")
     
-  # Build delete query and submit
+  # Build delete query and submit. Return n rows deleted if successful
   delete_query <- "DELETE FROM %s WHERE %s" |>
     sprintf(table_name, entry_sql)
-  db |> DBI::dbExecute(delete_query)
+  db |> DBI::dbExecute(delete_query) |> invisible()
 }
