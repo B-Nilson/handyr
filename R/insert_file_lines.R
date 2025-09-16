@@ -34,7 +34,7 @@ insert_file_lines <- function(file_path, line_number, lines_to_insert) {
       dplyr::mutate(
         dplyr::across(dplyr::where(is.character), \(x) paste0('"', x, '"'))
       ) |>
-      tidyr::unite("line", dplyr::everything(), sep = ",", ) |> 
+      tidyr::unite("line", dplyr::everything(), sep = ",", ) |>
       dplyr::pull("line")
   }
 

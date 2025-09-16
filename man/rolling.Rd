@@ -6,7 +6,7 @@
 \usage{
 rolling(
   x,
-  FUN = "mean",
+  FUN = mean,
   ...,
   .width = 3,
   .direction = "backward",
