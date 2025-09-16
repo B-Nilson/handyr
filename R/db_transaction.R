@@ -1,4 +1,10 @@
-# Run code block in a database transaction (rollback on error)
+#' Submit a transaction to a database, rolling back if an error occurs
+#'
+#' @param db A database connection or path to database (if sqlite or duckdb file extension).
+#' @param ... A code block to run in the transaction. The full request needs to be done here, including connecting to `db`.
+#'
+#' @return The result of the code block
+#' @export
 db_transaction <- function(db, ...) {
   # Handle db path instead of connection
   if (is.character(db)) {
