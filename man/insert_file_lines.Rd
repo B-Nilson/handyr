@@ -4,7 +4,7 @@
 \alias{insert_file_lines}
 \title{Insert new lines into a text-file inline}
 \usage{
-insert_file_lines(file_path, line_number, lines_to_insert)
+insert_file_lines(file_path, line_number, new_lines)
 }
 \arguments{
 \item{file_path}{The path to the file to modify.}
@@ -13,7 +13,7 @@ insert_file_lines(file_path, line_number, lines_to_insert)
 If -1, the data will be appended to the end of the file.
 Line numbers start at 1, which in most cases is the header line - ensure you don't insert the header by accident.}
 
-\item{lines_to_insert}{A character vector of lines to insert, OR a matrix or data frame containing the data to insert.}
+\item{new_lines}{A character vector of lines to insert, OR a matrix or data frame containing the data to insert.}
 }
 \value{
 Invisibly returns \code{TRUE} if the file was editted successfully.

@@ -7,19 +7,21 @@
 #'
 #' @param file_path The path to the file to modify.
 #' @param line_number The line number to insert the data at.
-#'   If -1, the data will be appended to the end of the file. 
+#'   If -1, the data will be appended to the end of the file.
 #'   Line numbers start at 1, which in most cases is the header line - ensure you don't insert the header by accident.
-#' @param lines_to_insert A character vector of lines to insert, OR a matrix or data frame containing the data to insert.
+#' @param new_lines A character vector of lines to insert, OR a matrix or data frame containing the data to insert.
 #'
 #' @return Invisibly returns `TRUE` if the file was editted successfully.
 #' @export
-insert_file_lines <- function(file_path, line_number, lines_to_insert) {
+insert_file_lines <- function(file_path, line_number, new_lines) {
   stopifnot(is.character(file_path) & length(file_path) == 1)
-  stopifnot(is.numeric(line_number), length(line_number) == 1, line_number >= 1 | line_number == -1)
   stopifnot(
-    is.character(lines_to_insert) |
-      is.matrix(lines_to_insert) |
-      is.data.frame(lines_to_insert)
+    is.numeric(line_number),
+    length(line_number) == 1,
+    line_number >= 1 | line_number == -1
+  )
+  stopifnot(
+    is.character(new_lines) | is.matrix(new_lines) | is.data.frame(new_lines)
   )
   # Ensure sed is installed if not appending
   if (line_number != -1) {
@@ -28,13 +30,13 @@ insert_file_lines <- function(file_path, line_number, lines_to_insert) {
   }
 
   # Convert matrices to data.frames
-  if (is.matrix(lines_to_insert)) {
-    lines_to_insert <- as.data.frame(lines_to_insert)
+  if (is.matrix(new_lines)) {
+    new_lines <- as.data.frame(new_lines)
   }
 
   # Convert data.frames to a vector of line strings
-  if (is.data.frame(lines_to_insert)) {
-    lines_to_insert <- lines_to_insert |>
+  if (is.data.frame(new_lines)) {
+    new_lines <- new_lines |>
       dplyr::mutate(
         dplyr::across(dplyr::where(is.character), \(x) paste0('"', x, '"'))
       ) |>
@@ -44,12 +46,12 @@ insert_file_lines <- function(file_path, line_number, lines_to_insert) {
 
   # Append to end if -1, otherwise use sed to insert
   if (line_number == -1) {
-    result <- lines_to_insert |> 
+    result <- new_lines |>
       write(file_path, sep = "\n", append = TRUE)
   } else {
     # Write to temp file
     temp_file <- tempfile()
-    writeLines(lines_to_insert, temp_file)
+    writeLines(new_lines, temp_file)
 
     # Build and run command
     result <- 'sed -i "%sr %s" %s' |>
