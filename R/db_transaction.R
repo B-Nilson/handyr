@@ -6,6 +6,9 @@
 #' @return The result of the code block
 #' @export
 db_transaction <- function(db, ...) {
+  stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
+  rlang::check_installed("DBI")
+  rlang::check_installed("dbplyr")
   # Handle db path instead of connection
   if (is.character(db)) {
     db <- db_conn_from_path(db)
@@ -14,7 +17,7 @@ db_transaction <- function(db, ...) {
   # Begin a transaction
   DBI::dbBegin(db)
 
-  # run code block passed to function, capture error as warning
+  # run code block, capture error as warning
   result <- ... |> 
     on_error(.return = NULL, .warn = TRUE)
 
