@@ -27,7 +27,7 @@ Anything else beyond variable names needs to be prefaced with \verb{!!} (e.g. \c
 Will be overidden if \code{pull} is not \code{NULL}.
 Default is \code{TRUE}.}
 
-\item{pull}{A tidy-select expression to use \code{\link[dplyr:pull]{dplyr::pull()}} to pull a single column after applying \code{query_fun}.
+\item{pull}{A single character string to use with \code{\link[dplyr:pull]{dplyr::pull()}} to pull a column after applying \code{query_fun}.
 Default is \code{NULL}, which does not pull any columns.}
 }
 \value{
@@ -35,7 +35,7 @@ Default is \code{NULL}, which does not pull any columns.}
 \itemize{
 \item \code{collect} is \code{TRUE} (the default), returns a tibble (data.frame)
 \item \code{collect} is \code{FALSE}, returns a lazy table of the query
-\item \strong{Unless} \code{pull} is not \code{NULL}, returns a vector of the specified column
+\item \strong{Unless} \code{pull} is a column name, returns a vector of the specified column
 }
 }
 \description{

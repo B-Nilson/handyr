@@ -12,14 +12,14 @@
 #' @param collect A logical value indicating whether to use [dplyr::collect()] to fetch the data from the database.
 #'   Will be overidden if `pull` is not `NULL`.
 #'   Default is `TRUE`.
-#' @param pull A tidy-select expression to use [dplyr::pull()] to pull a single column after applying `query_fun`.
+#' @param pull A single character string to use with [dplyr::pull()] to pull a column after applying `query_fun`.
 #'   Default is `NULL`, which does not pull any columns.
 #'
 #' @return 
 #' `query_fun` applied to the table `table_name` in `db` where if:
 #'  * `collect` is `TRUE` (the default), returns a tibble (data.frame)
 #'  * `collect` is `FALSE`, returns a lazy table of the query
-#'  * **Unless** `pull` is not `NULL`, returns a vector of the specified column
+#'  * **Unless** `pull` is a column name, returns a vector of the specified column
 #' @export
 read_from_database <- function(
   db,
@@ -32,6 +32,7 @@ read_from_database <- function(
   stopifnot(is.character(table_name), length(table_name) == 1)
   stopifnot(is.function(query_fun))
   stopifnot(is.logical(collect), length(collect) == 1)
+  stopifnot((is.character(pull) & length(pull) == 1) | is.null(pull))
   rlang::check_installed("DBI")
   rlang::check_installed("dbplyr")
 
