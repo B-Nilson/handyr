@@ -9,17 +9,12 @@
 #' @param line_range A numeric vector of length 2 indicating the start and end of the range of lines to delete. Line numbers start at 1, which in most cases is the header line - ensure you don't delete the header by accident.
 #' @export
 delete_file_lines <- function(file_path, line_range) {
-  # Handle edge case where no lines desired to be removed
-  if (line_range[1] == line_range[2]) {
-    return(invisible(FALSE))
-  }
+  stopifnot(is.character(file_path) & length(file_path) == 1)
+  stopifnot(is.numeric(line_range) & length(line_range) %in% c(1, 2))
 
   # Ensure sed is installed
   # TODO: add fallback that is not inline
-  sed_exists <- check_if_cmd_exists("sed")
-  if (!sed_exists) {
-    stop("`sed` is not installed")
-  }
+  check_if_cmd_exists("sed")
 
   # Use sed (i=inline) to delete select range
   result <- "sed -i '%d,%dd' '%s'" |>
@@ -29,7 +24,11 @@ delete_file_lines <- function(file_path, line_range) {
 }
 
 check_if_cmd_exists <- function(cmd) {
-  system(paste(cmd, "--help"), intern = TRUE) |>
+  cmd_exists <- system(paste(cmd, "--help"), intern = TRUE) |>
     is.character() |>
     on_error(.return = FALSE)
+  if (!cmd_exists) {
+    stop(paste0("`", cmd, "` not found. Ensure it is installed and try again."))
+  }
+  invisible(cmd_exists)
 }
