@@ -1,5 +1,10 @@
 # Run code block in a database transaction (rollback on error)
 db_transaction <- function(db, ...) {
+  # Handle db path instead of connection
+  if (is.character(db)) {
+    db <- db_conn_from_path(db)
+  }
+
   # Begin a transaction
   DBI::dbBegin(db)
 
