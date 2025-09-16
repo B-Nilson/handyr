@@ -1,4 +1,11 @@
 insert_file_lines <- function(file_path, line_number, lines_to_insert) {
+  stopifnot(is.character(file_path) & length(file_path) == 1)
+  stopifnot(is.numeric(line_number) & length(line_number) == 1)
+  stopifnot(
+    is.character(lines_to_insert) |
+      is.matrix(lines_to_insert) |
+      is.data.frame(lines_to_insert)
+  )
   # Ensure sed is installed
   # TODO: add fallback that is not inline
   check_if_cmd_exists("sed")
