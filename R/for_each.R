@@ -24,8 +24,11 @@
 #'   Default is `FALSE`.
 #' @param .workers A single numeric value indicating the number of workers to run in parallel if `.parallel = TRUE`.
 #'   Default is `NULL` which uses all available cores (see [parallel::detectCores()]).
+#'   If an an existing plan is set of the same type as `.plan`, this argument is ignored.
 #' @param .plan A string indicating the strategy to use if `.parallel = TRUE`.
 #'   Default is `"multisession"` (see [future::plan()]).
+#'   If `.parallel = FALSE`, this argument is ignored.
+#'   If an an existing plan is set of the same type, this argument is ignored.
 #' @param .parallel_cleanup A logical value indicating if the parallel plan should be reset to sequential using `future::plan("sequential")` if `.parallel = TRUE`.
 #'   Default is `TRUE`.
 #' @param .show_progress A logical value indicating if the progress bar (see [pbapply::pbsapply()]) should be shown if `.parallel = TRUE`.
@@ -138,7 +141,10 @@ for_each <- function(
       .workers <- parallel::detectCores()
     }
     if (!is.null(.plan)) {
-      future::plan(.plan, workers = .workers)
+      current_plan <- class(future::plan())[2]
+      if (current_plan != .plan) {
+        future::plan(.plan, workers = .workers)
+      }
     }
     if (.show_progress) {
       apply_fun <- .as_list |>

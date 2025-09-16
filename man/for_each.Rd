@@ -63,7 +63,9 @@ Default is \code{FALSE}.}
 Default is \code{NULL} which uses all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}}).}
 
 \item{.plan}{A string indicating the strategy to use if \code{.parallel = TRUE}.
-Default is \code{"multisession"} (see \code{\link[future:plan]{future::plan()}}).}
+Default is \code{"multisession"} (see \code{\link[future:plan]{future::plan()}}).
+If \code{.parallel = FALSE}, this argument is ignored.
+If an an existing plan is set of the same type, this argument is ignored.}
 
 \item{.parallel_cleanup}{A logical value indicating if the parallel plan should be reset to sequential using \code{future::plan("sequential")} if \code{.parallel = TRUE}.
 Default is \code{TRUE}.}
