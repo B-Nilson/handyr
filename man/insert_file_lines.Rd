@@ -9,7 +9,9 @@ insert_file_lines(file_path, line_number, lines_to_insert)
 \arguments{
 \item{file_path}{The path to the file to modify.}
 
-\item{line_number}{The line number to insert the data at. Line numbers start at 1, which in most cases is the header line - ensure you don't insert the header by accident.}
+\item{line_number}{The line number to insert the data at.
+If -1, the data will be appended to the end of the file.
+Line numbers start at 1, which in most cases is the header line - ensure you don't insert the header by accident.}
 
 \item{lines_to_insert}{A character vector of lines to insert, OR a matrix or data frame containing the data to insert.}
 }
@@ -17,7 +19,7 @@ insert_file_lines(file_path, line_number, lines_to_insert)
 Invisibly returns \code{TRUE} if the file was editted successfully.
 }
 \description{
-Uses sed to insert select lines from a matrix/data.frame/vector into a file inline -
+Appends lines to a file (if \code{line_number = -1}), or uses sed to insert select lines from a matrix/data.frame/vector into a file inline -
 faster that loading the file into memory,
 then inserting the lines, and then writing the file back out.
 }
