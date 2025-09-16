@@ -48,3 +48,19 @@ test_that("collect works", {
   DBI::dbDisconnect(db)
   file.remove(db_path)
 })
+
+test_that("pull works", {
+  # Create temp db to work with
+  db_list <- init_airquality_sqlite_test()
+  db_path <- names(db_list)
+  db <- db_list[[1]]
+
+  # Pull Month column using a character
+  output <- db |>
+    read_from_database(table_name = "airquality", pull = "Month")
+  expect_equal(output, datasets::airquality$Month)
+
+  # Cleanup
+  DBI::dbDisconnect(db)
+  file.remove(db_path)
+})
