@@ -4,12 +4,11 @@ db_transaction <- function(db, ...) {
   DBI::dbBegin(db)
 
   # run code block passed to function, capture error as warning
-  transaction_failed <- ... |> 
-    on_error(.return = NULL, .warn = TRUE) |> 
-    is.null()
+  result <- ... |> 
+    on_error(.return = NULL, .warn = TRUE)
 
   # Rollback the transaction and quit if failed
-  if (transaction_failed) {
+  if (is.null(result)) {
     DBI::dbRollback(db)
     stop("Transaction failed.")
   }
