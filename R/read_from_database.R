@@ -10,9 +10,16 @@
 #'   (e.g. `query_fun = \(df) df |> dplyr::select(column1, column2)`)
 #'   Anything else beyond variable names needs to be prefaced with `!!` (e.g. `... |>  dplyr::filter(month |> dplyr::between(!!select_months[1], !!select_months[2]))`).
 #' @param collect A logical value indicating whether to use [dplyr::collect()] to fetch the data from the database.
+#'   Will be overidden if `pull` is not `NULL`.
 #'   Default is `TRUE`.
+#' @param pull A tidy-select expression to use [dplyr::pull()] to pull a single column after applying `query_fun`.
+#'   Default is `NULL`, which does not pull any columns.
 #'
-#' @return A data frame containing the data from the specified table in the database.
+#' @return 
+#' `query_fun` applied to the table `table_name` in `db` where if:
+#'  * `collect` is `TRUE` (the default), returns a tibble (data.frame)
+#'  * `collect` is `FALSE`, returns a lazy table of the query
+#'  * **Unless** `pull` is not `NULL`, returns a vector of the specified column
 #' @export
 read_from_database <- function(
   db,

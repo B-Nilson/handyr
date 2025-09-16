@@ -4,7 +4,13 @@
 \alias{read_from_database}
 \title{Read data from a database}
 \usage{
-read_from_database(db, table_name, query_fun = function(df) df, collect = TRUE)
+read_from_database(
+  db,
+  table_name,
+  query_fun = function(df) df,
+  collect = TRUE,
+  pull = NULL
+)
 }
 \arguments{
 \item{db}{A database connection or the path to a database file (if sqlite or duckdb file extension).}
@@ -18,10 +24,19 @@ Most \code{dplyr} functions will be implemented here (see \link[dbplyr:dbplyr-pa
 Anything else beyond variable names needs to be prefaced with \verb{!!} (e.g. \code{... |>  dplyr::filter(month |> dplyr::between(!!select_months[1], !!select_months[2]))}).}
 
 \item{collect}{A logical value indicating whether to use \code{\link[dplyr:compute]{dplyr::collect()}} to fetch the data from the database.
+Will be overidden if \code{pull} is not \code{NULL}.
 Default is \code{TRUE}.}
+
+\item{pull}{A tidy-select expression to use \code{\link[dplyr:pull]{dplyr::pull()}} to pull a single column after applying \code{query_fun}.
+Default is \code{NULL}, which does not pull any columns.}
 }
 \value{
-A data frame containing the data from the specified table in the database.
+\code{query_fun} applied to the table \code{table_name} in \code{db} where if:
+\itemize{
+\item \code{collect} is \code{TRUE} (the default), returns a tibble (data.frame)
+\item \code{collect} is \code{FALSE}, returns a lazy table of the query
+\item \strong{Unless} \code{pull} is not \code{NULL}, returns a vector of the specified column
+}
 }
 \description{
 \code{read_from_database} takes a database connection and table name, applies a dplyr-based query, and returns either a lazy-table or a data frame of the query results.
