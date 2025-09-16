@@ -18,7 +18,8 @@ read_from_database <- function(
   db,
   table_name,
   query_fun = \(df) df,
-  collect = TRUE
+  collect = TRUE,
+  pull = NULL
 ) {
   stopifnot((is.character(db) & length(db) == 1) | is_db_connection(db))
   stopifnot(is.character(table_name), length(table_name) == 1)
@@ -37,8 +38,10 @@ read_from_database <- function(
     dplyr::tbl(table_name) |>
     query_fun()
 
-  # Either collect results or return lazy table of query
-  if (collect) {
+  # Either pull the desired column, collect results or return lazy table of query
+  if (!is.null(pull)) {
+    output <- query |> dplyr::pull(pull)
+  } else if (collect) {
     output <- dplyr::collect(query)
   } else {
     output <- query
