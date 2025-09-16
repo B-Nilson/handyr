@@ -138,7 +138,10 @@ for_each <- function(
       .workers <- parallel::detectCores()
     }
     if (!is.null(.plan)) {
-      future::plan(.plan, workers = .workers)
+      current_plan <- class(future::plan())[2]
+      if (current_plan != .plan) {
+        future::plan(.plan, workers = .workers)
+      }
     }
     if (.show_progress) {
       apply_fun <- .as_list |>
