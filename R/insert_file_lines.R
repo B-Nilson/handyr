@@ -9,7 +9,7 @@
 #' @param line_number The line number to insert the data at. Line numbers start at 1, which in most cases is the header line - ensure you don't insert the header by accident.
 #' @param lines_to_insert A character vector of lines to insert, OR a matrix or data frame containing the data to insert.
 #'
-#' @value Invisibly returns `TRUE` if the file was editted successfully.
+#' @return Invisibly returns `TRUE` if the file was editted successfully.
 #' @export
 insert_file_lines <- function(file_path, line_number, lines_to_insert) {
   stopifnot(is.character(file_path) & length(file_path) == 1)
