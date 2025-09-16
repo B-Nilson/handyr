@@ -1,3 +1,13 @@
+#' Delete select lines from a file inline
+#' 
+#' @description
+#' Uses sed to delete select lines from a file inline - 
+#' faster that loading the file into memory, 
+#' then deleting the lines, and then writing the file back out.
+#'
+#' @param file_path The path to the file to modify.
+#' @param line_range A numeric vector of length 2 indicating the start and end of the range of lines to delete. Line numbers start at 1, which in most cases is the header line - ensure you don't delete the header by accident.
+#' @export
 delete_file_lines <- function(file_path, line_range) {
   # Handle edge case where no lines desired to be removed
   if (line_range[1] == line_range[2]) {
