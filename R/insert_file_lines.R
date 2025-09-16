@@ -43,7 +43,9 @@ insert_file_lines <- function(file_path, line_number, lines_to_insert) {
   writeLines(lines_to_insert, temp_file)
 
   # Build and run command
-  'sed -i "%sr %s" %s' |>
-    sprintf(line_number - 1, temp_file, file_path) |> 
+  result <- 'sed -i "%sr %s" %s' |>
+    sprintf(line_number - 1, temp_file, file_path) |>
     system(intern = TRUE)
+
+  invisible(length(result) == 0)
 }
