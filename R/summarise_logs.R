@@ -43,7 +43,7 @@ summarise_logs <- function(logs, save_to = NULL) {
         TRUE ~ .data$run_time
       )
     ) |>
-    dplyr::group_by(run_time) |> 
+    dplyr::group_by("run_time") |> 
     dplyr::mutate(
       run_time_text = dplyr::case_when(
         .data$is_not_section ~ NA,
