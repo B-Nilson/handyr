@@ -95,8 +95,8 @@ db_create_table <- function(
 
   # Build column definition SQL
   # TODO: handle more data types
-  column_types <- new_data |>
-    get_sql_column_types(unique_indexes = unique_indexes)
+  column_types <- db |>
+    get_sql_column_types(new_data = new_data, unique_indexes = unique_indexes)
   column_def_sql <- '\t"%s" %s' |>
     sprintf(names(new_data), column_types) |>
     paste(collapse = ",\n")
