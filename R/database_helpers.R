@@ -23,17 +23,10 @@ is_db_connection <- function(db) {
 # Convert from R columns types to SQL column types
 # TODO: handle more data types
 # TODO: are dates handled correctly?
-get_sql_column_types <- function(new_data, unique_indexes = NULL) {
-  # Get R column types
-  column_types <- new_data |> sapply(\(x) class(x)[1])
+get_sql_column_types <- function(db, new_data, unique_indexes = NULL) {
   # Convert to SQL column types
-  sql_types <- dplyr::case_when(
-    column_types %in%
-      c("integer", "logical", "Date", "POSIXct", "POSIXlt", "POSIXt") ~
-      "INTEGER",
-    column_types == "numeric" ~ "REAL",
-    TRUE ~ "TEXT"
-  )
+  sql_types <- db |> 
+    DBI::dbDataType(new_data)
   # Mark unique columns as not null if specified
   if (!is.null(unique_indexes)) {
     is_unique <- names(new_data) %in% unlist(unique_indexes)
