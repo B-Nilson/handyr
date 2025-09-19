@@ -40,7 +40,6 @@ rolling <- function(
     .direction = "backward",
     .fill = NA,
     .min_non_na = 0) {
-  rlang::check_installed("zoo")
   # Handle inputs
   stopifnot(is.function(FUN) | is.character(FUN))
   stopifnot(is.numeric(.width), length(.width) == 1)
@@ -69,6 +68,8 @@ rolling <- function(
     }
     FUN <- get(FUN)
   }
+  
+  rlang::check_installed("zoo")
 
   # translate .direction -> align for zoo
   align <- ifelse(
