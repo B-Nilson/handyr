@@ -13,7 +13,6 @@ Imports:
     lubridate,
     prettyunits,
     rlang,
-    stringr,
     tidyr
 Suggests: 
     DBI,

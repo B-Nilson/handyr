@@ -28,11 +28,11 @@ db_transaction <- function(db, ...) {
   }
 
   # Commit the transaction, capture error if needed
-  result <- DBI::dbCommit(db) |>
+  result2 <- DBI::dbCommit(db) |>
     on_error(.return = NULL, .warn = TRUE)
 
   # Rollback the transaction if failed
-  if (is.null(result)) {
+  if (is.null(result2)) {
     DBI::dbRollback(db)
     stop("Transaction failed.")
   }
