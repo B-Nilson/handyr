@@ -18,7 +18,7 @@ test_that("writing to SQLite works", {
   
   # Cleanup
   DBI::dbDisconnect(db)
-  file.remove(file.path(db_dir, db_name))
+  file.remove(file.path(db_path))
 })
 
 test_that("writing to duckdb works", {
@@ -36,7 +36,7 @@ test_that("writing to duckdb works", {
 
   # Cleanup
   DBI::dbDisconnect(db)
-  file.remove(file.path(db_dir, db_name))
+  file.remove(file.path(db_path))
 })
 
 test_that("writing to postgresql works", {
