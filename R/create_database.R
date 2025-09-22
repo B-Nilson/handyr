@@ -128,7 +128,7 @@ setup_postgres_db <- function(
     stop("This function currently only supports Windows.")
   }
   # Define persistent folders
-  base_dir <- rappdirs::user_data_dir("postgres_handyr") |>
+  base_dir <- rappdirs::user_data_dir("postgres", "handyr") |>
     file.path(version)
   bin_dir <- file.path(base_dir, "pgsql", "bin")
   zip_name <- sprintf("postgresql-%s-windows-x64-binaries.zip", version)
@@ -199,7 +199,7 @@ start_postgres_server <- function(
     version <- "17.0-1"
   }
   # Define persistent folders
-  base_dir <- rappdirs::user_data_dir("postgres_handyr") |>
+  base_dir <- rappdirs::user_data_dir("postgres", "handyr") |>
     file.path(version)
   data_dir <- file.path(base_dir, "data", db_name)
   bin_dir <- file.path(base_dir, "pgsql", "bin")
