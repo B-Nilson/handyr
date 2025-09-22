@@ -5,7 +5,7 @@
 #' @param db A database connection or the path to a database file (if sqlite or duckdb file extension).
 #' @param table_name A character string specifying the table to read from.
 #' @param query_fun A function taking a single argument (the data.frame-like object to be queried) and returning a data frame.
-#'   Default is the identity function, which simply returns the input data frame.
+#'   Default is `NULL`, which does not apply a query fun.
 #'   Most `dplyr` functions will be implemented here (see [dbplyr] for details).
 #'   (e.g. `query_fun = \(df) df |> dplyr::select(column1, column2)`)
 #'   Anything else beyond variable names needs to be prefaced with `!!` (e.g. `... |>  dplyr::filter(month |> dplyr::between(!!select_months[1], !!select_months[2]))`).
@@ -24,13 +24,13 @@
 read_from_database <- function(
   db,
   table_name,
-  query_fun = \(df) df,
+  query_fun = NULL,
   collect = TRUE,
   pull = NULL
 ) {
   stopifnot((is.character(db) & length(db) == 1) | is_db_connection(db))
   stopifnot(is.character(table_name), length(table_name) == 1)
-  stopifnot(is.function(query_fun))
+  stopifnot(is.function(query_fun) | is.null(query_fun))
   stopifnot(is.logical(collect), length(collect) == 1)
   stopifnot((is.character(pull) & length(pull) == 1) | is.null(pull))
   rlang::check_installed("DBI")
@@ -43,8 +43,10 @@ read_from_database <- function(
 
   # Connect to table and build query
   query <- db |>
-    dplyr::tbl(table_name) |>
-    query_fun()
+    dplyr::tbl(table_name)
+  if(!is.null(query_fun)) {
+    query <- query_fun(query)
+  }
 
   # Either pull the desired column, collect results or return lazy table of query
   if (!is.null(pull)) {
