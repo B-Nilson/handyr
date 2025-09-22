@@ -3,7 +3,6 @@
 export(clamp)
 export(convert_units)
 export(create_database)
-export(db_transaction)
 export(delete_database_entries)
 export(do_if)
 export(do_if_enough)
