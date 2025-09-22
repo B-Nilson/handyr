@@ -132,43 +132,12 @@ db_create_table <- function(
 
   # insert rows if provided
   if (nrow(new_data)) {
-    n_rows_inserted <- db |> 
-      db_insert_rows(new_data = new_data, table_name = table_name)
-  }else {
+    n_rows_inserted <- db |>
+      DBI::dbAppendRows(value = new_data, name = table_name)
+  } else {
     n_rows_inserted <- 0
   }
   invisible(n_rows_inserted)
-}
-
-# Insert new_data into existing table
-db_insert_rows <- function(db, table_name, new_data) {
-  # Make values SQL
-  values_sql <- new_data |>
-    dplyr::mutate(
-      # Replace NAs with -Inf (swapped with NULL later)
-      dplyr::across(dplyr::everything(), ~ swap(., NA, -Inf)),
-      # Wrap strings in quotes in case they contain commas/spaces etc
-      # TODO: what about strings with quotes in them?
-      # TODO: what about dates/times?
-      dplyr::across(dplyr::where(is.character), ~ paste0("'", ., "'"))
-    ) |>
-    tidyr::unite("values", sep = ", ") |>
-    # Replace -Inf placeholder with NULL
-    dplyr::mutate(
-      values = paste0("(", .data$values, ")") |>
-        gsub(pattern = "'-Inf'|-Inf", replacement = "NULL")
-    ) |>
-    # Combine into single string
-    dplyr::pull("values") |>
-    paste(collapse = ",\n")
-
-  # Build insert query
-  col_names_safe <- paste0('"', names(new_data), '"')
-  insert_query <- "INSERT INTO %s (%s)\nVALUES\n%s;" |>
-    sprintf(table_name, paste(col_names_safe, collapse = ", "), values_sql)
-
-  # Insert values, return n rows inserted
-  db |> DBI::dbExecute(insert_query) |> invisible()
 }
 
 # Merge new and/or overlapping data 
