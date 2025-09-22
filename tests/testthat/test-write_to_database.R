@@ -9,6 +9,11 @@ test_that("writing to SQLite works", {
   dplyr::tbl(db, "airquality") |>
     dplyr::collect() |>
     as.data.frame() |>
+    dplyr::mutate(
+      date = as.Date(date),
+      datetime = as.POSIXct(datetime, tz = "UTC")
+    ) |>
+    dplyr::arrange(date) |> 
     expect_equal(expected, tolerance = 0.0001)
   
   # Cleanup
