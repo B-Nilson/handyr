@@ -107,8 +107,10 @@ db_create_table <- function(
   } else {
     unique_constraint_sql <- unique_indexes |>
       sapply(\(unique_ids) {
-        unique_ids_safe <- paste0('"', unique_ids, '"')
-        "\tUNIQUE (%s)" |> sprintf(paste0(unique_ids_safe, collapse = ", "))
+        unique_ids_safe <- unique_ids |>
+          DBI::dbQuoteIdentifier(conn = db) |>
+          paste0(collapse = ", ")
+        "\tUNIQUE (%s)" |> sprintf(unique_ids_safe)
       }) |>
       paste(collapse = ",\n")
   }
@@ -120,7 +122,7 @@ db_create_table <- function(
       "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
     ) |>
     sprintf(
-      table_name,
+      table_name |> DBI::dbQuoteIdentifier(conn = db),
       column_def_sql,
       primary_key_sql,
       unique_constraint_sql
@@ -151,6 +153,8 @@ db_combine_tables <- function(
   update_duplicates = FALSE
 ) {
   table_name_staging <- paste0("_", table_name, "_staged")
+  table_name_staging_safe <- table_name_staging |>
+    DBI::dbQuoteIdentifier(conn = db)
   # Create a staging table
   db |>
     db_create_table(
@@ -179,7 +183,7 @@ db_combine_tables <- function(
   }
   # Remove "_staged" table
   db |>
-    DBI::dbRemoveTable(table_name_staging)
+    DBI::dbRemoveTable(table_name_staging_safe)
 }
 
 # Merge overlapping data from table b into table a based on primary key(s)
@@ -193,29 +197,37 @@ db_merge_overlap <- function(
     db <- db_conn_from_path(db)
   }
 
-  # Builder header matching sql
-  col_names <- db |> 
+  # Get non-pKey headers
+  col_names <- db |>
     db_get_tbl_col_names(table_name = table_name_a)
   col_names <- col_names[!col_names %in% primary_keys]
-  match_header_sql <- '\t"%s" = _b."%s"' |>
-    sprintf(col_names, col_names) |>
+
+  # Make sql-safe values
+  table_name_a_safe <- table_name_a |> DBI::dbQuoteIdentifier(conn = db)
+  table_name_b_safe <- table_name_b |> DBI::dbQuoteIdentifier(conn = db)
+  primary_keys_safe <- primary_keys |> DBI::dbQuoteIdentifier(conn = db)
+  col_names_safe <- col_names |> DBI::dbQuoteIdentifier(conn = db)
+
+  # Builder header matching sql
+  match_header_sql <- '\t%s = _b.%s' |>
+    sprintf(col_names_safe, col_names_safe) |>
     paste(collapse = ",\n")
 
   # Build key overlap test sql
-  overlap_test_sql <- '%s."%s" = _b."%s"' |>
+  overlap_test_sql <- '%s.%s = _b.%s' |>
     sprintf(
-      rep(table_name_a, length(primary_keys)),
-      primary_keys,
-      primary_keys
+      table_name_a_safe |> rep(length(primary_keys)),
+      primary_keys_safe,
+      primary_keys_safe
     ) |>
     paste(collapse = " AND ")
 
   # Build and execute merge query, return n_rows updated
   merge_query <- "UPDATE %s\nSET\n%s\nFROM %s _b\nWHERE %s;" |>
     sprintf(
-      table_name_a,
+      table_name_a_safe,
       match_header_sql,
-      table_name_b,
+      table_name_b_safe,
       overlap_test_sql
     )
   db |> DBI::dbExecute(merge_query)
@@ -228,34 +240,37 @@ db_merge_new <- function(
     table_name_b,
     primary_keys) {
   # Determine columns to insert
-  col_names <- db |> 
+  col_names <- db |>
     db_get_tbl_col_names(table_name = table_name_b)
-  col_names_safe <- paste0('"', col_names, '"')
+
+  # Build sql-safe values
+  col_names_safe <- col_names |> DBI::dbQuoteIdentifier(conn = db)
+  primary_keys_safe <- primary_keys |> DBI::dbQuoteIdentifier(conn = db)
+  table_name_a_safe <- table_name_a |> DBI::dbQuoteIdentifier(conn = db)
+  table_name_b_safe <- table_name_b |> DBI::dbQuoteIdentifier(conn = db)
 
   # Build header sql for each table
-  a_header_sql <- col_names_safe |>
-    paste(collapse = ", ")
-  b_header_sql <- paste0("_b.", col_names_safe) |>
-    paste(collapse = ", ")
+  a_header_sql <- col_names_safe |> paste(collapse = ", ")
+  b_header_sql <- paste0("_b.", col_names_safe) |> paste(collapse = ", ")
 
   # Build overlap test sql
-  overlap_test_sql <- '_b."%s" = _a."%s"' |>
-    sprintf(primary_keys, primary_keys) |>
+  overlap_test_sql <- '_b.%s = _a.%s' |>
+    sprintf(primary_keys_safe, primary_keys_safe) |>
     paste(collapse = " AND ")
 
   # Build not overlap test sql (so we can exclude in left join)
-  not_overlap_test_sql <- '_a."%s" IS NULL' |>
-    sprintf(primary_keys) |>
+  not_overlap_test_sql <- '_a.%s IS NULL' |>
+    sprintf(primary_keys_safe) |>
     paste(collapse = " AND ")
 
   # Build insert query and execute, return n_rows inserted
   sql_query <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s _b LEFT JOIN %s _a ON %s\nWHERE %s;" |>
     sprintf(
-      table_name_a,
+      table_name_a_safe,
       a_header_sql,
       b_header_sql,
-      table_name_b,
-      table_name_a,
+      table_name_b_safe,
+      table_name_a_safe,
       overlap_test_sql,
       not_overlap_test_sql
     )
