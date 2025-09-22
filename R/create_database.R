@@ -154,11 +154,14 @@ setup_postgres_db <- function(
     if (response != "yes") {
       stop("Download cancelled.")
     }
-    # Download zip
-    utils::download.file(
-      url = zip_src,
-      destfile = zip_path,
-      mode = "wb"
+    # Download zip (prevent timeout error - user can ctrl+z if needed)
+    withr::with_options(
+      list(timeout = Inf),
+      utils::download.file(
+        url = zip_src,
+        destfile = zip_path,
+        mode = "wb"
+      )
     )
   }
 
