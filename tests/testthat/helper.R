@@ -1,6 +1,6 @@
 # Creates a tempdir sqlite database with airquality data
 init_airquality_db_test <- function(type = "sqlite") {
-  db_name <- "__test"
+  db_name <- "test_tbl"
   db_dir <- tempdir()
   db_data <- datasets::airquality |>
     as.data.frame() |>
