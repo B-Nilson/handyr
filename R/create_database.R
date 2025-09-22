@@ -44,6 +44,7 @@ create_database <- function(
     type <- tools::file_ext(name) |>
       swap("", with = "sqlite")
   }
+  stopifnot(type %in% .dbi_creatable)
 
   # Check if driver package is installed, prompt to install if not
   db_driver <- .dbi_drivers[[type]]
@@ -104,7 +105,7 @@ create_database <- function(
   return(database_path)
 }
 
-.dbi_creatable <- c("sqlite", "duckdb") # not all drivers are creatable by R
+.dbi_creatable <- c("sqlite", "duckdb", "postgresql") # not all drivers are creatable by R
 .dbi_drivers <- list(
   sqlite = c("RSQLite" = \() RSQLite::SQLite()),
   duckdb = c("duckdb" = \() duckdb::duckdb()),
