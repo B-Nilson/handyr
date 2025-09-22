@@ -1,6 +1,6 @@
 test_that("basic case works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
+  db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
 
@@ -16,7 +16,7 @@ test_that("basic case works", {
 
 test_that("custom query works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
+  db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
 
@@ -35,7 +35,7 @@ test_that("custom query works", {
 
 test_that("collect works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
+  db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
 
@@ -51,7 +51,7 @@ test_that("collect works", {
 
 test_that("pull works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
+  db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
 

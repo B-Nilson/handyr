@@ -1,6 +1,6 @@
 test_that("basic case works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
+  db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
 
