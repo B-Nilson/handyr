@@ -88,8 +88,7 @@ db_create_table <- function(
   }
 
   # Build primary key SQL
-  # TODO: quotes dont work for MySQL (backticks) or SQL server (sqr brackets)
-  primary_keys_safe <- paste0('"', primary_keys, '"')
+  primary_keys_safe <- primary_keys |> DBI::dbQuoteIdentifier(conn = db)
   primary_key_sql <- "\tPRIMARY KEY (%s)" |>
     sprintf(paste0(primary_keys_safe, collapse = ", "))
 
