@@ -119,6 +119,7 @@ setup_postgres_db <- function(
     user = "postgres",
     password = "postgres") {
   rlang::check_installed("rappdirs")
+  rlang::check_installed("withr")
   if (is.null(version)) {
     version <- "17.0-1"
   }
