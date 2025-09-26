@@ -44,6 +44,7 @@ create_database <- function(
     type <- tools::file_ext(name) |>
       swap("", with = "sqlite")
   }
+  stopifnot(type %in% .dbi_creatable)
 
   # Check if driver package is installed, prompt to install if not
   db_driver <- .dbi_drivers[[type]]
@@ -104,7 +105,7 @@ create_database <- function(
   return(database_path)
 }
 
-.dbi_creatable <- c("sqlite", "duckdb") # not all drivers are creatable by R
+.dbi_creatable <- c("sqlite", "duckdb", "postgresql") # not all drivers are creatable by R
 .dbi_drivers <- list(
   sqlite = c("RSQLite" = \() RSQLite::SQLite()),
   duckdb = c("duckdb" = \() duckdb::duckdb()),
@@ -127,7 +128,7 @@ setup_postgres_db <- function(
     stop("This function currently only supports Windows.")
   }
   # Define persistent folders
-  base_dir <- rappdirs::user_data_dir("postgres_handyr") |>
+  base_dir <- rappdirs::user_data_dir("postgres", "handyr") |>
     file.path(version)
   bin_dir <- file.path(base_dir, "pgsql", "bin")
   zip_name <- sprintf("postgresql-%s-windows-x64-binaries.zip", version)
@@ -153,11 +154,14 @@ setup_postgres_db <- function(
     if (response != "yes") {
       stop("Download cancelled.")
     }
-    # Download zip
-    utils::download.file(
-      url = zip_src,
-      destfile = zip_path,
-      mode = "wb"
+    # Download zip (prevent timeout error - user can ctrl+z if needed)
+    withr::with_options(
+      list(timeout = Inf),
+      utils::download.file(
+        url = zip_src,
+        destfile = zip_path,
+        mode = "wb"
+      )
     )
   }
 
@@ -195,7 +199,7 @@ start_postgres_server <- function(
     version <- "17.0-1"
   }
   # Define persistent folders
-  base_dir <- rappdirs::user_data_dir("postgres_handyr") |>
+  base_dir <- rappdirs::user_data_dir("postgres", "handyr") |>
     file.path(version)
   data_dir <- file.path(base_dir, "data", db_name)
   bin_dir <- file.path(base_dir, "pgsql", "bin")

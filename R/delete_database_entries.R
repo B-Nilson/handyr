@@ -21,7 +21,13 @@ delete_database_entries <- function(db, table_name, entry_keys) {
     as.data.frame() |>
     dplyr::mutate(dplyr::across(
       dplyr::everything(),
-      ~ paste0(dplyr::cur_column(), " = ", .)
+      \(values) {
+        values_safe <- values |>
+          DBI::dbQuoteLiteral(conn = db)
+        dplyr::cur_column() |> 
+          DBI::dbQuoteIdentifier(conn = db) |> 
+          paste0(" = ", values_safe)
+      }
     )) |>
     tidyr::unite("entry_keys", sep = " AND ") |>
     dplyr::mutate(entry_keys = paste0("(", .data$entry_keys, ")")) |>
@@ -30,6 +36,9 @@ delete_database_entries <- function(db, table_name, entry_keys) {
 
   # Build delete query and submit. Return n rows deleted if successful
   delete_query <- "DELETE FROM %s WHERE %s" |>
-    sprintf(table_name, entry_sql)
+    sprintf(
+      table_name |> DBI::dbQuoteIdentifier(conn = db), 
+      entry_sql
+    )
   db |> DBI::dbExecute(delete_query) |> invisible()
 }

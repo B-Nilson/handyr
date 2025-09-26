@@ -1,13 +1,15 @@
 test_that("basic case works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
-  db_path <- names(db_list)
+  db_list <- init_airquality_db_test(type = "duckdb")
+  db_path <- names(db_list)[1]
   db <- db_list[[1]]
+  expected <- db_list[[2]]
 
   # Read data from database
-  output <- read_from_database(db, table_name = "airquality") |> 
-    as.data.frame()
-  expect_equal(output, datasets::airquality, tolerance = 0.0001)
+  read_from_database(db, table_name = "airquality") |> 
+    as.data.frame() |> 
+    dplyr::arrange(date) |>
+    expect_equal(expected, tolerance = 0.0001)
 
   # Cleanup
   DBI::dbDisconnect(db)
@@ -16,17 +18,18 @@ test_that("basic case works", {
 
 test_that("custom query works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
-  db_path <- names(db_list)
+  db_list <- init_airquality_db_test(type = "duckdb")
+  db_path <- names(db_list)[1]
   db <- db_list[[1]]
+  expected <- db_list[[2]]
 
   # Read data from database
   db_query <- \(df) df |> dplyr::filter(.data$Month == 5)
-  output <- db |> 
+  db |> 
     read_from_database(table_name = "airquality", query_fun = db_query) |>
-    as.data.frame()
-  expect_equal(output, datasets::airquality |>
-    dplyr::filter(Month == 5), tolerance = 0.0001)
+    as.data.frame() |> 
+    dplyr::arrange(date) |>
+    expect_equal(expected |> dplyr::filter(Month == 5), tolerance = 0.0001)
 
   # Cleanup
   DBI::dbDisconnect(db)
@@ -35,7 +38,7 @@ test_that("custom query works", {
 
 test_that("collect works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
+  db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
 
@@ -51,7 +54,7 @@ test_that("collect works", {
 
 test_that("pull works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
+  db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
 

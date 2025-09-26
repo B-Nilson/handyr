@@ -7,7 +7,7 @@
 read_from_database(
   db,
   table_name,
-  query_fun = function(df) df,
+  query_fun = NULL,
   collect = TRUE,
   pull = NULL
 )
@@ -18,7 +18,7 @@ read_from_database(
 \item{table_name}{A character string specifying the table to read from.}
 
 \item{query_fun}{A function taking a single argument (the data.frame-like object to be queried) and returning a data frame.
-Default is the identity function, which simply returns the input data frame.
+Default is \code{NULL}, which does not apply a query fun.
 Most \code{dplyr} functions will be implemented here (see \link[dbplyr:dbplyr-package]{dbplyr::dbplyr} for details).
 (e.g. \verb{query_fun = \\(df) df |> dplyr::select(column1, column2)})
 Anything else beyond variable names needs to be prefaced with \verb{!!} (e.g. \code{... |>  dplyr::filter(month |> dplyr::between(!!select_months[1], !!select_months[2]))}).}

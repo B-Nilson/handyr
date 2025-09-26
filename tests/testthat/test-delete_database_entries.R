@@ -1,8 +1,9 @@
 test_that("basic case works", {
   # Create temp db to work with
-  db_list <- init_airquality_sqlite_test()
-  db_path <- names(db_list)
+  db_list <- init_airquality_db_test(type = "duckdb")
+  db_path <- names(db_list)[1]
   db <- db_list[[1]]
+  expected <- db_list[[2]]
 
   # Delete May 5th entry
   entry_keys <- data.frame(Month = 5, Day = 5)
@@ -13,7 +14,7 @@ test_that("basic case works", {
   read_from_database(db, table_name = "airquality") |>
     as.data.frame() |>
     expect_equal(
-      datasets::airquality |>
+      expected |>
         dplyr::filter(!(Month == 5 & Day == 5)),
       tolerance = 0.0001
     )

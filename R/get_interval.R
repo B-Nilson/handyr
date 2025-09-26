@@ -37,9 +37,9 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
 
   # Get interval frequencies
   intervals <- diff(x)
-  if (is.numeric(intervals)) {
+  if (is.numeric(intervals)) { # handle floating point errors
     intervals <- round(intervals, digits = 14)
-  } # handle floating point errors
+  }
   unique_intervals <- unique(intervals)
   frequencies <- match(intervals, unique_intervals) |>
     tabulate()
@@ -49,6 +49,11 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
     interval = unique_intervals[order(-frequencies)],
     frequency = frequencies[order(-frequencies)]
   )
+
+  # Handle difftime units dropped by unique()
+  if (lubridate::is.difftime(intervals)) {
+    interval_freqs$interval <- as.difftime(interval_freqs$interval, units = units(intervals)) 
+  }
 
   # Warn if more than one interval has the same frequency
   if (!quiet & nrow(interval_freqs) > 1) {
