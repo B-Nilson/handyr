@@ -4,3 +4,6 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
+^codecov\.yml$
+^[.]?air[.]toml$
+^\.vscode$
