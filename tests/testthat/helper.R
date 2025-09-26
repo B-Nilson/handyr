@@ -23,6 +23,6 @@ init_airquality_db_test <- function(type = "sqlite") {
     )
   return(
     list(db, db_data) |> 
-      setNames(c(file.path(db_dir, db_name), "original"))
+      setNames(c(paste0(db_dir, "/", db_name, ".", type), "original"))
   )
 }
