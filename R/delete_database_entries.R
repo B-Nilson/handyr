@@ -16,29 +16,36 @@ delete_database_entries <- function(db, table_name, entry_keys) {
     db <- db_conn_from_path(db)
   }
 
-  # Build sql for determining which entries to delete
-  entry_sql <- entry_keys |>
-    as.data.frame() |>
-    dplyr::mutate(dplyr::across(
-      dplyr::everything(),
-      \(values) {
-        values_safe <- values |>
-          DBI::dbQuoteLiteral(conn = db)
-        dplyr::cur_column() |> 
-          DBI::dbQuoteIdentifier(conn = db) |> 
-          paste0(" = ", values_safe)
-      }
-    )) |>
-    tidyr::unite("entry_keys", sep = " AND ") |>
-    dplyr::mutate(entry_keys = paste0("(", .data$entry_keys, ")")) |>
-    dplyr::pull("entry_keys") |>
-    paste(collapse = " OR ")
-
-  # Build delete query and submit. Return n rows deleted if successful
-  delete_query <- "DELETE FROM %s WHERE %s" |>
-    sprintf(
-      table_name |> DBI::dbQuoteIdentifier(conn = db), 
-      entry_sql
+  # Create temp table
+  temp_tbl_name <- paste0("_delete_keys_", table_name)
+  db |>
+    db_create_table(
+      table_name = temp_tbl_name,
+      new_data = as.data.frame(entry_keys) |> 
+        dplyr::mutate(id = dplyr::row_number()),
+      primary_keys = "id"
     )
-  db |> DBI::dbExecute(delete_query) |> invisible()
+
+  # Build delete query using JOIN
+  header_match_sql <- "%s.%s = %s.%s" |>
+    sprintf(
+      temp_tbl_name |> DBI::dbQuoteIdentifier(conn = db),
+      names(entry_keys) |> DBI::dbQuoteIdentifier(conn = db),
+      table_name |> DBI::dbQuoteIdentifier(conn = db),
+      names(entry_keys) |> DBI::dbQuoteIdentifier(conn = db)
+    ) |>
+    paste(collapse = " AND ")
+  delete_query <- "DELETE FROM %s WHERE EXISTS (SELECT 1 FROM %s WHERE %s)" |>
+    sprintf(
+      DBI::dbQuoteIdentifier(db, table_name),
+      DBI::dbQuoteIdentifier(db, temp_tbl_name),
+      header_match_sql
+    )
+
+  # Execute query
+  result <- db |> DBI::dbExecute(delete_query)
+
+  # Cleanup
+  db |> DBI::dbRemoveTable(temp_tbl_name)
+  invisible(result)
 }
