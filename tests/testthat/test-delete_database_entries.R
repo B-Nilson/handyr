@@ -6,7 +6,7 @@ test_that("basic case works", {
   expected <- db_list[[2]]
 
   # Delete May 5th entry
-  entry_keys <- data.frame(Month = 5, Day = 5)
+  entry_keys <- data.frame(Month = c(5, 5), Day = c(4, 5))
   db |>
     delete_database_entries(table_name = "airquality", entry_keys = entry_keys)
 
@@ -15,10 +15,10 @@ test_that("basic case works", {
     as.data.frame() |>
     expect_equal(
       expected |>
-        dplyr::filter(!(Month == 5 & Day == 5)),
+        dplyr::filter(!(Month == 5 & Day %in% c(4, 5))),
       tolerance = 0.0001
     )
-  
+
   # Cleanup
   DBI::dbDisconnect(db)
   file.remove(db_path)
