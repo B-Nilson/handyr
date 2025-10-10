@@ -1,5 +1,5 @@
 
-# handyr
+![handyr](man/figures/logo.svg){: align="right" height="138"}
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/B-Nilson/handyr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/B-Nilson/handyr/actions/workflows/R-CMD-check.yaml)
