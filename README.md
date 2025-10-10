@@ -1,5 +1,5 @@
 
-# handyr <a href="https://github.com/B-Nilson/handy"><img src="man/figures/logo.svg" align="right" height="138" /></a>
+# handyr <a href="https://b-nilson.github.io/handyr/"><img src="man/figures/logo.svg" align="right" height="139" alt="handyr website" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/B-Nilson/handyr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/B-Nilson/handyr/actions/workflows/R-CMD-check.yaml)
