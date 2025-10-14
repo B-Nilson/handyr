@@ -60,10 +60,13 @@ Default is \code{NULL}, which is \code{FALSE} if \code{x} is a vector, \code{TRU
 Default is \code{FALSE}.}
 
 \item{.workers}{A single numeric value indicating the number of workers to run in parallel if \code{.parallel = TRUE}.
-Default is \code{NULL} which uses all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}}).}
+Default is \code{NULL} which uses all available cores (see \code{\link[parallel:detectCores]{parallel::detectCores()}}).
+If an an existing plan is set of the same type as \code{.plan}, this argument is ignored.}
 
 \item{.plan}{A string indicating the strategy to use if \code{.parallel = TRUE}.
-Default is \code{"multisession"} (see \code{\link[future:plan]{future::plan()}}).}
+Default is \code{"multisession"} (see \code{\link[future:plan]{future::plan()}}).
+If \code{.parallel = FALSE}, this argument is ignored.
+If an an existing plan is set of the same type, this argument is ignored.}
 
 \item{.parallel_cleanup}{A logical value indicating if the parallel plan should be reset to sequential using \code{future::plan("sequential")} if \code{.parallel = TRUE}.
 Default is \code{TRUE}.}

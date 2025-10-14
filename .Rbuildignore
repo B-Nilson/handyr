@@ -4,3 +4,10 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
+^codecov\.yml$
+^[.]?air[.]toml$
+^\.vscode$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^CODE_OF_CONDUCT\.md$

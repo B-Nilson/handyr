@@ -32,7 +32,7 @@ summarise_logs <- function(logs, save_to = NULL) {
 
   # Make log data frame with run times
   logs_bound <- logs |>
-    for_each(as.data.frame, .bind = TRUE) |>
+    for_each(as.data.frame, .bind = TRUE, .quiet = TRUE) |>
     dplyr::mutate(.id = dplyr::row_number())
   log_summary <- logs_bound |>
     dplyr::group_by(is_not_section = .data$is_header | !.data$is_timestamped) |>
@@ -41,29 +41,30 @@ summarise_logs <- function(logs, save_to = NULL) {
       run_time = dplyr::case_when(
         .data$is_not_section ~ NA,
         TRUE ~ .data$run_time
-      ),
-      units = attr(.data$run_time, "units"),
+      )
+    ) |>
+    dplyr::group_by("run_time") |> 
+    dplyr::mutate(
       run_time_text = dplyr::case_when(
         .data$is_not_section ~ NA,
         TRUE ~
           .data$text |>
-          paste0(": ", .data$run_time, " ", .data$units)
+          paste0(": ", .data$run_time |> as.numeric(units = "secs") |> prettyunits::pretty_sec())
       )
-    ) |>
-    dplyr::ungroup()
+    )
 
   # Extract run times for each section
   sections <- log_summary[
     !log_summary$is_not_section & log_summary$.id != max(log_summary$.id),
   ]
-  total_time <- sum(sections$run_time, na.rm = TRUE)
-  time_units <- total_time |> attr("units")
+  total_time <- sum(sections$run_time, na.rm = TRUE) |>
+    as.numeric(units = "secs") |>
+    prettyunits::pretty_sec()
 
   # Log a summary of total time and each sections time
   time_summary <- log_step(
     "\nTotal time:",
     total_time,
-    time_units,
     "\n-->",
     sections$run_time_text |> paste(collapse = "\n--> "),
     time = FALSE

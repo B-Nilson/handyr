@@ -33,15 +33,13 @@
 #' x |> rolling(mean, .width = 2, .direction = "forward", .fill = -1)
 #' @export
 rolling <- function(
-  x,
-  FUN = "mean",
-  ...,
-  .width = 3,
-  .direction = "backward",
-  .fill = NA,
-  .min_non_na = 0
-) {
-  rlang::check_installed("zoo")
+    x,
+    FUN = mean,
+    ...,
+    .width = 3,
+    .direction = "backward",
+    .fill = NA,
+    .min_non_na = 0) {
   # Handle inputs
   stopifnot(is.function(FUN) | is.character(FUN))
   stopifnot(is.numeric(.width), length(.width) == 1)
@@ -70,6 +68,8 @@ rolling <- function(
     }
     FUN <- get(FUN)
   }
+  
+  rlang::check_installed("zoo")
 
   # translate .direction -> align for zoo
   align <- ifelse(
@@ -128,19 +128,23 @@ roll_sum <- function(
       direction = direction,
       fill = fill
     )
-  n_missing <- rowSums(is.na(value_matrix))
+  n_non_missing <- width - rowSums(is.na(value_matrix))
   rolling_sum <- rowSums(value_matrix, na.rm = TRUE)
-  rolling_sum[n_missing < min_non_na] <- NA
+  rolling_sum[n_non_missing < min_non_na] <- NA
 
   if (.include_counts) {
     n_possible <- rep(width, length(x))
     n_possible[1:width] <- 1:width
     attr(rolling_sum, "n") <- n_possible
-    attr(rolling_sum, "n_non_missing") <- width - n_missing
+    attr(rolling_sum, "n_non_missing") <- n_non_missing
   }
 
   if (!is.null(fill)) {
-    rolling_sum[1:(width - 1)] <- fill
+    if (direction == "backward") {
+      rolling_sum[1:(width - 1)] <- fill
+    } else if (direction == "forward") {
+      rolling_sum[(length(x) - width + 1):length(x)] <- fill
+    }
   }
 
   return(rolling_sum)
