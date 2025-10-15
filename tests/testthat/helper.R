@@ -22,7 +22,7 @@ init_airquality_db_test <- function(type = "sqlite") {
       primary_keys = c("Month", "Day")
     )
   return(
-    list(db, db_data) |> 
+    list(db, db_data) |>
       setNames(c(paste0(db_dir, "/", db_name, ".", type), "original"))
   )
 }

@@ -20,13 +20,14 @@
 #'   Default is `TRUE`.
 #' @export
 create_database <- function(
-    name,
-    type = NULL,
-    path = NULL,
-    version = NULL,
-    credentials = c("USER", "PASSWORD"),
-    port = 5432,
-    return_connection = TRUE) {
+  name,
+  type = NULL,
+  path = NULL,
+  version = NULL,
+  credentials = c("USER", "PASSWORD"),
+  port = 5432,
+  return_connection = TRUE
+) {
   # Handle inputs
   stopifnot(is.character(name), length(name) == 1, name != "")
   stopifnot(is.character(type) & length(type) == 1 | is.null(type))
@@ -113,11 +114,12 @@ create_database <- function(
 )
 
 setup_postgres_db <- function(
-    db_name = "mydb",
-    version = NULL,
-    port = 5432,
-    user = "postgres",
-    password = "postgres") {
+  db_name = "mydb",
+  version = NULL,
+  port = 5432,
+  user = "postgres",
+  password = "postgres"
+) {
   rlang::check_installed("rappdirs")
   rlang::check_installed("withr")
   if (is.null(version)) {
@@ -191,11 +193,12 @@ setup_postgres_db <- function(
 }
 
 start_postgres_server <- function(
-    db_name = "mydb",
-    version = NULL,
-    port = 5432,
-    user = "postgres",
-    password = "postgres") {
+  db_name = "mydb",
+  version = NULL,
+  port = 5432,
+  user = "postgres",
+  password = "postgres"
+) {
   if (is.null(version)) {
     version <- "17.0-1"
   }
@@ -224,11 +227,12 @@ start_postgres_server <- function(
 }
 
 connect_to_postgres_db <- function(
-    db_name = "mydb",
-    version = NULL,
-    port = 5432,
-    user = "postgres",
-    password = "postgres") {
+  db_name = "mydb",
+  version = NULL,
+  port = 5432,
+  user = "postgres",
+  password = "postgres"
+) {
   if (is.null(version)) {
     version <- "17.0-1"
   }

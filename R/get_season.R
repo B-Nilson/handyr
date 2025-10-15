@@ -18,11 +18,12 @@
 #'   If `as_factor = TRUE`, a factor of the above with chronological levels.
 #' @export
 get_season <- function(
-    dates = Sys.time(),
-    as_factor = FALSE,
-    include_year = FALSE,
-    include_months = FALSE,
-    use_autumn = FALSE) {
+  dates = Sys.time(),
+  as_factor = FALSE,
+  include_year = FALSE,
+  include_months = FALSE,
+  use_autumn = FALSE
+) {
   stopifnot(lubridate::is.POSIXct(dates) | lubridate::is.Date(dates))
   stopifnot(length(dates) >= 1)
   stopifnot(is.logical(as_factor), length(as_factor) == 1)
@@ -65,7 +66,11 @@ get_season <- function(
 
   # Include year if requested
   if (include_year) {
-    year_mod <- ifelse(seasons == "Winter" & lubridate::month(dates) != 12, 1, 0)
+    year_mod <- ifelse(
+      seasons == "Winter" & lubridate::month(dates) != 12,
+      1,
+      0
+    )
     season_years <- lubridate::year(dates) - year_mod
     output <- output |> paste(season_years)
   }
@@ -75,7 +80,10 @@ get_season <- function(
     month_letters <- month.name |> substr(1, 1)
     season_month_letters <- months_in_seasons |>
       sapply(\(months) month_letters[months] |> paste(collapse = ""))
-    season_months <- season_month_letters[match(seasons, names(season_month_letters))]
+    season_months <- season_month_letters[match(
+      seasons,
+      names(season_month_letters)
+    )]
     output <- output |> paste0(" [", season_months, "]")
   }
 

@@ -26,21 +26,27 @@ test_that(".warn works", {
 })
 
 test_that("custom message works", {
-  expect_message(expect_no_error(
-    on_error(stop(), .message = "test")
-  ), "test")
+  expect_message(
+    expect_no_error(
+      on_error(stop(), .message = "test")
+    ),
+    "test"
+  )
 
-  expect_warning(expect_no_error(
-    on_error(stop(), .warn = "test")
-  ), "test")
+  expect_warning(
+    expect_no_error(
+      on_error(stop(), .warn = "test")
+    ),
+    "test"
+  )
 
   expect_error(
-    on_warning(warning(), .stop = "test"), 
+    on_warning(warning(), .stop = "test"),
     "test"
   )
 
   expect_message(
-    on_warning(warning(), .message = "test"), 
+    on_warning(warning(), .message = "test"),
     "test"
   )
 })

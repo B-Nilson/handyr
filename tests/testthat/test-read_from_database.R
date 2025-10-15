@@ -6,8 +6,8 @@ test_that("basic case works", {
   expected <- db_list[[2]]
 
   # Read data from database
-  read_from_database(db, table_name = "airquality") |> 
-    as.data.frame() |> 
+  read_from_database(db, table_name = "airquality") |>
+    as.data.frame() |>
     dplyr::arrange(date) |>
     expect_equal(expected, tolerance = 0.0001)
 
@@ -25,9 +25,9 @@ test_that("custom query works", {
 
   # Read data from database
   db_query <- \(df) df |> dplyr::filter(.data$Month == 5)
-  db |> 
+  db |>
     read_from_database(table_name = "airquality", query_fun = db_query) |>
-    as.data.frame() |> 
+    as.data.frame() |>
     dplyr::arrange(date) |>
     expect_equal(expected |> dplyr::filter(Month == 5), tolerance = 0.0001)
 

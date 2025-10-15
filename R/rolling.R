@@ -33,13 +33,14 @@
 #' x |> rolling(mean, .width = 2, .direction = "forward", .fill = -1)
 #' @export
 rolling <- function(
-    x,
-    FUN = mean,
-    ...,
-    .width = 3,
-    .direction = "backward",
-    .fill = NA,
-    .min_non_na = 0) {
+  x,
+  FUN = mean,
+  ...,
+  .width = 3,
+  .direction = "backward",
+  .fill = NA,
+  .min_non_na = 0
+) {
   # Handle inputs
   stopifnot(is.function(FUN) | is.character(FUN))
   stopifnot(is.numeric(.width), length(.width) == 1)
@@ -68,7 +69,7 @@ rolling <- function(
     }
     FUN <- get(FUN)
   }
-  
+
   rlang::check_installed("zoo")
 
   # translate .direction -> align for zoo

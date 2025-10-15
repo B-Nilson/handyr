@@ -15,7 +15,7 @@
 #' @param pull A single character string to use with [dplyr::pull()] to pull a column after applying `query_fun`.
 #'   Default is `NULL`, which does not pull any columns.
 #'
-#' @return 
+#' @return
 #' `query_fun` applied to the table `table_name` in `db` where if:
 #'  * `collect` is `TRUE` (the default), returns a tibble (data.frame)
 #'  * `collect` is `FALSE`, returns a lazy table of the query
@@ -44,7 +44,7 @@ read_from_database <- function(
   # Connect to table and build query
   query <- db |>
     dplyr::tbl(table_name)
-  if(!is.null(query_fun)) {
+  if (!is.null(query_fun)) {
     query <- query_fun(query)
   }
 

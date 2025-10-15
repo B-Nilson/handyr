@@ -20,7 +20,7 @@ get_location_details <- function(
     neighborhood = "Neighborhood",
     address = "Address"
   )
-  
+
   coordinates$y |>
     tidygeocoder::reverse_geo(
       long = coordinates$x,

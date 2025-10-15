@@ -3,7 +3,7 @@ test_that("basic case works", {
   latitudes <- c(49.1633, 53.8934, 43.6529, 49.116178, 56.0357)
   longitudes <- c(-124.0531, -122.7949, -79.3832, -122.8519, -121.9038)
   list(x = longitudes, y = latitudes) |>
-    get_location_details() |> 
+    get_location_details() |>
     expect_snapshot()
 })
 

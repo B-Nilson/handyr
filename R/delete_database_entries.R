@@ -21,7 +21,7 @@ delete_database_entries <- function(db, table_name, entry_keys) {
   db |>
     db_create_table(
       table_name = temp_tbl_name,
-      new_data = as.data.frame(entry_keys) |> 
+      new_data = as.data.frame(entry_keys) |>
         dplyr::mutate(id = dplyr::row_number()),
       primary_keys = "id"
     )

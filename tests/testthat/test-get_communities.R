@@ -32,7 +32,8 @@ test_that("able to get all canadian communities", {
     paste0(", Canada")
 
   communities <- expect_no_warning(expect_no_error(
-    prov_terrs |> for_each(get_communities, .name = TRUE, .bind_id = "prov_terr")
+    prov_terrs |>
+      for_each(get_communities, .name = TRUE, .bind_id = "prov_terr")
   ))
 
   expect_true(nrow(communities) > 1000)
