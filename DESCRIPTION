@@ -23,6 +23,7 @@ Suggests:
     ggplot2,
     lutz,
     matrixStats,
+    osmdata,
     pbapply,
     rappdirs,
     RPostgres,
