@@ -1,7 +1,7 @@
 #' Write data to a database
 #'
 #' Write data to a database, with options to insert new data, update existing data, and create a new table.
-#' 
+#'
 #' It will create the table and insert `new_data` if the table does not already exist.
 #' Otherwise:
 #'   * If `insert_new = TRUE`, `new_data` will be inserted into the existing table.
@@ -9,7 +9,7 @@
 #' @param db A database connection or path to database (if sqlite or duckdb file extension).
 #' @param table_name A character string specifying the table to write to.
 #' @param new_data A data frame to write to the table.
-#' @param primary_keys A character vector of column names to use as the primary key, the main identifier of individual rows in a table. 
+#' @param primary_keys A character vector of column names to use as the primary key, the main identifier of individual rows in a table.
 #'   Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
 #'   (e.g. `primary_keys = c("col1", "col2")` will add a primary key on the combination of `col1` and `col2`).
 #' @param unique_indexes A list of character vector(s) of column names to use as unique indexes.
@@ -21,17 +21,18 @@
 #'   If `FALSE`, no new data will be inserted, only existing rows will be updated if `update_duplicates = TRUE`.
 #' @param update_duplicates A logical value indicating if existing rows should be updated with new data.
 #'   If `FALSE`, no existing rows will be updated. Only new data will be inserted if `insert_new = TRUE`.
-#' 
+#'
 #' @return An invisible db connection.
 #' @export
 write_to_database <- function(
-    db,
-    table_name,
-    new_data,
-    primary_keys,
-    unique_indexes = NULL,
-    insert_new = TRUE,
-    update_duplicates = FALSE) {
+  db,
+  table_name,
+  new_data,
+  primary_keys,
+  unique_indexes = NULL,
+  insert_new = TRUE,
+  update_duplicates = FALSE
+) {
   stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
   stopifnot(is.character(table_name) & length(table_name) == 1)
   stopifnot(is.data.frame(new_data))
@@ -115,7 +116,7 @@ db_create_table <- function(
   }
 
   # Build table creation query
-  create_query <- is.null(unique_indexes) |> 
+  create_query <- is.null(unique_indexes) |>
     ifelse(
       "CREATE TABLE %s (\n%s,\n%s\n);",
       "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
@@ -141,7 +142,7 @@ db_create_table <- function(
   invisible(n_rows_inserted)
 }
 
-# Merge new and/or overlapping data 
+# Merge new and/or overlapping data
 db_combine_tables <- function(
   db,
   table_name,
@@ -187,10 +188,11 @@ db_combine_tables <- function(
 
 # Merge overlapping data from table b into table a based on primary key(s)
 db_merge_overlap <- function(
-    db,
-    table_name_a,
-    table_name_b,
-    primary_keys) {
+  db,
+  table_name_a,
+  table_name_b,
+  primary_keys
+) {
   # Handle db path instead of connection
   if (is.character(db)) {
     db <- db_conn_from_path(db)
@@ -234,10 +236,11 @@ db_merge_overlap <- function(
 
 # Insert non-overlapping values into table a from table b based on primary keys
 db_merge_new <- function(
-    db,
-    table_name_a,
-    table_name_b,
-    primary_keys) {
+  db,
+  table_name_a,
+  table_name_b,
+  primary_keys
+) {
   # Determine columns to insert
   col_names <- db |>
     db_get_tbl_col_names(table_name = table_name_b)

@@ -92,17 +92,18 @@ test_that("vectorized FUNs work and are faster", {
   normal_speed <- test_vals |> rolling(mean) |> system.time()
   vectorized_speed <- test_vals |> rolling("mean") |> system.time()
   expect_true(vectorized_speed[["elapsed"]] < normal_speed[["elapsed"]])
-  
+
   normal_speed <- test_vals |> rolling(max) |> system.time()
   vectorized_speed <- test_vals |> rolling("max") |> system.time()
   expect_true(vectorized_speed[["elapsed"]] < normal_speed[["elapsed"]])
-  
+
   normal_speed <- test_vals |> rolling(min) |> system.time()
   vectorized_speed <- test_vals |> rolling("min") |> system.time()
   expect_true(vectorized_speed[["elapsed"]] < normal_speed[["elapsed"]])
 
   normal_speed <- test_vals |> rolling(quantile, probs = 0.5) |> system.time()
-  vectorized_speed <- test_vals |> rolling("quantile", probs = 0.5) |> system.time()
+  vectorized_speed <- test_vals |>
+    rolling("quantile", probs = 0.5) |>
+    system.time()
   expect_true(vectorized_speed[["elapsed"]] < normal_speed[["elapsed"]])
-
 })

@@ -65,18 +65,23 @@ test_that("date/datetime inputs work", {
   check_date_range(as.POSIXct("2020-01-01 00:00:00", tz = "UTC")) |>
     expect_no_error() |>
     expect_no_warning()
-  check_date_range(as.POSIXct(c("2020-01-01 00:00:00", "2020-05-01 00:00:00"), tz = "UTC")) |>
+  check_date_range(as.POSIXct(
+    c("2020-01-01 00:00:00", "2020-05-01 00:00:00"),
+    tz = "UTC"
+  )) |>
     expect_no_error() |>
     expect_no_warning()
 })
 
 test_that("NAs handled properly", {
-
   # NA in within
   check_date_range(within = c(NA, "now")) |>
     expect_no_error() |>
     expect_no_warning()
-  check_date_range("2020-01-01 00:00:00", within = c(NA, "2020-05-01 00:00:00")) |>
+  check_date_range(
+    "2020-01-01 00:00:00",
+    within = c(NA, "2020-05-01 00:00:00")
+  ) |>
     expect_no_error() |>
     expect_no_warning()
 })

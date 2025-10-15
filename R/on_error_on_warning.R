@@ -22,7 +22,10 @@
 #' on_warning(base::max(NA, na.rm = TRUE), .return = NULL)
 on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
   # Handle inputs
-  stopifnot(is.logical(.message) | is.character(.message), length(.message) == 1)
+  stopifnot(
+    is.logical(.message) | is.character(.message),
+    length(.message) == 1
+  )
   stopifnot(is.logical(.warn) | is.character(.warn), length(.warn) == 1)
 
   # Run input, catch errors if any and control response
@@ -45,7 +48,10 @@ on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
 #' @export
 on_warning <- function(..., .return = NULL, .message = FALSE, .stop = FALSE) {
   # Handle inputs
-  stopifnot(is.logical(.message) | is.character(.message), length(.message) == 1)
+  stopifnot(
+    is.logical(.message) | is.character(.message),
+    length(.message) == 1
+  )
   stopifnot(is.logical(.stop) | is.character(.stop), length(.stop) == 1)
 
   # Run input, catch warnings if any and control response

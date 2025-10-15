@@ -13,9 +13,9 @@ test_that("writing to SQLite works", {
       date = as.Date(date),
       datetime = as.POSIXct(datetime, tz = "UTC")
     ) |>
-    dplyr::arrange(date) |> 
+    dplyr::arrange(date) |>
     expect_equal(expected, tolerance = 0.0001)
-  
+
   # Cleanup
   DBI::dbDisconnect(db)
   file.remove(file.path(db_path))
@@ -52,7 +52,7 @@ test_that("writing to postgresql works", {
     dplyr::collect() |>
     as.data.frame() |>
     expect_equal(expected, tolerance = 0.0001)
-  
+
   # Cleanup
   DBI::dbDisconnect(db)
 })

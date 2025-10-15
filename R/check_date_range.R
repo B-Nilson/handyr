@@ -1,10 +1,10 @@
 #' Check that a vector of two dates within a specified date range
-#' 
+#'
 #' @description
 #' [check_date_range] is useful for checking if a date range is within a specified date range,
 #' and provides quick ways to generate date ranges using "now" or "YYYY-MM-DD HH" format dates.
 #'
-#' @param date_range,within A vector of 1 or 2 dates, datetimes, or characters 
+#' @param date_range,within A vector of 1 or 2 dates, datetimes, or characters
 #' (formatted as "YYYY-MM-DD HH:MM:SS" with the same timezone as `tz` or "now" for the current time) representing the start and end of: an input `date_range` or a maximum allowed date range (`within`).
 #' NA values will be replaced with 1970-01-01 or "now" for the first and second values, respectively.
 #' Default for `date_range` is "now".
@@ -34,7 +34,7 @@ check_date_range <- function(
   # Pass within to this function to allow for both to be flexible
   if (!all(is.na(within))) {
     original <- within
-    within <- within[!is.na(within)] |> 
+    within <- within[!is.na(within)] |>
       check_date_range(tz = tz, now_time_step = now_time_step)
     within[is.na(original)] <- NA
   }
