@@ -135,7 +135,7 @@ db_create_table <- function(
   # insert rows if provided
   if (nrow(new_data)) {
     n_rows_inserted <- db |>
-      DBI::dbAppendTable(value = new_data, name = table_name)
+      DBI::dbWriteTable(value = new_data, name = table_name, append = TRUE, row.names = FALSE)
   } else {
     n_rows_inserted <- 0
   }
