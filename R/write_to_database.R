@@ -94,7 +94,6 @@ db_create_table <- function(
     sprintf(paste0(primary_keys_safe, collapse = ", "))
 
   # Build column definition SQL
-  # TODO: handle more data types
   column_types <- db |>
     get_sql_column_types(new_data = new_data, unique_indexes = unique_indexes)
   column_def_sql <- '\t"%s" %s' |>
@@ -115,12 +114,18 @@ db_create_table <- function(
       paste(collapse = ",\n")
   }
 
-  # Build table creation query
-  create_query <- is.null(unique_indexes) |>
-    ifelse(
+  # Build table creation query - defer constraints if postgresql for speed
+  driver <- DBI::dbGetInfo(db)$dbname
+  create_template <- dplyr::case_when(
+    driver != "postgres" ~ ifelse(
+      is.null(unique_indexes),
       "CREATE TABLE %s (\n%s,\n%s\n);",
       "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
-    ) |>
+    ),
+    TRUE ~ "CREATE TABLE %s (%s);"
+  )
+
+  create_query <- create_template |>
     sprintf(
       table_name |> DBI::dbQuoteIdentifier(conn = db),
       column_def_sql,
@@ -134,11 +139,38 @@ db_create_table <- function(
 
   # insert rows if provided
   if (nrow(new_data)) {
-    n_rows_inserted <- db |>
-      DBI::dbWriteTable(value = new_data, name = table_name, append = TRUE, row.names = FALSE)
+    success <- db |>
+      DBI::dbWriteTable(
+        value = new_data,
+        name = table_name,
+        append = TRUE,
+        row.names = FALSE
+      )
+    n_rows_inserted <- ifelse(success, nrow(new_data), 0)
   } else {
     n_rows_inserted <- 0
   }
+
+  # Add constraints if defered
+  if (driver == "postgres") {
+    pkey_query <- "ALTER TABLE %s ADD PRIMARY KEY (%s);" |>
+      sprintf(
+        table_name |> DBI::dbQuoteIdentifier(conn = db),
+        primary_keys_safe |> paste0(collapse = ", ")
+      )
+    db |>
+      DBI::dbExecute(pkey_query)
+    if (!is.null(unique_indexes)) {
+      constraint_query <- "ALTER TABLE %s %s;" |>
+        sprintf(
+          table_name |> DBI::dbQuoteIdentifier(conn = db),
+          unique_constraint_sql
+        )
+      db |>
+        DBI::dbExecute(constraint_query)
+    }
+  }
+
   invisible(n_rows_inserted)
 }
 
