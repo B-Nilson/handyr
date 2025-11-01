@@ -44,7 +44,8 @@
 <span>  <span class="va">primary_keys</span>,</span>
 <span>  unique_indexes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  insert_new <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  update_duplicates <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  update_duplicates <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_on_conflict <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -86,6 +87,13 @@ If <code>FALSE</code>, no new data will be inserted, only existing rows will be 
 <dt id="arg-update-duplicates">update_duplicates<a class="anchor" aria-label="anchor" href="#arg-update-duplicates"></a></dt>
 <dd><p>A logical value indicating if existing rows should be updated with new data.
 If <code>FALSE</code>, no existing rows will be updated. Only new data will be inserted if <code>insert_new = TRUE</code>.</p></dd>
+
+
+<dt id="arg-use-on-conflict">use_on_conflict<a class="anchor" aria-label="anchor" href="#arg-use-on-conflict"></a></dt>
+<dd><p>A logical value indicating if the <code>ON CONFLICT</code> clause should be used when updating existing rows.
+This will be faster for bulk inserts, but requires a unique contraint on the provided <code>primary_keys</code>,
+and <code>db</code> must support <code>ON CONFLICT</code> (e.g. SQLite, Postgres).
+If <code>FALSE</code>, the <code>ON CONFLICT</code> clause will not be used.</p></dd>
 
 </dl></div>
     <div class="section level2">
