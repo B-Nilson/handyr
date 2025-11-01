@@ -21,6 +21,10 @@
 #'   If `FALSE`, no new data will be inserted, only existing rows will be updated if `update_duplicates = TRUE`.
 #' @param update_duplicates A logical value indicating if existing rows should be updated with new data.
 #'   If `FALSE`, no existing rows will be updated. Only new data will be inserted if `insert_new = TRUE`.
+#' @param use_on_conflict A logical value indicating if the `ON CONFLICT` clause should be used when updating existing rows.
+#'   This will be faster for bulk inserts, but requires a unique contraint on the provided `primary_keys`,
+#'   and `db` must support `ON CONFLICT` (e.g. SQLite, Postgres).
+#'   If `FALSE`, the `ON CONFLICT` clause will not be used.
 #'
 #' @return An invisible db connection.
 #' @export
@@ -31,7 +35,8 @@ write_to_database <- function(
   primary_keys,
   unique_indexes = NULL,
   insert_new = TRUE,
-  update_duplicates = FALSE
+  update_duplicates = FALSE,
+  use_on_conflict = FALSE
 ) {
   stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
   stopifnot(is.character(table_name) & length(table_name) == 1)
@@ -68,7 +73,8 @@ write_to_database <- function(
         primary_keys = primary_keys,
         unique_indexes = unique_indexes,
         insert_new = insert_new,
-        update_duplicates = update_duplicates
+        update_duplicates = update_duplicates,
+        use_on_conflict = use_on_conflict
       ) |>
       DBI::dbWithTransaction(conn = db) |>
       on_error(.warn = "Failed to merge/insert data.")
@@ -182,7 +188,8 @@ db_combine_tables <- function(
   primary_keys,
   unique_indexes = NULL,
   insert_new = TRUE,
-  update_duplicates = FALSE
+  update_duplicates = FALSE,
+  use_on_conflict = FALSE
 ) {
   table_name_staging <- paste0("_", table_name, "_staged")
   table_name_staging_safe <- table_name_staging |>
@@ -195,23 +202,34 @@ db_combine_tables <- function(
       primary_keys = primary_keys,
       unique_indexes = unique_indexes
     )
-  # Merge overlaps between staged and existing if requested
-  if (update_duplicates) {
+  if (insert_new & update_duplicates & use_on_conflict) {
+    # Do both insert and merge
     db |>
-      db_merge_overlap(
+      db_upsert_from(
         table_name_a = table_name,
         table_name_b = table_name_staging,
         primary_keys = primary_keys
       )
-  }
-  # Insert non-overlapping values if requested
-  if (insert_new) {
-    db |>
-      db_merge_new(
-        table_name_a = table_name,
-        table_name_b = table_name_staging,
-        primary_keys = primary_keys
-      )
+  } else {
+    # Merge overlaps between staged and existing if requested
+    if (update_duplicates) {
+      db |>
+        db_update_from(
+          table_name_a = table_name,
+          table_name_b = table_name_staging,
+          primary_keys = primary_keys
+        )
+    }
+    # Insert non-overlapping values if requested
+    if (insert_new) {
+      db |>
+        db_insert_from(
+          table_name_a = table_name,
+          table_name_b = table_name_staging,
+          primary_keys = primary_keys,
+          use_on_conflict = use_on_conflict
+        )
+    }
   }
   # Remove "_staged" table
   db |>
@@ -219,7 +237,7 @@ db_combine_tables <- function(
 }
 
 # Merge overlapping data from table b into table a based on primary key(s)
-db_merge_overlap <- function(
+db_update_from <- function(
   db,
   table_name_a,
   table_name_b,
@@ -267,11 +285,12 @@ db_merge_overlap <- function(
 }
 
 # Insert non-overlapping values into table a from table b based on primary keys
-db_merge_new <- function(
+db_insert_from <- function(
   db,
   table_name_a,
   table_name_b,
-  primary_keys
+  primary_keys,
+  use_on_conflict = FALSE
 ) {
   # Determine columns to insert
   col_names <- db |>
@@ -298,15 +317,87 @@ db_merge_new <- function(
     paste(collapse = " AND ")
 
   # Build insert query and execute, return n_rows inserted
-  sql_query <- "INSERT INTO %s (%s)\nSELECT %s\nFROM %s _b LEFT JOIN %s _a ON %s\nWHERE %s;" |>
+  if (!use_on_conflict) {
+    sql_query <- paste(
+      sep = "\n",
+      "INSERT INTO %s (%s)",
+      "  SELECT %s",
+      "  FROM %s _b",
+      "  LEFT JOIN %s _a",
+      "  ON %s",
+      "  WHERE %s;"
+    ) |>
+      sprintf(
+        table_name_a_safe, # insert
+        a_header_sql, # insert
+        b_header_sql, # select
+        table_name_b_safe, # from
+        table_name_a_safe, # left join
+        overlap_test_sql, # on
+        not_overlap_test_sql # where
+      )
+  } else {
+    sql_query <- paste(
+      sep = "\n",
+      "INSERT INTO %s (%s)",
+      "  SELECT %s",
+      "  FROM %s",
+      "  ON CONFLICT (%s) DO NOTHING;"
+    ) |>
+      sprintf(
+        table_name_a_safe, # insert
+        a_header_sql, # insert
+        b_header_sql |> stringr::str_remove_all("_b\\."), # select
+        table_name_b_safe, # from
+        primary_keys_safe |> paste(collapse = ", ") # on
+      )
+  }
+  db |> DBI::dbExecute(sql_query)
+}
+
+# Requires ON CONFLICT to work
+db_upsert_from <- function(
+  db,
+  table_name_a,
+  table_name_b,
+  primary_keys
+) {
+  # Determine columns to insert
+  col_names <- db |>
+    db_get_tbl_col_names(table_name = table_name_b)
+
+  # Build sql-safe values
+  col_names_safe <- col_names |> DBI::dbQuoteIdentifier(conn = db)
+  primary_keys_safe <- primary_keys |> DBI::dbQuoteIdentifier(conn = db)
+  table_name_a_safe <- table_name_a |> DBI::dbQuoteIdentifier(conn = db)
+  table_name_b_safe <- table_name_b |> DBI::dbQuoteIdentifier(conn = db)
+
+  # Build header sql for each table
+  a_header_sql <- col_names_safe |> paste(collapse = ", ")
+  b_header_sql <- paste0("_b.", col_names_safe) |> paste(collapse = ", ")
+
+  # Build set sql for updating conflicts
+  col_names_safe_no_pk <- col_names_safe[!col_names_safe %in% primary_keys_safe]
+  set_sql <- '%s = EXCLUDED.%s' |>
+    sprintf(col_names_safe_no_pk, col_names_safe_no_pk) |>
+    paste(collapse = ",\n    ")
+
+  # Build insert query and execute, return n_rows inserted
+  sql_query <- paste(
+    sep = "\n",
+    "INSERT INTO %s (%s)",
+    "  SELECT %s",
+    "  FROM %s",
+    "  ON CONFLICT (%s) DO UPDATE",
+    "  SET \n    %s;"
+  ) |>
     sprintf(
-      table_name_a_safe,
-      a_header_sql,
-      b_header_sql,
-      table_name_b_safe,
-      table_name_a_safe,
-      overlap_test_sql,
-      not_overlap_test_sql
+      table_name_a_safe, # insert
+      a_header_sql, # insert
+      b_header_sql |> stringr::str_remove_all("_b\\."), # select
+      table_name_b_safe, # from
+      primary_keys_safe |> paste(collapse = ", "), # on
+      set_sql # set
     )
   db |> DBI::dbExecute(sql_query)
 }
