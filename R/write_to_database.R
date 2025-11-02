@@ -121,14 +121,14 @@ db_create_table <- function(
   }
 
   # Build table creation query - defer constraints if postgresql for speed
-  driver <- DBI::dbGetInfo(db)$dbname
+  is_postgres <- inherits(db, "PqConnection") | inherits(db, "PostgreSQL")
   create_template <- dplyr::case_when(
-    driver != "postgres" ~ ifelse(
+    !is_postgres ~ ifelse(
       is.null(unique_indexes),
       "CREATE TABLE %s (\n%s,\n%s\n);",
       "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
     ),
-    TRUE ~ "CREATE TABLE %s (%s);"
+    is_postgres ~ "CREATE TABLE %s (%s);"
   )
 
   create_query <- create_template |>
@@ -158,7 +158,7 @@ db_create_table <- function(
   }
 
   # Add constraints if defered
-  if (driver == "postgres") {
+  if (is_postgres) {
     pkey_query <- "ALTER TABLE %s ADD PRIMARY KEY (%s);" |>
       sprintf(
         table_name |> DBI::dbQuoteIdentifier(conn = db),
