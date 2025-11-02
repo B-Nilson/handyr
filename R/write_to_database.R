@@ -25,6 +25,7 @@
 #'   This will be faster for bulk inserts, but requires a unique contraint on the provided `primary_keys`,
 #'   and `db` must support `ON CONFLICT` (e.g. SQLite, Postgres).
 #'   If `FALSE`, the `ON CONFLICT` clause will not be used.
+#' @param skip_checks
 #'
 #' @return An invisible db connection.
 #' @export
@@ -36,7 +37,8 @@ write_to_database <- function(
   unique_indexes = NULL,
   insert_new = TRUE,
   update_duplicates = FALSE,
-  use_on_conflict = FALSE
+  use_on_conflict = FALSE,
+  skip_checks = FALSE
 ) {
   stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
   stopifnot(is.character(table_name) & length(table_name) == 1)
@@ -66,18 +68,30 @@ write_to_database <- function(
       on_error(.warn = "Failed to create table.")
   } else {
     # Otherwise, merge/insert new data as needed
-    db |>
-      db_combine_tables(
-        table_name = table_name,
-        new_data = new_data,
-        primary_keys = primary_keys,
-        unique_indexes = unique_indexes,
-        insert_new = insert_new,
-        update_duplicates = update_duplicates,
-        use_on_conflict = use_on_conflict
-      ) |>
-      DBI::dbWithTransaction(conn = db) |>
-      on_error(.warn = "Failed to merge/insert data.")
+    if (skip_checks) {
+      db |>
+        DBI::dbWriteTable(
+          value = new_data,
+          name = table_name,
+          append = TRUE,
+          row.names = FALSE
+        ) |>
+        DBI::dbWithTransaction(conn = db) |>
+        on_error(.warn = "Failed to append data.")
+    } else {
+      db |>
+        db_combine_tables(
+          table_name = table_name,
+          new_data = new_data,
+          primary_keys = primary_keys,
+          unique_indexes = unique_indexes,
+          insert_new = insert_new,
+          update_duplicates = update_duplicates,
+          use_on_conflict = use_on_conflict
+        ) |>
+        DBI::dbWithTransaction(conn = db) |>
+        on_error(.warn = "Failed to merge/insert data.")
+    }
   }
   invisible(db)
 }
