@@ -257,7 +257,7 @@ db_update_from <- function(
 
   # Get non-pKey headers
   col_names <- db |>
-    db_get_tbl_col_names(table_name = table_name_a)
+    db_get_tbl_col_names(table_name = table_name_b)
   col_names <- col_names[!col_names %in% primary_keys]
 
   # Make sql-safe values
