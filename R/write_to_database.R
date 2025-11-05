@@ -25,6 +25,7 @@
 #'   This will be faster for bulk inserts, but requires a unique contraint on the provided `primary_keys`,
 #'   and `db` must support `ON CONFLICT` (e.g. SQLite, Postgres).
 #'   If `FALSE`, the `ON CONFLICT` clause will not be used.
+#' @param skip_checks
 #'
 #' @return An invisible db connection.
 #' @export
@@ -36,7 +37,8 @@ write_to_database <- function(
   unique_indexes = NULL,
   insert_new = TRUE,
   update_duplicates = FALSE,
-  use_on_conflict = FALSE
+  use_on_conflict = FALSE,
+  skip_checks = FALSE
 ) {
   stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
   stopifnot(is.character(table_name) & length(table_name) == 1)
@@ -66,18 +68,30 @@ write_to_database <- function(
       on_error(.warn = "Failed to create table.")
   } else {
     # Otherwise, merge/insert new data as needed
-    db |>
-      db_combine_tables(
-        table_name = table_name,
-        new_data = new_data,
-        primary_keys = primary_keys,
-        unique_indexes = unique_indexes,
-        insert_new = insert_new,
-        update_duplicates = update_duplicates,
-        use_on_conflict = use_on_conflict
-      ) |>
-      DBI::dbWithTransaction(conn = db) |>
-      on_error(.warn = "Failed to merge/insert data.")
+    if (skip_checks) {
+      db |>
+        DBI::dbWriteTable(
+          value = new_data,
+          name = table_name,
+          append = TRUE,
+          row.names = FALSE
+        ) |>
+        DBI::dbWithTransaction(conn = db) |>
+        on_error(.warn = "Failed to append data.")
+    } else {
+      db |>
+        db_combine_tables(
+          table_name = table_name,
+          new_data = new_data,
+          primary_keys = primary_keys,
+          unique_indexes = unique_indexes,
+          insert_new = insert_new,
+          update_duplicates = update_duplicates,
+          use_on_conflict = use_on_conflict
+        ) |>
+        DBI::dbWithTransaction(conn = db) |>
+        on_error(.warn = "Failed to merge/insert data.")
+    }
   }
   invisible(db)
 }
@@ -87,17 +101,15 @@ db_create_table <- function(
   db,
   table_name,
   new_data,
-  primary_keys,
-  unique_indexes = NULL
+  primary_keys = NULL,
+  unique_indexes = NULL,
+  insert_data = TRUE
 ) {
   if (is.character(db)) {
     db <- db_conn_from_path(db)
   }
-
-  # Build primary key SQL
-  primary_keys_safe <- primary_keys |> DBI::dbQuoteIdentifier(conn = db)
-  primary_key_sql <- "\tPRIMARY KEY (%s)" |>
-    sprintf(paste0(primary_keys_safe, collapse = ", "))
+  table_name_safe <- table_name |>
+    DBI::dbQuoteIdentifier(conn = db)
 
   # Build column definition SQL
   column_types <- db |>
@@ -105,6 +117,15 @@ db_create_table <- function(
   column_def_sql <- '\t"%s" %s' |>
     sprintf(names(new_data), column_types) |>
     paste(collapse = ",\n")
+
+  # Build primary key SQL
+  if (is.null(primary_keys)) {
+    primary_key_sql <- ""
+  } else {
+    primary_keys_safe <- primary_keys |> DBI::dbQuoteIdentifier(conn = db)
+    primary_key_sql <- "\tPRIMARY KEY (%s)" |>
+      sprintf(paste0(primary_keys_safe, collapse = ", "))
+  }
 
   # Build unique constraint SQL
   if (is.null(unique_indexes)) {
@@ -121,36 +142,27 @@ db_create_table <- function(
   }
 
   # Build table creation query - defer constraints if postgresql for speed
-  driver <- DBI::dbGetInfo(db)$dbname
-  create_template <- dplyr::case_when(
-    driver != "postgres" ~ ifelse(
-      is.null(unique_indexes),
-      "CREATE TABLE %s (\n%s,\n%s\n);",
-      "CREATE TABLE %s (\n%s,\n%s,\n%s\n);"
-    ),
-    TRUE ~ "CREATE TABLE %s (%s);"
-  )
-
-  create_query <- create_template |>
+  is_postgres <- inherits(db, "PqConnection") | inherits(db, "PostgreSQL")
+  create_query <- "CREATE TABLE %s (\n%s%s%s\n);" |>
     sprintf(
-      table_name |> DBI::dbQuoteIdentifier(conn = db),
+      table_name_safe,
       column_def_sql,
-      primary_key_sql,
-      unique_constraint_sql
-    ) |>
-    suppressWarnings() # handle no unique indexes
+      (is.null(primary_keys) | is_postgres) |>
+        ifelse("", paste(",\n", primary_key_sql)),
+      (is.null(unique_indexes) | is_postgres) |>
+        ifelse("", paste(",\n", unique_constraint_sql))
+    )
 
   # Create table
   db |> DBI::dbExecute(create_query)
 
   # insert rows if provided
-  if (nrow(new_data)) {
+  if (nrow(new_data) & insert_data) {
     success <- db |>
       DBI::dbWriteTable(
         value = new_data,
         name = table_name,
-        append = TRUE,
-        row.names = FALSE
+        append = TRUE
       )
     n_rows_inserted <- ifelse(success, nrow(new_data), 0)
   } else {
@@ -158,20 +170,15 @@ db_create_table <- function(
   }
 
   # Add constraints if defered
-  if (driver == "postgres") {
-    pkey_query <- "ALTER TABLE %s ADD PRIMARY KEY (%s);" |>
-      sprintf(
-        table_name |> DBI::dbQuoteIdentifier(conn = db),
-        primary_keys_safe |> paste0(collapse = ", ")
-      )
+  if (is_postgres) {
+    pkey_query <- "ALTER TABLE %s ADD %s;" |>
+      sprintf(table_name_safe, primary_key_sql)
     db |>
       DBI::dbExecute(pkey_query)
     if (!is.null(unique_indexes)) {
-      constraint_query <- "ALTER TABLE %s %s;" |>
-        sprintf(
-          table_name |> DBI::dbQuoteIdentifier(conn = db),
-          unique_constraint_sql
-        )
+      # TODO: test this
+      constraint_query <- "ALTER TABLE %s ADD CONSTRAINT %s;" |>
+        sprintf(table_name_safe, unique_constraint_sql)
       db |>
         DBI::dbExecute(constraint_query)
     }
@@ -250,7 +257,7 @@ db_update_from <- function(
 
   # Get non-pKey headers
   col_names <- db |>
-    db_get_tbl_col_names(table_name = table_name_a)
+    db_get_tbl_col_names(table_name = table_name_b)
   col_names <- col_names[!col_names %in% primary_keys]
 
   # Make sql-safe values
