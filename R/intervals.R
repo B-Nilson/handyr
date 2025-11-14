@@ -60,7 +60,8 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
 #'
 #' [seq.Interval()] extends [seq()] to work with `Interval` objects.
 #'
-#' @param interval A `Interval` object representing the date range.
+#' @param interval A `Interval` object representing the date range. 
+#'   Multiple intervals will be looped over using `sapply()` with the same `by` and `...` arguments.
 #' @param by A string indicating the interval to use.
 #'   Can be one of "auto", "1 seconds", "1 minutes", "1 hours", or "1 days".
 #'   If "auto", the interval will be automatically determined based length of the interval.
@@ -70,6 +71,9 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
 #' @return A sequence of dates within the interval.
 #' @export
 seq.Interval <- function(interval, by = "auto", ...) {
+  if (length(interval) > 1) {
+    return(lapply(interval, seq, by = by, ...))
+  }
   stopifnot("`interval` must have a length of 1." = length(interval) == 1)
   stopifnot(
     "`by` must be a character vector of length 1." = inherits(by, "character") &

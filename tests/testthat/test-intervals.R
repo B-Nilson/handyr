@@ -37,7 +37,7 @@ test_that("functions are vectorised", {
   date_ranges |>
     as_interval() |>
     seq(by = "1 hours") |>
-    expect_equal(expected)
+    expect_snapshot()
 })
 
 test_that("able to make sequences from intervals", {

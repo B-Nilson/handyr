@@ -7,7 +7,8 @@
 \method{seq}{Interval}(interval, by = "auto", ...)
 }
 \arguments{
-\item{interval}{A \code{Interval} object representing the date range.}
+\item{interval}{A \code{Interval} object representing the date range.
+Multiple intervals will be looped over using \code{sapply()} with the same \code{by} and \code{...} arguments.}
 
 \item{by}{A string indicating the interval to use.
 Can be one of "auto", "1 seconds", "1 minutes", "1 hours", or "1 days".
