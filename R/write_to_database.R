@@ -360,7 +360,7 @@ db_insert_from <- function(
       sprintf(
         table_name_a_safe, # insert
         a_header_sql, # insert
-        b_header_sql |> stringr::str_remove_all("_b\\."), # select
+        b_header_sql |> gsub(pattern = "_b\\.", replacement = ""), # select
         table_name_b_safe, # from
         primary_keys_safe |> paste(collapse = ", ") # on
       )
@@ -385,10 +385,6 @@ db_upsert_from <- function(
   table_name_a_safe <- table_name_a |> DBI::dbQuoteIdentifier(conn = db)
   table_name_b_safe <- table_name_b |> DBI::dbQuoteIdentifier(conn = db)
 
-  # Build header sql for each table
-  a_header_sql <- col_names_safe |> paste(collapse = ", ")
-  b_header_sql <- paste0("_b.", col_names_safe) |> paste(collapse = ", ")
-
   # Build set sql for updating conflicts
   col_names_safe_no_pk <- col_names_safe[!col_names_safe %in% primary_keys_safe]
   set_sql <- '%s = EXCLUDED.%s' |>
@@ -406,8 +402,8 @@ db_upsert_from <- function(
   ) |>
     sprintf(
       table_name_a_safe, # insert
-      a_header_sql, # insert
-      b_header_sql |> stringr::str_remove_all("_b\\."), # select
+      col_names_safe |> paste(collapse = ", "), # insert
+      col_names_safe |> paste(collapse = ", "), # select
       table_name_b_safe, # from
       primary_keys_safe |> paste(collapse = ", "), # on
       set_sql # set
