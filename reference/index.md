@@ -2,6 +2,12 @@
 
 ## All functions
 
+- [`as.data.frame(`*`<Interval>`*`)`](https://b-nilson.github.io/handyr/reference/as.data.frame.Interval.md)
+  : Convert an Interval object to a data frame
+
+- [`as_interval()`](https://b-nilson.github.io/handyr/reference/as_interval.md)
+  : Create an Interval object from a date range
+
 - [`check_date_range()`](https://b-nilson.github.io/handyr/reference/check_date_range.md)
   : Check that a vector of two dates within a specified date range
 
@@ -41,6 +47,9 @@
 - [`get_timezone()`](https://b-nilson.github.io/handyr/reference/get_timezone.md)
   : Lookup timezones of latitude/longitude pairs
 
+- [`is_within()`](https://b-nilson.github.io/handyr/reference/is_within.md)
+  : Check if a date is within an interval
+
 - [`join_list()`](https://b-nilson.github.io/handyr/reference/join_list.md)
   : Join a list of data frames
 
@@ -66,6 +75,9 @@
 
 - [`save_figure()`](https://b-nilson.github.io/handyr/reference/save_figure.md)
   : Save a ggplot2 figure for publishing
+
+- [`seq(`*`<Interval>`*`)`](https://b-nilson.github.io/handyr/reference/seq.Interval.md)
+  : Extend seq() to work with Intervals
 
 - [`sf_as_df()`](https://b-nilson.github.io/handyr/reference/sf_as_df.md)
   : Convert an sf object to a data.frame
