@@ -45,7 +45,8 @@
 <span>  unique_indexes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  insert_new <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  update_duplicates <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  use_on_conflict <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  use_on_conflict <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  skip_checks <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -81,12 +82,16 @@ If <code>NULL</code> (the default), no unique indexes will be added.</p></dd>
 
 <dt id="arg-insert-new">insert_new<a class="anchor" aria-label="anchor" href="#arg-insert-new"></a></dt>
 <dd><p>A logical value indicating if new data should be inserted into the existing table.
-If <code>FALSE</code>, no new data will be inserted, only existing rows will be updated if <code>update_duplicates = TRUE</code>.</p></dd>
+If <code>FALSE</code>, no new data will be inserted, only existing rows will be updated if <code>update_duplicates = TRUE</code>.
+Ignored if <code>skip_checks</code> is <code>TRUE</code>.
+Default is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-update-duplicates">update_duplicates<a class="anchor" aria-label="anchor" href="#arg-update-duplicates"></a></dt>
 <dd><p>A logical value indicating if existing rows should be updated with new data.
-If <code>FALSE</code>, no existing rows will be updated. Only new data will be inserted if <code>insert_new = TRUE</code>.</p></dd>
+If <code>FALSE</code>, no existing rows will be updated. Only new data will be inserted if <code>insert_new = TRUE</code>.
+Ignored if <code>skip_checks</code> is <code>TRUE</code>.
+Default is <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-use-on-conflict">use_on_conflict<a class="anchor" aria-label="anchor" href="#arg-use-on-conflict"></a></dt>
@@ -94,6 +99,12 @@ If <code>FALSE</code>, no existing rows will be updated. Only new data will be i
 This will be faster for bulk inserts, but requires a unique contraint on the provided <code>primary_keys</code>,
 and <code>db</code> must support <code>ON CONFLICT</code> (e.g. SQLite, Postgres).
 If <code>FALSE</code>, the <code>ON CONFLICT</code> clause will not be used.</p></dd>
+
+
+<dt id="arg-skip-checks">skip_checks<a class="anchor" aria-label="anchor" href="#arg-skip-checks"></a></dt>
+<dd><p>A logical value indicating if checks for overlapping data should be skipped.
+If <code>TRUE</code>, <code><a href="https://dbi.r-dbi.org/reference/dbAppendTable.html" class="external-link">DBI::dbAppendTable()</a></code> will be used to insert new data, and will fail if there are overlapping primary keys.
+Default is <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -116,7 +127,7 @@ Otherwise:</p><ul><li><p>If <code>insert_new = TRUE</code>, <code>new_data</code
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
