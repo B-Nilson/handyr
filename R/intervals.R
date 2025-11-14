@@ -60,17 +60,18 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
 #'
 #' [seq.Interval()] extends [seq()] to work with `Interval` objects.
 #'
-#' @param from A `Interval` object representing the date range.
-#' @param to Not used.
+#' @param interval A `Interval` object representing the date range.
 #' @param by A string indicating the interval to use.
 #'   Can be one of "auto", "1 seconds", "1 minutes", "1 hours", or "1 days".
 #'   If "auto", the interval will be automatically determined based length of the interval.
 #'   Default is "auto".
+#' @param ... Additional arguments passed to `seq()`.
+#'
 #' @return A sequence of dates within the interval.
 #' @export
-seq.Interval <- function(from, to = NULL, by = "auto") {
+seq.Interval <- function(interval, by = "auto", ...) {
   if (by == "auto") {
-    interval_length <- lubridate::int_length(from)
+    interval_length <- lubridate::int_length(interval)
     if (interval_length < 60) {
       by <- "1 seconds"
     } else if (interval_length < 3600) {
@@ -83,8 +84,8 @@ seq.Interval <- function(from, to = NULL, by = "auto") {
       by <- "1 years"
     }
   }
-  lubridate::int_start(from) |>
-    seq(lubridate::int_end(from), by = by)
+  lubridate::int_start(interval) |>
+    seq(lubridate::int_end(interval), by = by, ...)
 }
 
 #' Convert an Interval object to a data frame

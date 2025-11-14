@@ -4,17 +4,17 @@
 \alias{seq.Interval}
 \title{Extend seq() to work with Intervals}
 \usage{
-\method{seq}{Interval}(from, to = NULL, by = "auto")
+\method{seq}{Interval}(interval, by = "auto", ...)
 }
 \arguments{
-\item{from}{A \code{Interval} object representing the date range.}
-
-\item{to}{Not used.}
+\item{interval}{A \code{Interval} object representing the date range.}
 
 \item{by}{A string indicating the interval to use.
 Can be one of "auto", "1 seconds", "1 minutes", "1 hours", or "1 days".
 If "auto", the interval will be automatically determined based length of the interval.
 Default is "auto".}
+
+\item{...}{Additional arguments passed to \code{seq()}.}
 }
 \value{
 A sequence of dates within the interval.
