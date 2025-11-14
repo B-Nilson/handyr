@@ -1,4 +1,5 @@
 test_that("basic case works", {
+  skip("Intermittent 504 errors on request")
   community <- expect_no_warning(expect_no_error(
     get_communities("Fort St. John, BC", quiet = TRUE)
   ))
