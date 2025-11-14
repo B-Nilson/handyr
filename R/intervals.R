@@ -73,3 +73,22 @@ seq.Interval <- function(from, to = NULL, by = "auto") {
   lubridate::int_start(from) |>
     seq(lubridate::int_end(from), by = by)
 }
+
+#' Convert an Interval object to a data frame
+#'
+#' @description
+#' Split an `Interval` object into a data frame with two columns: `start` and `end`.
+#'
+#' @param x An `Interval` object.
+#' @param row.names Not used.
+#' @param optional Not used.
+#' @param ... Additional arguments passed to `data.frame()`.
+#' @return A data frame with two columns: `start` and `end`.
+#' @export
+as.data.frame.Interval <- function(x, row.names = NULL, optional = FALSE, ...) {
+  data.frame(
+    start = lubridate::int_start(x),
+    end = lubridate::int_end(x),
+    ...
+  )
+}
