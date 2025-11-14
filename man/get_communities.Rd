@@ -7,7 +7,7 @@
 get_communities(
   bbox,
   types = c("city", "town", "village", "hamlet"),
-  timeout = 600,
+  timeout = 6000,
   quiet = TRUE
 )
 }
@@ -17,7 +17,7 @@ See \code{\link[osmdata:getbb]{osmdata::getbb()}} for more information.}
 
 \item{types}{A character vector of types of communities to search for. Default is c("city", "town", "village", "hamlet"). See \href{https://wiki.openstreetmap.org/wiki/Key:place}{https://wiki.openstreetmap.org/wiki/Key:place}.}
 
-\item{timeout}{The time in seconds to wait for a response from the OSM API. Default is 600 seconds.}
+\item{timeout}{The time in seconds to wait for a response from the OSM API. Default is 6000 seconds (10 minutes).}
 
 \item{quiet}{A logical value indicating whether non-critical warnings/messages should be suppressed. Default is TRUE.}
 }

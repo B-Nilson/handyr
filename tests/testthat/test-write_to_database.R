@@ -1,3 +1,50 @@
+test_that("writes are fast for many rows", {
+  skip("Skipping PostgreSQL tests as they download/invoke external binaries")
+  db <- create_database("test", type = "postgresql")
+
+  test_data <- read.csv(url(
+    "https://aqmap.ca/aqmap/data/aqmap_most_recent_obs.csv"
+  )) |>
+    dplyr::select(-monitor)
+  test_data$date <- lubridate::ymd_hms(test_data$date, tz = "UTC")
+
+  large_data <- 1:1000 |>
+    for_each(
+      .bind = TRUE,
+      \(x) test_data |> dplyr::mutate(date = date - lubridate::hours(x))
+    )
+
+  runtime <- db |>
+    write_to_database(
+      table_name = "test0",
+      new_data = large_data,
+      primary_keys = c("sensor_index", "date")
+    ) |>
+    system.time()
+
+  runtime_2 <- db |>
+    copy_df_to_postgres(
+      table_name = "test1",
+      new_data = large_data,
+      primary_keys = c("sensor_index", "date")
+    ) |>
+    system.time()
+
+  runtime_3 <- db |>
+    write_to_database(
+      table_name = "test2",
+      new_data = large_data,
+      primary_keys = c("sensor_index", "date"),
+      skip_checks = TRUE
+    ) |>
+    system.time()
+
+  DBI::dbRemoveTable(db, "test0")
+  DBI::dbRemoveTable(db, "test1")
+  DBI::dbRemoveTable(db, "test2")
+  DBI::dbDisconnect(db)
+})
+
 test_that("writing to SQLite works", {
   # Create temp db to work with
   db_list <- init_airquality_db_test(type = "sqlite")

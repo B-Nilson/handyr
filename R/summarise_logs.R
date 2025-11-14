@@ -49,12 +49,12 @@ summarise_logs <- function(logs, save_to = NULL) {
         .data$is_not_section ~ NA,
         TRUE ~
           .data$text |>
-            paste0(
-              ": ",
-              .data$run_time |>
-                as.numeric(units = "secs") |>
-                prettyunits::pretty_sec()
-            )
+          paste0(
+            ": ",
+            .data$run_time |>
+              as.numeric(units = "secs") |>
+              prettyunits::pretty_sec()
+          )
       )
     )
 

@@ -21,6 +21,7 @@ get_timezone <- function(lng, lat, method = "accurate", quiet = FALSE, ...) {
   # TODO: make this tidy friendly with{{ }} ?
   # TODO: leverage convert_coordinates to allow for x/y/crs inputs instead of lat/lng
   rlang::check_installed("lutz")
+  rlang::check_installed("sf")
   # Handle inputs
   stopifnot(
     all(!is.na(lng)),

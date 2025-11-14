@@ -3,7 +3,7 @@
 #' @param bbox Usually the name of an area (ie. "Fort St. John, BC").
 #'   See [osmdata::getbb()] for more information.
 #' @param types A character vector of types of communities to search for. Default is c("city", "town", "village", "hamlet"). See \href{https://wiki.openstreetmap.org/wiki/Key:place}{https://wiki.openstreetmap.org/wiki/Key:place}.
-#' @param timeout The time in seconds to wait for a response from the OSM API. Default is 600 seconds.
+#' @param timeout The time in seconds to wait for a response from the OSM API. Default is 6000 seconds (10 minutes).
 #' @param quiet A logical value indicating whether non-critical warnings/messages should be suppressed. Default is TRUE.
 #'
 #' @return An `sf` data frame containing the communities in the bounding box
@@ -18,7 +18,7 @@
 get_communities <- function(
   bbox,
   types = c("city", "town", "village", "hamlet"),
-  timeout = 600,
+  timeout = 6000,
   quiet = TRUE
 ) {
   rlang::check_installed("osmdata")
