@@ -29,7 +29,7 @@
 #'   This will be faster for bulk inserts, but requires a unique contraint on the provided `primary_keys`,
 #'   and `db` must support `ON CONFLICT` (e.g. SQLite, Postgres).
 #'   If `FALSE`, the `ON CONFLICT` clause will not be used.
-#' @param skip_checks A logical value indicating if checks for overlapping data should be skipped. 
+#' @param skip_checks A logical value indicating if checks for overlapping data should be skipped.
 #'   If `TRUE`, [DBI::dbAppendTable()] will be used to insert new data, and will fail if there are overlapping primary keys.
 #'   Default is `FALSE`.
 #'
