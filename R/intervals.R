@@ -70,6 +70,16 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
 #' @return A sequence of dates within the interval.
 #' @export
 seq.Interval <- function(interval, by = "auto", ...) {
+  stopifnot("`interval` must have a length of 1." = length(interval) == 1)
+  stopifnot(
+    "`by` must be a character vector of length 1." = inherits(by, "character") &
+      length(by) == 1
+  )
+  stopifnot(
+    "`by` must either be 'auto' or a period interpretable by `lubridate::as.period()` (e.g. '1 hours')." = by ==
+      "auto" |
+      !is.na(lubridate::as.period(by))
+  )
   if (by == "auto") {
     interval_length <- lubridate::int_length(interval)
     interval_thresholds <- c(
@@ -98,15 +108,34 @@ seq.Interval <- function(interval, by = "auto", ...) {
 #' Split an `Interval` object into a data frame with two columns: `start` and `end`.
 #'
 #' @param x An `Interval` object.
-#' @param row.names Not used.
-#' @param optional Not used.
+#' @param row.names Passed to `data.frame()`.
+#'   Either NULL or a character vector giving the row names for the data frame. Missing values are not allowed.
+#' @param optional Passed to `data.frame()`.
+#'   A single logical value, if `TRUE`, setting row names and converting column names (to syntactic names: see make.names) is optional.
+#'   `!optional` is passed to `check.names` in `data.frame()`.
+#'   Default is `FALSE`.
 #' @param ... Additional arguments passed to `data.frame()`.
 #' @return A data frame with two columns: `start` and `end`.
 #' @export
 as.data.frame.Interval <- function(x, row.names = NULL, optional = FALSE, ...) {
+  stopifnot("At least one interval must be provided." = length(x) >= 1)
+  stopifnot(
+    "`row.names` must be NULL or a character vector with no missing values." = inherits(
+      row.names,
+      "character"
+    ) ||
+      (is.null(row.names) & !any(is.na(row.names)))
+  )
+  stopifnot(
+    "`optional` must be a single logical value." = is.logical(optional) &
+      length(optional) == 1
+  )
+
   data.frame(
     start = lubridate::int_start(x),
     end = lubridate::int_end(x),
+    row.names = row.names,
+    check.names = !optional,
     ...
   )
 }

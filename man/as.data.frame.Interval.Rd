@@ -9,9 +9,13 @@
 \arguments{
 \item{x}{An \code{Interval} object.}
 
-\item{row.names}{Not used.}
+\item{row.names}{Passed to \code{data.frame()}.
+Either NULL or a character vector giving the row names for the data frame. Missing values are not allowed.}
 
-\item{optional}{Not used.}
+\item{optional}{Passed to \code{data.frame()}.
+A single logical value, if \code{TRUE}, setting row names and converting column names (to syntactic names: see make.names) is optional.
+\code{!optional} is passed to \code{check.names} in \code{data.frame()}.
+Default is \code{FALSE}.}
 
 \item{...}{Additional arguments passed to \code{data.frame()}.}
 }
