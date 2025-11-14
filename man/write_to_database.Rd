@@ -34,17 +34,23 @@ Multiple columns can be specified and uniqueness will be assessed based on the c
 If \code{NULL} (the default), no unique indexes will be added.}
 
 \item{insert_new}{A logical value indicating if new data should be inserted into the existing table.
-If \code{FALSE}, no new data will be inserted, only existing rows will be updated if \code{update_duplicates = TRUE}.}
+If \code{FALSE}, no new data will be inserted, only existing rows will be updated if \code{update_duplicates = TRUE}.
+Ignored if \code{skip_checks} is \code{TRUE}.
+Default is \code{TRUE}.}
 
 \item{update_duplicates}{A logical value indicating if existing rows should be updated with new data.
-If \code{FALSE}, no existing rows will be updated. Only new data will be inserted if \code{insert_new = TRUE}.}
+If \code{FALSE}, no existing rows will be updated. Only new data will be inserted if \code{insert_new = TRUE}.
+Ignored if \code{skip_checks} is \code{TRUE}.
+Default is \code{FALSE}.}
 
 \item{use_on_conflict}{A logical value indicating if the \verb{ON CONFLICT} clause should be used when updating existing rows.
 This will be faster for bulk inserts, but requires a unique contraint on the provided \code{primary_keys},
 and \code{db} must support \verb{ON CONFLICT} (e.g. SQLite, Postgres).
 If \code{FALSE}, the \verb{ON CONFLICT} clause will not be used.}
 
-\item{skip_checks}{}
+\item{skip_checks}{A logical value indicating if checks for overlapping data should be skipped.
+If \code{TRUE}, \code{\link[DBI:dbAppendTable]{DBI::dbAppendTable()}} will be used to insert new data, and will fail if there are overlapping primary keys.
+Default is \code{FALSE}.}
 }
 \value{
 An invisible db connection.

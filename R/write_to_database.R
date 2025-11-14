@@ -19,13 +19,19 @@
 #'   If `NULL` (the default), no unique indexes will be added.
 #' @param insert_new A logical value indicating if new data should be inserted into the existing table.
 #'   If `FALSE`, no new data will be inserted, only existing rows will be updated if `update_duplicates = TRUE`.
+#'   Ignored if `skip_checks` is `TRUE`.
+#'   Default is `TRUE`.
 #' @param update_duplicates A logical value indicating if existing rows should be updated with new data.
 #'   If `FALSE`, no existing rows will be updated. Only new data will be inserted if `insert_new = TRUE`.
+#'   Ignored if `skip_checks` is `TRUE`.
+#'   Default is `FALSE`.
 #' @param use_on_conflict A logical value indicating if the `ON CONFLICT` clause should be used when updating existing rows.
 #'   This will be faster for bulk inserts, but requires a unique contraint on the provided `primary_keys`,
 #'   and `db` must support `ON CONFLICT` (e.g. SQLite, Postgres).
 #'   If `FALSE`, the `ON CONFLICT` clause will not be used.
-#' @param skip_checks
+#' @param skip_checks A logical value indicating if checks for overlapping data should be skipped. 
+#'   If `TRUE`, [DBI::dbAppendTable()] will be used to insert new data, and will fail if there are overlapping primary keys.
+#'   Default is `FALSE`.
 #'
 #' @return An invisible db connection.
 #' @export
