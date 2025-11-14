@@ -72,20 +72,24 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
 seq.Interval <- function(interval, by = "auto", ...) {
   if (by == "auto") {
     interval_length <- lubridate::int_length(interval)
-    if (interval_length < 60) {
-      by <- "1 seconds"
-    } else if (interval_length < 3600) {
-      by <- "1 minutes"
-    } else if (interval_length < 86400) {
-      by <- "1 hours"
-    } else if (interval_length < 31536000) {
-      by <- "1 days"
-    } else {
-      by <- "1 years"
-    }
+    interval_thresholds <- c(
+      "1 seconds" = 60,
+      "1 minutes" = 3600,
+      "1 hours" = 86400,
+      "1 days" = 31536000,
+      "1 years" = Inf
+    )
+    highest_passed_threshold <- max(which(
+      interval_thresholds < interval_length
+    ))
+    by <- names(interval_thresholds)[highest_passed_threshold]
   }
-  lubridate::int_start(interval) |>
-    seq(lubridate::int_end(interval), by = by, ...)
+  seq(
+    from = lubridate::int_start(interval),
+    to = lubridate::int_end(interval),
+    by = by,
+    ...
+  )
 }
 
 #' Convert an Interval object to a data frame
