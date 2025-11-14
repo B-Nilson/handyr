@@ -53,7 +53,7 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
 }
 
 #' Check if a date is within an interval
-#' 
+#'
 #' This is a wrapper for the `%within%` operator from the `lubridate` package.
 #' You can create an `Interval` object using [as_interval()].
 #'
@@ -77,7 +77,7 @@ is_within <- function(dates, interval) {
 #'
 #' [seq.Interval()] extends [seq()] to work with `Interval` objects.
 #'
-#' @param interval A `Interval` object representing the date range. 
+#' @param interval A `Interval` object representing the date range.
 #'   Multiple intervals will be looped over using `sapply()` with the same `by` and `...` arguments.
 #' @param by A string indicating the interval to use.
 #'   Can be one of "auto", "1 seconds", "1 minutes", "1 hours", or "1 days".
