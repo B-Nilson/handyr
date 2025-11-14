@@ -36,13 +36,18 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
   ) {
     # TODO: vectorise check_date_range()
     date_ranges <- start |>
-      for_each(.enumerate = TRUE, .bind = TRUE, \(value, i) {
-        check_date_range(c(start = value, end = end[[i]])) |>
-          as.list() |>
-          as.data.frame()
-      })
-    start <- date_ranges$start
-    end <- date_ranges$end
+      for_each(
+        .enumerate = TRUE,
+        .bind = TRUE,
+        .show_progress = FALSE,
+        \(value, i) {
+          check_date_range(c(start = value, end = end[[i]])) |>
+            as.list() |>
+            as.data.frame()
+        }
+      )
+    start <- date_ranges[[1]]
+    end <- date_ranges[[2]]
   }
   lubridate::`%--%`(start, end)
 }
