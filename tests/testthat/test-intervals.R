@@ -49,3 +49,19 @@ test_that("able to make sequences from intervals", {
     seq(by = "1 hours") |>
     expect_equal(expected)
 })
+
+test_that("is_within works", {
+  date_ranges <- c(
+    start = "2025-01-01 00:00:00",
+    end = "2025-01-12 00:00:00"
+  ) |>
+    lapply(rep, times = 24) |>
+    lapply(lubridate::as_datetime) |>
+    as.data.frame()
+  date_ranges$end <- date_ranges$end + lubridate::days(c(1:24))
+
+  date_ranges$end |> 
+    rev() |> 
+    is_within(interval = date_ranges[12, ]) |> 
+    expect_equal(rep(c(FALSE, TRUE), each = 12))
+})

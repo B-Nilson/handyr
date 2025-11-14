@@ -52,6 +52,23 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
   lubridate::`%--%`(start, end)
 }
 
+#' Check if a date is within an interval
+#' 
+#' This is a wrapper for the `%within%` operator from the `lubridate` package.
+#' You can create an `Interval` object using [as_interval()].
+#'
+#' @param dates A vector of dates.
+#' @param interval An `Interval` object representing the date range, or something that can be coerced to an `Interval` object using [as_interval()].
+#' @return A logical vector indicating whether each date is within the interval.
+#' @export
+is_within <- function(dates, interval) {
+  if (!inherits(interval, "Interval")) {
+    interval <- as_interval(interval)
+  }
+  stopifnot(length(interval) == 1)
+  lubridate::`%within%`(dates, interval)
+}
+
 #' Extend seq() to work with Intervals
 #'
 #' @description
