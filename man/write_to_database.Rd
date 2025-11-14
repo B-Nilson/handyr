@@ -12,7 +12,8 @@ write_to_database(
   unique_indexes = NULL,
   insert_new = TRUE,
   update_duplicates = FALSE,
-  use_on_conflict = FALSE
+  use_on_conflict = FALSE,
+  skip_checks = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ If \code{FALSE}, no existing rows will be updated. Only new data will be inserte
 This will be faster for bulk inserts, but requires a unique contraint on the provided \code{primary_keys},
 and \code{db} must support \verb{ON CONFLICT} (e.g. SQLite, Postgres).
 If \code{FALSE}, the \verb{ON CONFLICT} clause will not be used.}
+
+\item{skip_checks}{}
 }
 \value{
 An invisible db connection.
