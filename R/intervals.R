@@ -16,7 +16,10 @@
 #' @export
 as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
   stopifnot(
-    "At least one of `date_range` or `start` and `end` must be provided." = !is.null(date_range) | !is.null(start) & !is.null(end)
+    "At least one of `date_range` or `start` and `end` must be provided." = !is.null(
+      date_range
+    ) |
+      !is.null(start) & !is.null(end)
   )
   # Handle date_range provided instead of start/end
   if (!is.null(date_range)) {
@@ -25,7 +28,12 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
   }
 
   # Handle non-date start/end
-  if ("character" %in% class(start) | "character" %in% class(end) | any(is.na(c(start, end)))) {
+  if (
+    "character" %in%
+      class(start) |
+      "character" %in% class(end) |
+      any(is.na(c(start, end)))
+  ) {
     # TODO: vectorise check_date_range()
     date_ranges <- start |>
       for_each(.enumerate = TRUE, .bind = TRUE, \(value, i) {
