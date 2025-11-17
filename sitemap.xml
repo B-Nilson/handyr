@@ -10,6 +10,7 @@
 <url><loc>https://b-nilson.github.io/handyr/reference/as.data.frame.Interval.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/as_interval.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/check_date_range.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/check_urls_exist.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/clamp.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/convert_units.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/create_database.html</loc></url>
@@ -19,6 +20,7 @@
 <url><loc>https://b-nilson.github.io/handyr/reference/extract_sf_coords.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/for_each.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_communities.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/get_file_index.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_interval.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_season.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_timezone.html</loc></url>
@@ -34,6 +36,7 @@
 <url><loc>https://b-nilson.github.io/handyr/reference/save_figure.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/seq.Interval.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/sf_as_df.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/shorten_number.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/silence.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/split_date_range.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/summarise_logs.html</loc></url>

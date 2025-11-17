@@ -11,6 +11,9 @@
 - [`check_date_range()`](https://b-nilson.github.io/handyr/reference/check_date_range.md)
   : Check that a vector of two dates within a specified date range
 
+- [`check_urls_exist()`](https://b-nilson.github.io/handyr/reference/check_urls_exist.md)
+  : Check if URLs exist and can be reached
+
 - [`clamp()`](https://b-nilson.github.io/handyr/reference/clamp.md) :
   Replace out-of-range values with the nearest in-range value
 
@@ -37,6 +40,9 @@
 
 - [`get_communities()`](https://b-nilson.github.io/handyr/reference/get_communities.md)
   : Get a communities within a region from OpenStreetMap
+
+- [`get_file_index()`](https://b-nilson.github.io/handyr/reference/get_file_index.md)
+  : Get a file index from a URL
 
 - [`get_interval()`](https://b-nilson.github.io/handyr/reference/get_interval.md)
   : Determine distance(s) between values
@@ -81,6 +87,10 @@
 
 - [`sf_as_df()`](https://b-nilson.github.io/handyr/reference/sf_as_df.md)
   : Convert an sf object to a data.frame
+
+- [`shorten_number()`](https://b-nilson.github.io/handyr/reference/shorten_number.md)
+  : Shorten a number to a string with a unit prefix (e.g. "1K", "10M",
+  "100B")
 
 - [`silence()`](https://b-nilson.github.io/handyr/reference/silence.md)
   : Silence unwanted output
