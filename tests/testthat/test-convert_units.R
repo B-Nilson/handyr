@@ -15,3 +15,12 @@ test_that("keep_units works", {
     (1:5 / 100) |> units::set_units("m")
   )
 })
+
+test_that("converting to base units works", {
+  expect_equal(
+    convert_units(c(1, 2, 3), from = "m", to = NULL, keep_units = TRUE),
+    c(1, 2, 3) |>
+      units::set_units("m") |>
+      units::convert_to_base()
+  )
+})
