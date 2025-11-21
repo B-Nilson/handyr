@@ -58,7 +58,10 @@ write_to_database <- function(
 
   # Handle db path instead of connection
   if (is.character(db)) {
-    db <- db_conn_from_path(db)
+    db <- connect_to_database(
+      name = basename(db),
+      path = dirname(db)
+    )
   }
 
   # Create initial table if not already existing
@@ -112,7 +115,10 @@ db_create_table <- function(
   insert_data = TRUE
 ) {
   if (is.character(db)) {
-    db <- db_conn_from_path(db)
+    db <- connect_to_database(
+      name = basename(db),
+      path = dirname(db)
+    )
   }
   table_name_safe <- table_name |>
     DBI::dbQuoteIdentifier(conn = db)
@@ -258,7 +264,10 @@ db_update_from <- function(
 ) {
   # Handle db path instead of connection
   if (is.character(db)) {
-    db <- db_conn_from_path(db)
+    db <- connect_to_database(
+      name = basename(db),
+      path = dirname(db)
+    )
   }
 
   # Get non-pKey headers
