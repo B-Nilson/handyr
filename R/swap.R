@@ -1,7 +1,7 @@
 #' Swap out values in a vector
 #'
 #' @param x Vector of values to be have certain values swapped out.
-#' @param what One or more values to be replaced with `with` throughout `x`, 
+#' @param what One or more values to be replaced with `with` throughout `x`,
 #'   or a logical vector with the same length as `x` indicating which values to replace.
 #' @param with A single value to replace `what` for throughout `x`, or a vector with the same length as `x` indicating which values to insert for each value in `x`.
 #'
@@ -30,7 +30,12 @@ swap <- function(x, what, with) {
     what <- NA_character_ # in case `NA` (NA_logical_) is passed
   }
   stopifnot(length(what) >= 1)
-  stopifnot("`what` must have the same length as `x` if `what` is logical." = !is.logical(what) | (is.logical(what) & length(what) == length(x)))
+  stopifnot(
+    "`what` must have the same length as `x` if `what` is logical." = !is.logical(
+      what
+    ) |
+      (is.logical(what) & length(what) == length(x))
+  )
   stopifnot(length(with) == 1 | length(with) == length(x))
 
   # Swap values
@@ -39,7 +44,7 @@ swap <- function(x, what, with) {
       with <- with[what]
     }
     x[what] <- with
-  }else {
+  } else {
     if (length(with) == length(x)) {
       with <- with[x %in% what]
     }

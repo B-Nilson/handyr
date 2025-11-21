@@ -109,7 +109,7 @@ create_database_table <- function(
   if (length(indexes) > 0) {
     for (i in 1:length(indexes)) {
       index_name <- NULL
-      if(!(is.null(names(indexes)) | names(indexes)[i] == "")) {
+      if (!(is.null(names(indexes)) | names(indexes)[i] == "")) {
         index_name <- names(indexes)[i]
       }
       db |>

@@ -21,7 +21,7 @@ check_date_range <- function(
   within = c(NA, NA),
   tz = "UTC",
   now_time_step = "1 hours",
-  as_interval = FALSE 
+  as_interval = FALSE
 ) {
   stopifnot(length(date_range) %in% 1:2)
   stopifnot(
