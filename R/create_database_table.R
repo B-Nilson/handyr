@@ -90,27 +90,44 @@ create_database_table <- function(
   # Add indexes if provided
   if (length(indexes) > 0) {
     for (i in 1:length(indexes)) {
-      safe_cols <- indexes[[i]] |>
-        DBI::dbQuoteIdentifier(conn = db)
-      pasted_cols <- indexes[[i]] |>
-        gsub(pattern = " |\\.", replacement = "_") |>
-        paste(collapse = "_")
-      index_name <- (is.null(names(indexes)) | names(indexes)[i] == "") |>
-        ifelse(
-          yes = pasted_cols,
-          no = names(indexes)[i]
-        )
-
-      index_query <- "CREATE INDEX IF NOT EXISTS %s_%s ON %s (%s);" |>
-        sprintf(
-          table_name |> gsub(pattern = " |\\.", replacement = "_"),
-          index_name,
-          table_name_safe,
-          safe_cols |> paste(collapse = ", ")
-        )
+      index_name <- NULL
+      if(!(is.null(names(indexes)) | names(indexes)[i] == "")) {
+        index_name <- names(indexes)[i]
+      }
       db |>
-        DBI::dbExecute(index_query)
+        create_database_index(
+          table_name = table_name,
+          index_cols = indexes[[i]],
+          index_name = index_name
+        )
     }
   }
   invisible(n_rows_inserted)
+}
+
+create_database_index <- function(
+  db,
+  table_name,
+  index_cols,
+  index_name = NULL
+) {
+  table_name_safe <- table_name |>
+    DBI::dbQuoteIdentifier(conn = db)
+  safe_cols <- index_cols |>
+    DBI::dbQuoteIdentifier(conn = db)
+  if (is.null(index_name)) {
+    index_name <- index_cols |>
+      gsub(pattern = " |\\.", replacement = "_") |>
+      paste(collapse = "_")
+  }
+
+  index_query <- "CREATE INDEX IF NOT EXISTS %s_%s ON %s (%s);" |>
+    sprintf(
+      table_name |> gsub(pattern = " |\\.", replacement = "_"),
+      index_name,
+      table_name_safe,
+      safe_cols |> paste(collapse = ", ")
+    )
+  db |>
+    DBI::dbExecute(index_query)
 }
