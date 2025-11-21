@@ -58,10 +58,7 @@ write_to_database <- function(
 
   # Handle db path instead of connection
   if (is.character(db)) {
-    db <- connect_to_database(
-      name = basename(db),
-      path = dirname(db)
-    )
+    db <- connect_to_database(db)
   }
 
   # Create initial table if not already existing
@@ -170,10 +167,7 @@ db_update_from <- function(
 ) {
   # Handle db path instead of connection
   if (is.character(db)) {
-    db <- connect_to_database(
-      name = basename(db),
-      path = dirname(db)
-    )
+    db <- connect_to_database(db)
   }
 
   # Get non-pKey headers

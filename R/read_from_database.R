@@ -38,10 +38,7 @@ read_from_database <- function(
 
   # Handle db path instead of connection
   if (is.character(db)) {
-    db <- connect_to_database(
-      name = basename(db),
-      path = dirname(db)
-    )
+    db <- connect_to_database(db)
   }
 
   # Connect to table and build query

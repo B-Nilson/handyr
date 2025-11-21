@@ -9,10 +9,7 @@ create_database_table <- function(
   insert_data = TRUE
 ) {
   if (is.character(db)) {
-    db <- connect_to_database(
-      name = basename(db),
-      path = dirname(db)
-    )
+    db <- connect_to_database(db)
   }
   table_name_safe <- table_name |>
     DBI::dbQuoteIdentifier(conn = db)
