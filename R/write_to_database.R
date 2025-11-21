@@ -12,11 +12,18 @@
 #' @param primary_keys A character vector of column names to use as the primary key, the main identifier of individual rows in a table.
 #'   Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
 #'   (e.g. `primary_keys = c("col1", "col2")` will add a primary key on the combination of `col1` and `col2`).
+#'   Primary keys are functionally similiar to "unique indexes", but act as the main row identifier.
 #' @param unique_indexes A list of character vector(s) of column names to use as unique indexes.
-#'   These will be added to the table, in addition to the primary key.
+#'   These will be added to the table, in addition to the primary key, and will result in an error if non-unique data is inserted/existing.
+#'   Indexes speed up queries by allowing for faster lookups, but can increase the size of the database and reduce write performance.
 #'   Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
 #'   (e.g. `unique_indexes = list(c("col1", "col2"))` will add a unique index on the combination of `col1` and `col2`.).
 #'   If `NULL` (the default), no unique indexes will be added.
+#' @param indexes A list of character vector(s) of column names to use as indexes.
+#'   These will be added to the table, in addition to the primary key and unique indexes.
+#'   Indexes speed up queries by allowing for faster lookups, but can increase the size of the database and reduce write performance.
+#'   Multiple columns can be specified for composite indexes, and the index will be named after the list names if provided.
+#'   If `NULL` (the default), no indexes will be added.
 #' @param insert_new A logical value indicating if new data should be inserted into the existing table.
 #'   If `FALSE`, no new data will be inserted, only existing rows will be updated if `update_duplicates = TRUE`.
 #'   Ignored if `skip_checks` is `TRUE`.
@@ -41,6 +48,7 @@ write_to_database <- function(
   new_data,
   primary_keys,
   unique_indexes = NULL,
+  indexes = NULL,
   insert_new = TRUE,
   update_duplicates = FALSE,
   use_on_conflict = FALSE,
@@ -68,7 +76,8 @@ write_to_database <- function(
         new_data = new_data,
         table_name = table_name,
         primary_keys = primary_keys,
-        unique_indexes = unique_indexes
+        unique_indexes = unique_indexes,
+        indexes = indexes
       ) |>
       DBI::dbWithTransaction(conn = db) |>
       on_error(.warn = "Failed to create table.")
@@ -109,6 +118,7 @@ db_combine_tables <- function(
   new_data,
   primary_keys,
   unique_indexes = NULL,
+  indexes = NULL,
   insert_new = TRUE,
   update_duplicates = FALSE,
   use_on_conflict = FALSE
@@ -122,7 +132,8 @@ db_combine_tables <- function(
       new_data = new_data,
       table_name = table_name_staging,
       primary_keys = primary_keys,
-      unique_indexes = unique_indexes
+      unique_indexes = unique_indexes,
+      indexes = indexes
     )
   if (insert_new & update_duplicates & use_on_conflict) {
     # Do both insert and merge

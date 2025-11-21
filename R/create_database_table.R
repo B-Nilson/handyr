@@ -1,4 +1,3 @@
-
 # Create table if not already existing
 create_database_table <- function(
   db,
@@ -6,6 +5,7 @@ create_database_table <- function(
   new_data,
   primary_keys = NULL,
   unique_indexes = NULL,
+  indexes = NULL,
   insert_data = TRUE
 ) {
   if (is.character(db)) {
@@ -87,5 +87,30 @@ create_database_table <- function(
     }
   }
 
+  # Add indexes if provided
+  if (length(indexes) > 0) {
+    for (i in 1:length(indexes)) {
+      safe_cols <- indexes[[i]] |>
+        DBI::dbQuoteIdentifier(conn = db)
+      pasted_cols <- indexes[[i]] |>
+        gsub(pattern = " |\\.", replacement = "_") |>
+        paste(collapse = "_")
+      index_name <- (is.null(names(indexes)) | names(indexes)[i] == "") |>
+        ifelse(
+          yes = pasted_cols,
+          no = names(indexes)[i]
+        )
+
+      index_query <- "CREATE INDEX IF NOT EXISTS %s_%s ON %s (%s);" |>
+        sprintf(
+          table_name |> gsub(pattern = " |\\.", replacement = "_"),
+          index_name,
+          table_name_safe,
+          safe_cols |> paste(collapse = ", ")
+        )
+      db |>
+        DBI::dbExecute(index_query)
+    }
+  }
   invisible(n_rows_inserted)
 }
