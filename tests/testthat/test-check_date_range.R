@@ -117,3 +117,10 @@ test_that("now_time_step works as expected", {
   expect_equal(format(daily[1], "%H:%M:%S"), "00:00:00")
   expect_equal(format(biminutely[1], "%S"), "00")
 })
+
+test_that("as_interval works as expected", {
+  c("yesterday", "now") |>
+    check_date_range(as_interval = TRUE) |>
+    lubridate::int_length() |>
+    expect_equal(24 * 3600)
+})

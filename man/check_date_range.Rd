@@ -8,7 +8,8 @@ check_date_range(
   date_range = "now",
   within = c(NA, NA),
   tz = "UTC",
-  now_time_step = "1 hours"
+  now_time_step = "1 hours",
+  as_interval = FALSE
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ Default for \code{within} is c(NA, NA) - which is equivalent to c("1970-01-01 00
 \item{tz}{A character string representing the time zone to use for the output.}
 
 \item{now_time_step}{A character string representing the time step to use when generating the current time if \code{within} is not fully specified. Passed to \code{\link[lubridate:round_date]{lubridate::floor_date()}}.}
+
+\item{as_interval}{A logical value indicating whether to return an \code{Interval} object instead of a vector of dates.}
 }
 \value{
 A length-2 vector of Dates or POSIXcts representing the start and end of a date range.

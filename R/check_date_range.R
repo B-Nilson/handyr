@@ -11,6 +11,7 @@
 #' Default for `within` is c(NA, NA) - which is equivalent to c("1970-01-01 00", "now")
 #' @param tz A character string representing the time zone to use for the output.
 #' @param now_time_step A character string representing the time step to use when generating the current time if `within` is not fully specified. Passed to [lubridate::floor_date()].
+#' @param as_interval A logical value indicating whether to return an `Interval` object instead of a vector of dates.
 #'
 #' @return
 #'   A length-2 vector of Dates or POSIXcts representing the start and end of a date range.
@@ -19,7 +20,8 @@ check_date_range <- function(
   date_range = "now",
   within = c(NA, NA),
   tz = "UTC",
-  now_time_step = "1 hours"
+  now_time_step = "1 hours",
+  as_interval = FALSE 
 ) {
   stopifnot(length(date_range) %in% 1:2)
   stopifnot(
@@ -129,6 +131,13 @@ check_date_range <- function(
   }
 
   # Ensure right time zones
-  date_range |>
+  date_range <- date_range |>
     lubridate::with_tz(tz)
+
+  # Convert to intervals if required
+  if (as_interval) {
+    date_range <- as_interval(date_range)
+  }
+
+  return(date_range)
 }
