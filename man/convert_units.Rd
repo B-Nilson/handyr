@@ -4,15 +4,17 @@
 \alias{convert_units}
 \title{Convert between common units}
 \usage{
-convert_units(x, from, to, keep_units = FALSE, ...)
+convert_units(x, from = NULL, to, keep_units = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric vector.}
 
 \item{from, to}{A string indicating the current/desired unit of \code{x}.
-Run \code{\link[units:valid_udunits]{units::valid_udunits()}} for a list of valid units for your system.}
+Run \code{\link[units:valid_udunits]{units::valid_udunits()}} for a list of valid units for your system.
+If \code{from} is \code{NULL} (default), tries to get units from \code{x} and fails if \code{x} does not have a \code{units} attribute.}
 
-\item{keep_units}{A logical value indicating whether to keep the units after conversion (default is \code{FALSE}).}
+\item{keep_units}{A logical value (or \code{NULL}) indicating whether to keep the units after conversion.
+Default is \code{NULL}, which is \code{TRUE} if \code{x} has a \code{units} attribute, \code{FALSE} otherwise.}
 
 \item{...}{Additional arguments passed on to \code{\link[units:units]{units::set_units()}}}
 }
@@ -30,4 +32,5 @@ convert_units(c(1, 2, 3), from = "ft", to = "m")
 convert_units(c(1, 2, 3), from = "oz", to = "L")
 convert_units(c(1, 2, 3), from = "m/s", to = "km/h")
 convert_units(c(1, 2, 3), from = "ug/m3", to = "mg/km3")
+1:5 |> units::set_units("cm") |> convert_units(to = "m")
 }
