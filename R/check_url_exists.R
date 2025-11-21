@@ -13,7 +13,7 @@ check_urls_exist <- function(urls, quiet = FALSE, ...) {
   stopifnot(
     "`urls` must be a character vector." = identical(class(urls), "character")
   )
-  stopifnot("`urls` must not contain missing values." = !any(is.na(urls)))
+  stopifnot("`urls` must not contain missing values." = !anyNA(urls))
   stopifnot(
     "`quiet` must be a single logical value." = is.logical(quiet) &
       length(quiet) == 1

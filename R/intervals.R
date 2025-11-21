@@ -32,7 +32,7 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
     "character" %in%
       class(start) |
       "character" %in% class(end) |
-      any(is.na(c(start, end)))
+      anyNA(c(start, end))
   ) {
     # TODO: vectorise check_date_range()
     date_ranges <- start |>
@@ -145,7 +145,7 @@ as.data.frame.Interval <- function(x, row.names = NULL, optional = FALSE, ...) {
       row.names,
       "character"
     ) ||
-      (is.null(row.names) & !any(is.na(row.names)))
+      (is.null(row.names) & !anyNA(row.names))
   )
   stopifnot(
     "`optional` must be a single logical value." = is.logical(optional) &

@@ -80,7 +80,7 @@ check_date_range <- function(
   }
 
   # Handle NA's in within (no bound)
-  if (any(is.na(within))) {
+  if (anyNA(within)) {
     if (is.na(within[1])) {
       within[1] <- lubridate::as_datetime(0, tz = tz)
     }
