@@ -13,7 +13,7 @@ check_date_range(
 }
 \arguments{
 \item{date_range, within}{A vector of 1 or 2 dates, datetimes, or characters
-(formatted as "YYYY-MM-DD HH:MM:SS" with the same timezone as \code{tz} or "now" for the current time) representing the start and end of: an input \code{date_range} or a maximum allowed date range (\code{within}).
+(formatted as "YYYY-MM-DD HH:MM:SS" with the same timezone as \code{tz} or "now"/"today" for the current time, or "yesterday" or "tomorrow" for that plus/minus one day) representing the start and end of: an input \code{date_range} or a maximum allowed date range (\code{within}).
 NA values will be replaced with 1970-01-01 or "now" for the first and second values, respectively.
 Default for \code{date_range} is "now".
 Default for \code{within} is c(NA, NA) - which is equivalent to c("1970-01-01 00", "now")}
