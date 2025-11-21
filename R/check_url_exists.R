@@ -1,5 +1,5 @@
 #' Check if URLs exist and can be reached
-#' 
+#'
 #' Performs a HEAD request on each URL and returns `TRUE` if the status code is 200, `FALSE` otherwise.
 #'
 #' @param urls A character vector of URLs to check.
@@ -10,20 +10,25 @@
 #' @export
 check_urls_exist <- function(urls, quiet = FALSE, ...) {
   stopifnot("At least one URL must be provided." = length(urls) >= 1)
-  stopifnot("`urls` must be a character vector." = identical(class(urls), "character"))
+  stopifnot(
+    "`urls` must be a character vector." = identical(class(urls), "character")
+  )
   stopifnot("`urls` must not contain missing values." = !any(is.na(urls)))
-  stopifnot("`quiet` must be a single logical value." = is.logical(quiet) & length(quiet) == 1)
-  
+  stopifnot(
+    "`quiet` must be a single logical value." = is.logical(quiet) &
+      length(quiet) == 1
+  )
+
   # Make HEAD requests for each url and return status codes (or -1 if failed to make request)
-  status_codes <- urls |> 
+  status_codes <- urls |>
     sapply(
       \(url) {
         httr::HEAD(url, ...) |>
-          httr::status_code() |> 
+          httr::status_code() |>
           on_error(.return = -1, .warn = !quiet)
       }
     )
-  
+
   # Return TRUE where status code is 200
   status_codes == 200
 }

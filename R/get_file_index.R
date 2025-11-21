@@ -46,7 +46,7 @@ get_file_index <- function(url, size_unit = "kB", timeout = 2) {
     stop(
       "Timeout reached - ensure url is actually a file index, and increase `timeout` if needed."
     )
-  }else if(httr::status_code(response) != 200) {
+  } else if (httr::status_code(response) != 200) {
     stop(
       "Failed to fetch file index - status code ",
       httr::status_code(response),

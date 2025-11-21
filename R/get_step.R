@@ -1,6 +1,6 @@
 #' Determine most common distance between values
 #'
-#' Finds the most common interval/step in a numeric-like vector. 
+#' Finds the most common interval/step in a numeric-like vector.
 #' Especially useful for time series data that has occasional time gaps.
 #' If there are multiple intervals of the same frequency and `most_common = TRUE`, it takes the first one in the sorted vector and a warning is raised.
 #'
