@@ -4,7 +4,7 @@ test_that("basic case works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })
@@ -22,7 +22,7 @@ test_that("custom query works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })
@@ -41,7 +41,7 @@ test_that("collect works", {
   db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })
@@ -57,7 +57,7 @@ test_that("pull works", {
   db_list <- init_airquality_db_test(type = "sqlite")
   db_path <- names(db_list)
   db <- db_list[[1]]
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })

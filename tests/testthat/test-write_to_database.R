@@ -1,7 +1,7 @@
 test_that("writes are fast for many rows", {
   skip("Skipping PostgreSQL tests as they download/invoke external binaries")
   db <- create_database("test", type = "postgresql")
-  on.exit(\(...) DBI::dbDisconnect(db))
+  withr::defer(DBI::dbDisconnect(db))
 
   test_data <- read.csv(url(
     "https://aqmap.ca/aqmap/data/aqmap_most_recent_obs.csv"
@@ -51,7 +51,7 @@ test_that("writing to SQLite works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })
@@ -74,7 +74,7 @@ test_that("writing to duckdb works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })
@@ -93,7 +93,7 @@ test_that("writing to postgresql works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
-  on.exit(\(...) DBI::dbDisconnect(db))
+  withr::defer(DBI::dbDisconnect(db))
 
   # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
@@ -117,7 +117,7 @@ test_that("insert_new only inserts non-overlapping entries", {
     return_connection = TRUE,
     path = db_dir
   )
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(file.path(db_dir, db_name))
   })
@@ -161,7 +161,7 @@ test_that("update_duplicates only inserts overlapping entries", {
     return_connection = TRUE,
     path = db_dir
   )
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(file.path(db_dir, db_name))
   })

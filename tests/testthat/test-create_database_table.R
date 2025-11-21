@@ -3,7 +3,7 @@ test_that("indexes work", {
   db_list <- init_airquality_db_test(type = "duckdb")
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
-  on.exit(\(...) {
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })

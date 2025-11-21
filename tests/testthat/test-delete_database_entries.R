@@ -4,7 +4,7 @@ test_that("basic case works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
-  on.exit(\(...){
+  withr::defer({
     DBI::dbDisconnect(db)
     file.remove(db_path)
   })
