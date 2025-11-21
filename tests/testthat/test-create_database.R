@@ -13,8 +13,8 @@ test_that("duckdb works", {
 test_that("postgresql works", {
   skip("Skipping PostgreSQL tests as they download/invoke external binaries")
   db <- create_database("__test.postgresql")
+  on.exit(\(...) DBI::dbDisconnect(db))
   expect_true(DBI::dbIsValid(db))
-  DBI::dbDisconnect(db)
 })
 
 test_that("setting path works", {
