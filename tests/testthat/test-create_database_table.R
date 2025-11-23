@@ -46,3 +46,199 @@ test_that("indexes work", {
       tolerance = 0.0001
     )
 })
+
+test_that("partitioning works for sqlite", {
+  # Create temp db to work with
+  db_list <- init_airquality_db_test(type = "sqlite")
+  db_path <- names(db_list)[1]
+  db <- db_list[[1]]
+  withr::defer({
+    DBI::dbDisconnect(db)
+    file.remove(db_path)
+  })
+
+  # Make dataset to insert
+  new_data <- mtcars |>
+    as.data.frame() |>
+    dplyr::mutate(car = row.names(mtcars)) |>
+    dplyr::arrange(car)
+  row.names(new_data) <- NULL
+
+  # Create partitioned table
+  db |>
+    create_database_table(
+      table_name = "mtcars",
+      new_data = new_data,
+      primary_keys = c("car"),
+      partition_by = gear
+    )
+
+  # Check partitions are created
+  expected_tables <- paste0("mtcars_", unique(new_data$gear)) # TODO: improve naming
+  db |>
+    DBI::dbListTables() |>
+    expect_contains(expected_tables)
+
+  # Check View exists
+  db |>
+    DBI::dbGetQuery(
+      "SELECT name FROM sqlite_master WHERE type = 'view' AND name = 'mtcars'"
+    ) |>
+    dplyr::pull(name) |>
+    expect_equal("mtcars")
+
+  # Check view data is correct
+  db |>
+    DBI::dbGetQuery("SELECT * FROM mtcars") |>
+    dplyr::arrange(car) |>
+    expect_equal(
+      new_data,
+      tolerance = 0.0001
+    )
+
+  # Check each partition is correct
+  new_data |>
+    dplyr::group_split(gear) |>
+    lapply(\(partition_data) {
+      partition_name <- paste0("mtcars_", unique(partition_data$gear))
+      db |>
+        dplyr::tbl(partition_name) |>
+        dplyr::arrange(car) |>
+        dplyr::collect() |>
+        expect_equal(
+          partition_data,
+          tolerance = 0.0001
+        )
+    }) |>
+    expect_no_warning() |>
+    expect_no_error()
+})
+
+test_that("partitioning works for duckdb", {
+  # Create temp db to work with
+  db_list <- init_airquality_db_test(type = "duckdb")
+  db_path <- names(db_list)[1]
+  db <- db_list[[1]]
+  withr::defer({
+    DBI::dbDisconnect(db)
+    file.remove(db_path)
+  })
+
+  # Make dataset to insert
+  new_data <- mtcars |>
+    as.data.frame() |>
+    dplyr::mutate(car = row.names(mtcars)) |>
+    dplyr::arrange(car)
+  row.names(new_data) <- NULL
+
+  # Create partitioned table
+  db |>
+    create_database_table(
+      table_name = "mtcars",
+      new_data = new_data,
+      primary_keys = c("car"),
+      partition_by = gear
+    )
+
+  # Check partitions are created
+  expected_tables <- paste0("mtcars_", unique(new_data$gear)) # TODO: improve naming
+  db |>
+    DBI::dbGetQuery("SELECT * FROM duckdb_tables()") |>
+    dplyr::pull(table_name) |>
+    expect_contains(expected_tables)
+
+  # Check View exists
+  db |>
+    DBI::dbGetQuery(
+      "SELECT * FROM duckdb_views() WHERE view_name = 'mtcars'"
+    ) |>
+    dplyr::pull(view_name) |>
+    expect_equal("mtcars")
+
+  # Check view data is correct
+  db |>
+    DBI::dbGetQuery("SELECT * FROM mtcars") |>
+    dplyr::arrange(car) |>
+    expect_equal(
+      new_data,
+      tolerance = 0.0001
+    )
+
+  # Check each partition is correct
+  new_data |>
+    dplyr::group_split(gear) |>
+    lapply(\(partition_data) {
+      partition_name <- paste0("mtcars_", unique(partition_data$gear))
+      db |>
+        dplyr::tbl(partition_name) |>
+        dplyr::arrange(car) |>
+        dplyr::collect() |>
+        expect_equal(
+          partition_data,
+          tolerance = 0.0001
+        )
+    }) |>
+    expect_no_warning() |>
+    expect_no_error()
+})
+
+test_that("partitioning works for postgres", {
+  skip("Skipping PostgreSQL tests as they download/invoke external binaries")
+  # Create temp db to work with
+  db_list <- init_airquality_db_test(type = "postgresql")
+  db_path <- names(db_list)[1]
+  db <- db_list[[1]]
+  withr::defer({
+    db |> DBI::dbRemoveTable("mtcars") |> on_error(.return = NULL)
+    DBI::dbDisconnect(db)
+  })
+
+  # Make dataset to insert
+  new_data <- mtcars |>
+    as.data.frame() |>
+    dplyr::mutate(car = row.names(mtcars)) |>
+    dplyr::arrange(car)
+  row.names(new_data) <- NULL
+
+  # Create partitioned table
+  db |>
+    create_database_table(
+      table_name = "mtcars",
+      new_data = new_data,
+      primary_keys = c("car", "gear"), # TODO: automate inclusion of partition key in primary keys if not present
+      partition_by = gear
+    )
+
+  # Check partitions are created
+  expected_tables <- paste0("mtcars_", unique(new_data$gear)) |> # TODO: improve naming
+    c("mtcars")
+  db |>
+    DBI::dbListTables() |>
+    expect_contains(expected_tables)
+
+  # Check partitioned data is correct
+  db |>
+    DBI::dbGetQuery("SELECT * FROM mtcars") |>
+    dplyr::arrange(car) |>
+    expect_equal(
+      new_data,
+      tolerance = 0.0001
+    )
+
+  # Check each partition is correct
+  new_data |>
+    dplyr::group_split(gear) |>
+    lapply(\(partition_data) {
+      partition_name <- paste0("mtcars_", unique(partition_data$gear))
+      db |>
+        dplyr::tbl(partition_name) |>
+        dplyr::arrange(car) |>
+        dplyr::collect() |>
+        expect_equal(
+          partition_data,
+          tolerance = 0.0001
+        )
+    }) |>
+    expect_no_warning() |>
+    expect_no_error()
+})
