@@ -4,6 +4,11 @@ create_database_index <- function(
   index_cols,
   index_name = NULL
 ) {
+  stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
+  stopifnot(is.character(table_name) & length(table_name) == 1)
+  stopifnot(is.character(index_cols), length(index_cols) >= 1)
+  stopifnot(is.null(index_name) | is.character(index_name) & length(index_name) == 1)
+
   table_name_safe <- table_name |>
     DBI::dbQuoteIdentifier(conn = db)
   safe_cols <- index_cols |>
