@@ -13,8 +13,13 @@
 #'   These will be added to the table, in addition to the primary key, and will result in an error if non-unique data is inserted/existing.
 #'   Indexes speed up queries by allowing for faster lookups, but can increase the size of the database and reduce write performance.
 #' @param indexes A list of character vector(s) of column names to use as indexes.
-#' @param partition_by A tidyselect expression specifying a column to partition the table by. True partitioning is only supported for Postgres, but for other types mulitple partition tables will be created and linked using a View.
+#' @param partition_by A named list of partitions to create, where names correspond to the names of the columns to partition by, and values correspond to the values of that column within each partition (i.e. `partition_by = list(gear = list(c(1, 4), c(4, 6)), carb = list(c(1, 4), c(4, 10)))` will create partition the table into 2 partitions, one for gears 1,2, and 3, and one for gear 4 and 5).
+#'   True partitioning is only supported for Postgres, but for other types mulitiple partition tables will be created and linked using a View.
 #'   If `NULL` (the default), no partitioning will be used.
+#' @param partition_type A character string specifying the type of partitioning to use.
+#'   Currently supports "range" (expects pairs of inclusive start and exclusive end values), "list" (expects vectors of values to match), and "hash" (expects single values).
+#'   Default is "range".
+#'   Ignored if `partition_by` is `NULL`.
 #' @param insert_data A logical indicating whether to insert the data frame provided in `new_data` into the created table.
 #'   If `FALSE`, the table will be created but no data will be inserted.
 #' @return A data frame containing the number of rows inserted into the table.
@@ -27,24 +32,31 @@ create_database_table <- function(
   unique_indexes = NULL,
   indexes = NULL,
   partition_by = NULL,
+  partition_type = c("range", "list", "hash")[1],
   insert_data = TRUE
 ) {
   if (is.character(db)) {
     db <- connect_to_database(db)
   }
   is_postgres <- inherits(db, "PqConnection") | inherits(db, "PostgreSQL")
-  partitioned_data <- new_data |>
-    dplyr::group_nest({{ partition_by }}, keep = TRUE) |>
-    dplyr::rename_with(.cols = 1, .fn = ~"group")
-  is_partitioned <- ncol(partitioned_data) > 1
+  is_partitioned <- !is.null(partition_by)
   table_name_safe <- table_name |>
     DBI::dbQuoteIdentifier(conn = db)
+
+  # Partition input data if applicable
+  if (is_partitioned) {
+    partitioned_data <- new_data |>
+      partition_data(
+        partition_by = partition_by,
+        partition_type = partition_type
+      )
+  }
 
   # Create partition tables and a master view if applicable
   if (is_partitioned & !is_postgres) {
     # make partition tables # TODO: abstract
     partition_names <- partitioned_data |>
-      dplyr::group_by(.data$group) |>
+      dplyr::group_by(.data$.partition) |>
       dplyr::mutate(
         partition_name = table_name |>
           paste0("_", paste(unlist(dplyr::cur_group()), collapse = "_"))
@@ -63,7 +75,6 @@ create_database_table <- function(
         return(row$partition_name)
       })
     # create master view
-    message(paste(partition_names, collapse = ", "))
     unions <- "SELECT * FROM %s" |>
       sprintf(partition_names) |>
       paste(collapse = " UNION ALL ")
@@ -117,20 +128,11 @@ create_database_table <- function(
 
   # Mark table as partitioned if postgres and partition_by is provided
   if (is_partitioned & is_postgres) {
-    new_data <- new_data |> dplyr::mutate(.v = {{ partition_by }})
-    partition_type <- dplyr::case_when(
-      is.numeric(new_data$.v) |
-        lubridate::is.Date(new_data$.v) |
-        lubridate::is.POSIXct(new_data$.v) ~ "RANGE",
-      is.factor(new_data$.v) | is.character(new_data$.v) ~ "LIST",
-      TRUE ~ "HASH"
-    )
-    partition_col <- rlang::expr({{ partition_by }}) |>
-      tidyselect::eval_select(data = new_data) |>
-      names() |>
-      DBI::dbQuoteIdentifier(conn = db)
+    partition_cols <- names(partition_by) |>
+      DBI::dbQuoteIdentifier(conn = db) |>
+      paste0(collapse = ", ")
     partition_sql <- " PARTITION BY %s (%s);" |>
-      sprintf(partition_type, partition_col)
+      sprintf(toupper(partition_type), partition_cols)
     create_query <- create_query |>
       sub(pattern = ";", replacement = partition_sql)
   }
@@ -140,28 +142,33 @@ create_database_table <- function(
 
   # Create partition tables if postgres and partition_by is provided
   if (is_partitioned & is_postgres) {
-    partition_names <- new_data |>
-      dplyr::group_nest(group = {{ partition_by }}) |>
-      dplyr::group_by(.data$group) |>
+    partition_names <- partitioned_data |>
+      dplyr::group_by(.data$.partition) |>
       dplyr::mutate(
         partition_name = table_name |>
-          paste0("_", paste(unlist(dplyr::cur_group()), collapse = "_")) |>
+          paste0("_", .data$.partition) |>
           DBI::dbQuoteIdentifier(conn = db),
-        .min_v = purrr::map_dbl(.data$data, ~ min(.x$.v, na.rm = TRUE)),
-        .max_v = purrr::map_dbl(.data$data, ~ max(.x$.v, na.rm = TRUE)),
-        .vals = purrr::map(.data$data, ~ unique(.x$.v)),
-
-        partition_def = ifelse(
-          partition_type == "RANGE",
-          yes = "FROM (%s) TO (%s)" |>
-            sprintf(.min_v, .max_v + 1),
-          no = "IN (%s)" |>
-            sprintf(
-              as.character(.vals) |>
-                DBI::dbQuoteLiteral(conn = db) |>
-                paste(collapse = ", ")
-            )
-        )
+        .min_sql = paste0(
+          dplyr::across(dplyr::starts_with(".range_"), \(x) unlist(x)[1]),
+          collapse = ", "
+        ),
+        .max_sql = paste0(
+          dplyr::across(dplyr::starts_with(".range_"), \(x) unlist(x)[2]),
+          collapse = ", "
+        ),
+        # TODO: figure out how to handle list partitions
+        partition_def = #ifelse(
+          # partition_type == "RANGE",
+          # yes = 
+          "FROM (%s) TO (%s)" |>
+            sprintf(.min_sql, .max_sql),
+          # no = "IN (%s)" |>
+          #   sprintf(
+          #     as.character(.vals) |>
+          #       DBI::dbQuoteLiteral(conn = db) |>
+          #       paste(collapse = ", ")
+          #   )
+        # )
       ) |>
       apply(1, \(row) {
         row <- as.list(row)
@@ -171,8 +178,6 @@ create_database_table <- function(
           DBI::dbExecute(create_partition_query)
         return(row$partition_name)
       })
-    new_data <- new_data |>
-      dplyr::select(-.v)
   }
 
   # insert rows if provided
@@ -246,4 +251,68 @@ create_database_index <- function(
     )
   db |>
     DBI::dbExecute(index_query)
+}
+
+partition_data <- function(new_data, partition_by, partition_type) {
+  partitioned_data <- new_data
+  for (col in names(partition_by)) {
+    for (i in seq_along(partition_by[[col]])) {
+      if (partition_type == "range") {
+        within <- partition_by[[col]][[i]]
+        partitioned_data <- partitioned_data |>
+          dplyr::mutate(
+            .partition = .data[[col]] >= within[1] & .data[[col]] < within[2],
+            .range = list(within)
+          ) |>
+          dplyr::rename_with(.cols = c(.partition, .range), .fn = \(x) {
+            paste0(x, "_", col, "_", paste(within, collapse = "to"))
+          })
+      } else if (partition_type == "list") {} else {}
+    }
+    partitioned_data <- partitioned_data |>
+      dplyr::group_by(dplyr::across(
+        dplyr::starts_with(paste0(".partition_", col))
+      )) |>
+      dplyr::mutate(
+        .partition = names(dplyr::cur_group())[unlist(dplyr::cur_group())] |>
+          sub(pattern = ".partition_", replacement = "") |>
+          paste(collapse = "_"),
+        .range = data.frame(
+          row = dplyr::cur_group_rows(),
+          col = match(
+            paste0(".range_", .partition),
+            colnames(partitioned_data)
+          )
+        ) |>
+          as.matrix() |>
+          apply(
+            1,
+            \(entry) {
+              entry <- as.list(entry)
+              partitioned_data[entry$row, entry$col] |>
+                unlist() |>
+                unname() |>
+                as.list()
+            }
+          )
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::rename_with(.cols = c(.partition, .range), .fn = \(x) {
+        paste0(x, "_", col)
+      }) |>
+      dplyr::select(
+        -dplyr::starts_with(paste0(c(".partition_", ".range_"), col, "_"))
+      )
+  }
+  partitioned_data |>
+    dplyr::group_by(dplyr::across(
+      dplyr::starts_with(paste0(".partition_"))
+    )) |>
+    dplyr::mutate(
+      .partition = unlist(dplyr::cur_group()) |>
+        paste(collapse = "_")
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::select(-dplyr::starts_with(".partition_")) |>
+    dplyr::group_nest(.partition, dplyr::across(dplyr::starts_with(".range_")))
 }

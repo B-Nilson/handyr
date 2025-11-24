@@ -70,11 +70,11 @@ test_that("partitioning works for sqlite", {
       table_name = "mtcars",
       new_data = new_data,
       primary_keys = c("car"),
-      partition_by = gear
+      partition_by = list(gear = list(c(1, 4), c(4, 6)))
     )
 
   # Check partitions are created
-  expected_tables <- paste0("mtcars_", unique(new_data$gear)) # TODO: improve naming
+  expected_tables <- paste0("mtcars_gear_", c(1, 4), "to", c(4, 6))
   db |>
     DBI::dbListTables() |>
     expect_contains(expected_tables)
@@ -98,15 +98,20 @@ test_that("partitioning works for sqlite", {
 
   # Check each partition is correct
   new_data |>
-    dplyr::group_split(gear) |>
+    dplyr::group_split(
+      partition_name = (gear < 4) |>
+        factor(
+          levels = c(TRUE, FALSE),
+          labels = paste0("mtcars_gear_", c(1, 4), "to", c(4, 6))
+        )
+    ) |>
     lapply(\(partition_data) {
-      partition_name <- paste0("mtcars_", unique(partition_data$gear))
       db |>
-        dplyr::tbl(partition_name) |>
+        dplyr::tbl(as.character(partition_data$partition_name[1])) |>
         dplyr::arrange(car) |>
         dplyr::collect() |>
         expect_equal(
-          partition_data,
+          partition_data |> dplyr::select(-partition_name),
           tolerance = 0.0001
         )
     }) |>
@@ -137,11 +142,11 @@ test_that("partitioning works for duckdb", {
       table_name = "mtcars",
       new_data = new_data,
       primary_keys = c("car"),
-      partition_by = gear
+      partition_by = list(gear = list(c(1, 4), c(4, 6)))
     )
 
   # Check partitions are created
-  expected_tables <- paste0("mtcars_", unique(new_data$gear)) # TODO: improve naming
+  expected_tables <- paste0("mtcars_gear_", c(1, 4), "to", c(4, 6))
   db |>
     DBI::dbGetQuery("SELECT * FROM duckdb_tables()") |>
     dplyr::pull(table_name) |>
@@ -166,15 +171,20 @@ test_that("partitioning works for duckdb", {
 
   # Check each partition is correct
   new_data |>
-    dplyr::group_split(gear) |>
+    dplyr::group_split(
+      partition_name = (gear < 4) |>
+        factor(
+          levels = c(TRUE, FALSE),
+          labels = paste0("mtcars_gear_", c(1, 4), "to", c(4, 6))
+        )
+    ) |>
     lapply(\(partition_data) {
-      partition_name <- paste0("mtcars_", unique(partition_data$gear))
       db |>
-        dplyr::tbl(partition_name) |>
+        dplyr::tbl(as.character(partition_data$partition_name[1])) |>
         dplyr::arrange(car) |>
         dplyr::collect() |>
         expect_equal(
-          partition_data,
+          partition_data |> dplyr::select(-partition_name),
           tolerance = 0.0001
         )
     }) |>
@@ -206,12 +216,11 @@ test_that("partitioning works for postgres", {
       table_name = "mtcars",
       new_data = new_data,
       primary_keys = c("car", "gear"), # TODO: automate inclusion of partition key in primary keys if not present
-      partition_by = gear
+      partition_by = list(gear = list(c(1, 4), c(4, 6)))
     )
 
   # Check partitions are created
-  expected_tables <- paste0("mtcars_", unique(new_data$gear)) |> # TODO: improve naming
-    c("mtcars")
+  expected_tables <- paste0("mtcars_gear_", c(1, 4), "to", c(4, 6))
   db |>
     DBI::dbListTables() |>
     expect_contains(expected_tables)
@@ -227,15 +236,20 @@ test_that("partitioning works for postgres", {
 
   # Check each partition is correct
   new_data |>
-    dplyr::group_split(gear) |>
+    dplyr::group_split(
+      partition_name = (gear < 4) |>
+        factor(
+          levels = c(TRUE, FALSE),
+          labels = paste0("mtcars_gear_", c(1, 4), "to", c(4, 6))
+        )
+    ) |>
     lapply(\(partition_data) {
-      partition_name <- paste0("mtcars_", unique(partition_data$gear))
       db |>
-        dplyr::tbl(partition_name) |>
+        dplyr::tbl(as.character(partition_data$partition_name[1])) |>
         dplyr::arrange(car) |>
         dplyr::collect() |>
         expect_equal(
-          partition_data,
+          partition_data |> dplyr::select(-partition_name),
           tolerance = 0.0001
         )
     }) |>
