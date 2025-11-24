@@ -193,7 +193,7 @@ test_that("partitioning works for duckdb", {
 })
 
 test_that("partitioning works for postgres", {
-  skip("Skipping PostgreSQL tests as they download/invoke external binaries")
+  skip_on_cran()
   # Create temp db to work with
   db_list <- init_airquality_db_test(type = "postgresql")
   db_path <- names(db_list)[1]

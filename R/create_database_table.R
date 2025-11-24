@@ -282,18 +282,19 @@ partition_data <- function(new_data, partition_by, partition_type) {
     dplyr::group_nest(.partition, dplyr::across(dplyr::starts_with(".range_")))
 }
 
+# TODO: add default partition if needed?
 create_postgres_partitions <- function(
   db,
   partitioned_data,
   table_name,
   partition_type
 ) {
-  
   table_name_safe <- table_name |>
     DBI::dbQuoteIdentifier(conn = db)
   partitions <- partitioned_data |>
     dplyr::group_by(.data$.partition) |>
     dplyr::mutate(
+      partition_type = partition_type,
       partition_name = table_name |>
         paste0("_", .data$.partition) |>
         DBI::dbQuoteIdentifier(conn = db),
@@ -319,23 +320,28 @@ create_postgres_partitions <- function(
         on_error(.return = "", .warn = TRUE),
       # Build partition definitions
       .range_sql = "FROM (%s) TO (%s)" |>
-        sprintf(.min_sql, .max_sql),
+        sprintf(.data$.min_sql, .data$.max_sql),
       .list_sql = "IN (%s)" |>
-        sprintf(.values_sql)
+        sprintf(.data$.values_sql),
+      .partition_sql = dplyr::case_when(
+        .data$partition_type == "range" ~ .data$.range_sql,
+        .data$partition_type == "list" ~ .data$.list_sql
+      )
     )
 
   # Make partition tables
-  create_query_template <- "CREATE TABLE %s_%s PARTITION OF %s %s;"
+  create_query_template <- "CREATE TABLE %s PARTITION OF %s FOR VALUES %s;"
   partitions |>
     apply(1, \(row) {
       row <- as.list(row)
       create_partition_query <- create_query_template |>
-        sprintf(row$partition_name, table_name_safe, row$partition_def)
+        sprintf(row$partition_name, table_name_safe, row$.partition_sql)
       db |> DBI::dbExecute(create_partition_query)
     })
   invisible()
 }
 
+# TODO: add default partition if needed?
 create_pretend_partitions <- function(
   db,
   partitioned_data,
@@ -368,7 +374,7 @@ create_pretend_partitions <- function(
         )
       return(row$partition_name)
     })
-  
+
   # create master view
   unions <- "SELECT * FROM %s" |>
     sprintf(partition_names) |>
