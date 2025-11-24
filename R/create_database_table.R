@@ -68,34 +68,15 @@ create_database_table <- function(
 
   # Create partition tables and a master view if applicable
   if (is_partitioned & !is_postgres) {
-    # make partition tables # TODO: abstract
-    partition_names <- partitioned_data |>
-      dplyr::group_by(.data$.partition) |>
-      dplyr::mutate(
-        partition_name = table_name |>
-          paste0("_", paste(unlist(dplyr::cur_group()), collapse = "_"))
-      ) |>
-      apply(1, \(row) {
-        row <- as.list(row)
-        db |>
-          create_database_table(
-            table_name = row$partition_name,
-            new_data = row$data,
-            primary_keys = primary_keys,
-            unique_indexes = unique_indexes,
-            indexes = indexes,
-            insert_data = insert_data
-          )
-        return(row$partition_name)
-      })
-    # create master view
-    unions <- "SELECT * FROM %s" |>
-      sprintf(partition_names) |>
-      paste(collapse = " UNION ALL ")
-    create_view_query <- "CREATE VIEW %s AS %s;" |>
-      sprintf(table_name_safe, unions)
     db |>
-      DBI::dbExecute(create_view_query)
+      create_pretend_partitions(
+        partitioned_data = partitioned_data,
+        table_name = table_name,
+        primary_keys = primary_keys,
+        unique_indexes = unique_indexes,
+        indexes = indexes,
+        insert_data = insert_data
+      )
     return(invisible()) # return early
   }
 
@@ -156,42 +137,12 @@ create_database_table <- function(
 
   # Create partition tables if postgres and partition_by is provided
   if (is_partitioned & is_postgres) {
-    partition_names <- partitioned_data |>
-      dplyr::group_by(.data$.partition) |>
-      dplyr::mutate(
-        partition_name = table_name |>
-          paste0("_", .data$.partition) |>
-          DBI::dbQuoteIdentifier(conn = db),
-        .min_sql = paste0(
-          dplyr::across(dplyr::starts_with(".range_"), \(x) unlist(x)[1]),
-          collapse = ", "
-        ),
-        .max_sql = paste0(
-          dplyr::across(dplyr::starts_with(".range_"), \(x) unlist(x)[2]),
-          collapse = ", "
-        ),
-        # TODO: figure out how to handle list partitions
-        partition_def = #ifelse(
-          # partition_type == "RANGE",
-          # yes = 
-          "FROM (%s) TO (%s)" |>
-            sprintf(.min_sql, .max_sql),
-          # no = "IN (%s)" |>
-          #   sprintf(
-          #     as.character(.vals) |>
-          #       DBI::dbQuoteLiteral(conn = db) |>
-          #       paste(collapse = ", ")
-          #   )
-        # )
-      ) |>
-      apply(1, \(row) {
-        row <- as.list(row)
-        create_partition_query <- "CREATE TABLE %s PARTITION OF %s FOR VALUES %s;" |>
-          sprintf(row$partition_name, table_name_safe, row$partition_def)
-        db |>
-          DBI::dbExecute(create_partition_query)
-        return(row$partition_name)
-      })
+    db |>
+      create_postgres_partitions(
+        partitioned_data = partitioned_data,
+        table_name = table_name,
+        partition_type = partition_type
+      )
   }
 
   # insert rows if provided
@@ -329,4 +280,101 @@ partition_data <- function(new_data, partition_by, partition_type) {
     dplyr::ungroup() |>
     dplyr::select(-dplyr::starts_with(".partition_")) |>
     dplyr::group_nest(.partition, dplyr::across(dplyr::starts_with(".range_")))
+}
+
+create_postgres_partitions <- function(
+  db,
+  partitioned_data,
+  table_name,
+  partition_type
+) {
+  
+  table_name_safe <- table_name |>
+    DBI::dbQuoteIdentifier(conn = db)
+  partitions <- partitioned_data |>
+    dplyr::group_by(.data$.partition) |>
+    dplyr::mutate(
+      partition_name = table_name |>
+        paste0("_", .data$.partition) |>
+        DBI::dbQuoteIdentifier(conn = db),
+      # Build inputs for range sql
+      .min_sql = dplyr::across(
+        dplyr::starts_with(".range_"),
+        \(x) unlist(x)[1] |> DBI::dbQuoteLiteral(conn = db)
+      ) |>
+        paste0(collapse = ", ") |>
+        on_error(.return = "", .warn = TRUE),
+      .max_sql = dplyr::across(
+        dplyr::starts_with(".range_"),
+        \(x) unlist(x)[2] |> DBI::dbQuoteLiteral(conn = db)
+      ) |>
+        paste0(collapse = ", ") |>
+        on_error(.return = "", .warn = TRUE),
+      # Build inputs for list sql
+      .values_sql = dplyr::across(
+        dplyr::starts_with(".values_"),
+        \(x) unlist(x) |> DBI::dbQuoteLiteral(conn = db)
+      ) |>
+        paste0(collapse = ", ") |>
+        on_error(.return = "", .warn = TRUE),
+      # Build partition definitions
+      .range_sql = "FROM (%s) TO (%s)" |>
+        sprintf(.min_sql, .max_sql),
+      .list_sql = "IN (%s)" |>
+        sprintf(.values_sql)
+    )
+
+  # Make partition tables
+  create_query_template <- "CREATE TABLE %s_%s PARTITION OF %s %s;"
+  partitions |>
+    apply(1, \(row) {
+      row <- as.list(row)
+      create_partition_query <- create_query_template |>
+        sprintf(row$partition_name, table_name_safe, row$partition_def)
+      db |> DBI::dbExecute(create_partition_query)
+    })
+  invisible()
+}
+
+create_pretend_partitions <- function(
+  db,
+  partitioned_data,
+  table_name,
+  primary_keys,
+  unique_indexes,
+  indexes,
+  insert_data
+) {
+  table_name_safe <- table_name |>
+    DBI::dbQuoteIdentifier(conn = db)
+
+  # Create "partition" tables
+  partition_names <- partitioned_data |>
+    dplyr::group_by(.data$.partition) |>
+    dplyr::mutate(
+      partition_name = table_name |>
+        paste0("_", paste(unlist(dplyr::cur_group()), collapse = "_"))
+    ) |>
+    apply(1, \(row) {
+      row <- as.list(row)
+      db |>
+        create_database_table(
+          table_name = row$partition_name,
+          new_data = row$data,
+          primary_keys = primary_keys,
+          unique_indexes = unique_indexes,
+          indexes = indexes,
+          insert_data = insert_data
+        )
+      return(row$partition_name)
+    })
+  
+  # create master view
+  unions <- "SELECT * FROM %s" |>
+    sprintf(partition_names) |>
+    paste(collapse = " UNION ALL ")
+  create_view_query <- "CREATE VIEW %s AS %s;" |>
+    sprintf(table_name_safe, unions)
+  db |>
+    DBI::dbExecute(create_view_query)
 }
