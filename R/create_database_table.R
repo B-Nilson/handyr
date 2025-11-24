@@ -35,6 +35,20 @@ create_database_table <- function(
   partition_type = c("range", "list", "hash")[1],
   insert_data = TRUE
 ) {
+  stopifnot(is.character(db) & length(db) == 1 | is_db_connection(db))
+  stopifnot(is.character(table_name) & length(table_name) == 1)
+  stopifnot(is.data.frame(new_data))
+  stopifnot(is.character(primary_keys), length(primary_keys) >= 1)
+  stopifnot(is.list(unique_indexes) | is.null(unique_indexes))
+  stopifnot(is.list(indexes) | is.null(indexes))
+  stopifnot(is.list(partition_by) | is.null(partition_by))
+  stopifnot(
+    is.character(partition_type),
+    length(partition_type) == 1,
+    partition_type %in% c("range", "list", "hash")
+  )
+  stopifnot(is.logical(insert_data), length(insert_data) == 1)
+
   if (is.character(db)) {
     db <- connect_to_database(db)
   }
