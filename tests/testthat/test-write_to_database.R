@@ -1,6 +1,7 @@
 test_that("writes are fast for many rows", {
   skip("Skipping PostgreSQL tests as they download/invoke external binaries")
   db <- create_database("test", type = "postgresql")
+  withr::defer(DBI::dbDisconnect(db))
 
   test_data <- read.csv(url(
     "https://aqmap.ca/aqmap/data/aqmap_most_recent_obs.csv"
@@ -42,7 +43,6 @@ test_that("writes are fast for many rows", {
   DBI::dbRemoveTable(db, "test0")
   DBI::dbRemoveTable(db, "test1")
   DBI::dbRemoveTable(db, "test2")
-  DBI::dbDisconnect(db)
 })
 
 test_that("writing to SQLite works", {
@@ -51,6 +51,10 @@ test_that("writing to SQLite works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
+  withr::defer({
+    DBI::dbDisconnect(db)
+    file.remove(db_path)
+  })
 
   # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
@@ -62,10 +66,6 @@ test_that("writing to SQLite works", {
     ) |>
     dplyr::arrange(date) |>
     expect_equal(expected, tolerance = 0.0001)
-
-  # Cleanup
-  DBI::dbDisconnect(db)
-  file.remove(file.path(db_path))
 })
 
 test_that("writing to duckdb works", {
@@ -74,16 +74,16 @@ test_that("writing to duckdb works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
+  withr::defer({
+    DBI::dbDisconnect(db)
+    file.remove(db_path)
+  })
 
   # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
     dplyr::collect() |>
     as.data.frame() |>
     expect_equal(expected, tolerance = 0.0001)
-
-  # Cleanup
-  DBI::dbDisconnect(db)
-  file.remove(file.path(db_path))
 })
 
 test_that("writing to postgresql works", {
@@ -93,15 +93,13 @@ test_that("writing to postgresql works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
+  withr::defer(DBI::dbDisconnect(db))
 
   # Check data in database matches input
   dplyr::tbl(db, "airquality") |>
     dplyr::collect() |>
     as.data.frame() |>
     expect_equal(expected, tolerance = 0.0001)
-
-  # Cleanup
-  DBI::dbDisconnect(db)
 })
 
 test_that("insert_new only inserts non-overlapping entries", {
@@ -119,6 +117,10 @@ test_that("insert_new only inserts non-overlapping entries", {
     return_connection = TRUE,
     path = db_dir
   )
+  withr::defer({
+    DBI::dbDisconnect(db)
+    file.remove(file.path(db_dir, db_name))
+  })
   # Write data to database
   db |>
     write_to_database(
@@ -142,10 +144,6 @@ test_that("insert_new only inserts non-overlapping entries", {
   expected_data <- rbind(new_data_1, new_data_2) |>
     dplyr::distinct(Month, Day, .keep_all = TRUE)
   db_data |> expect_equal(expected_data, tolerance = 0.0001)
-
-  # Cleanup
-  DBI::dbDisconnect(db)
-  file.remove(file.path(db_dir, db_name))
 })
 
 test_that("update_duplicates only inserts overlapping entries", {
@@ -163,6 +161,10 @@ test_that("update_duplicates only inserts overlapping entries", {
     return_connection = TRUE,
     path = db_dir
   )
+  withr::defer({
+    DBI::dbDisconnect(db)
+    file.remove(file.path(db_dir, db_name))
+  })
   # Write data to database
   db |>
     write_to_database(
@@ -187,8 +189,4 @@ test_that("update_duplicates only inserts overlapping entries", {
   expected_data <- new_data_1[1:4, ] |>
     rbind(new_data_2[1:4, ])
   db_data |> expect_equal(expected_data, tolerance = 0.0001)
-
-  # Cleanup
-  DBI::dbDisconnect(db)
-  file.remove(file.path(db_dir, db_name))
 })

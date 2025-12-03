@@ -38,5 +38,5 @@ test_that("able to get all canadian communities", {
   ))
 
   expect_true(nrow(communities) > 1000)
-  expect_true(all(!is.na(communities$name)))
+  expect_true(!anyNA(communities$name))
 })

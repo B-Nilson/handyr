@@ -13,13 +13,13 @@ delete_database_entries <- function(db, table_name, entry_keys) {
 
   # Handle db path instead of connection
   if (is.character(db)) {
-    db <- db_conn_from_path(db)
+    db <- connect_to_database(db)
   }
 
   # Create temp table
   temp_tbl_name <- paste0("_delete_keys_", table_name)
   db |>
-    db_create_table(
+    create_database_table(
       table_name = temp_tbl_name,
       new_data = as.data.frame(entry_keys) |>
         dplyr::mutate(id = dplyr::row_number()),

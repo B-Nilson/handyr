@@ -9,9 +9,10 @@ swap(x, what, with)
 \arguments{
 \item{x}{Vector of values to be have certain values swapped out.}
 
-\item{what}{One or more values to be replaced with \code{with} throughout \code{x}.}
+\item{what}{One or more values to be replaced with \code{with} throughout \code{x},
+or a logical vector with the same length as \code{x} indicating which values to replace.}
 
-\item{with}{A single value to replace \code{what} for throughout \code{x}.}
+\item{with}{A single value to replace \code{what} for throughout \code{x}, or a vector with the same length as \code{x} indicating which values to insert for each value in \code{x}.}
 }
 \value{
 a vector of \code{x} where all instances of \code{what} are replaced with \code{with}
@@ -23,6 +24,10 @@ a vector of \code{x} where all instances of \code{what} are replaced with \code{
 swap(c(-20:20, NA), what = NA, with = -1)
 swap(c(-20:20, Inf), what = Inf, with = NA)
 swap(c(-20:20), what = Inf, with = NA)
+x <- 1:10
+swap(x, what = x < 5, with = -1)
+y <- 10:1
+swap(x, what = x < 5, with = y)
 }
 \seealso{
 Other Utilities: 

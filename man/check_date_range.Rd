@@ -8,12 +8,13 @@ check_date_range(
   date_range = "now",
   within = c(NA, NA),
   tz = "UTC",
-  now_time_step = "1 hours"
+  now_time_step = "1 hours",
+  as_interval = FALSE
 )
 }
 \arguments{
 \item{date_range, within}{A vector of 1 or 2 dates, datetimes, or characters
-(formatted as "YYYY-MM-DD HH:MM:SS" with the same timezone as \code{tz} or "now" for the current time) representing the start and end of: an input \code{date_range} or a maximum allowed date range (\code{within}).
+(formatted as "YYYY-MM-DD HH:MM:SS" with the same timezone as \code{tz} or "now"/"today" for the current time, or "yesterday" or "tomorrow" for that plus/minus one day) representing the start and end of: an input \code{date_range} or a maximum allowed date range (\code{within}).
 NA values will be replaced with 1970-01-01 or "now" for the first and second values, respectively.
 Default for \code{date_range} is "now".
 Default for \code{within} is c(NA, NA) - which is equivalent to c("1970-01-01 00", "now")}
@@ -21,6 +22,8 @@ Default for \code{within} is c(NA, NA) - which is equivalent to c("1970-01-01 00
 \item{tz}{A character string representing the time zone to use for the output.}
 
 \item{now_time_step}{A character string representing the time step to use when generating the current time if \code{within} is not fully specified. Passed to \code{\link[lubridate:round_date]{lubridate::floor_date()}}.}
+
+\item{as_interval}{A logical value indicating whether to return an \code{Interval} object instead of a vector of dates.}
 }
 \value{
 A length-2 vector of Dates or POSIXcts representing the start and end of a date range.

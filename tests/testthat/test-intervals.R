@@ -60,8 +60,8 @@ test_that("is_within works", {
     as.data.frame()
   date_ranges$end <- date_ranges$end + lubridate::days(c(1:24))
 
-  date_ranges$end |> 
-    rev() |> 
-    is_within(interval = date_ranges[12, ]) |> 
+  date_ranges$end |>
+    rev() |>
+    is_within(interval = date_ranges[12, ]) |>
     expect_equal(rep(c(FALSE, TRUE), each = 12))
 })

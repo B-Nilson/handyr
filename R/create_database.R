@@ -107,6 +107,7 @@ create_database <- function(
 }
 
 .dbi_creatable <- c("sqlite", "duckdb", "postgresql") # not all drivers are creatable by R
+.dbi_filebased <- c("sqlite", "duckdb")
 .dbi_drivers <- list(
   sqlite = c("RSQLite" = \() RSQLite::SQLite()),
   duckdb = c("duckdb" = \() duckdb::duckdb()),

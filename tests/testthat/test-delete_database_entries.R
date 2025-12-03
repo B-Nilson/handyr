@@ -4,6 +4,10 @@ test_that("basic case works", {
   db_path <- names(db_list)[1]
   db <- db_list[[1]]
   expected <- db_list[[2]]
+  withr::defer({
+    DBI::dbDisconnect(db)
+    file.remove(db_path)
+  })
 
   # Delete May 5th entry
   entry_keys <- data.frame(Month = c(5, 5), Day = c(4, 5))
@@ -18,8 +22,4 @@ test_that("basic case works", {
         dplyr::filter(!(Month == 5 & Day %in% c(4, 5))),
       tolerance = 0.0001
     )
-
-  # Cleanup
-  DBI::dbDisconnect(db)
-  file.remove(db_path)
 })

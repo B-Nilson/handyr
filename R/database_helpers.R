@@ -1,23 +1,3 @@
-# Create connection from path to a file-based database
-db_conn_from_path <- function(db_path) {
-  # Determine backend from file extension
-  # TODO: handle variations of extensions
-  type <- tools::file_ext(db_path)
-  # Handle unsupported backends
-  if (!type %in% .dbi_creatable) {
-    stop(
-      "Could not detect a supported backend for ",
-      db_path,
-      "(based on file extension)"
-    )
-  }
-  # Check if driver package is installed
-  rlang::check_installed(names(.dbi_drivers[[type]]))
-  # Create connection
-  .dbi_drivers[[type]][[1]]() |>
-    DBI::dbConnect(db_path)
-}
-
 # Check if db is a valid database connection or not
 is_db_connection <- function(db) {
   DBI::dbIsValid(db) |>

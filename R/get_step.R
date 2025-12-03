@@ -1,6 +1,8 @@
-#' Determine distance(s) between values
+#' Determine most common distance between values
 #'
-#' `get_interval` finds the most common interval in a vector. If there are multiple intervals of the same frequency, it takes the first one in the sorted vector and a warning is raised.
+#' Finds the most common interval/step in a numeric-like vector.
+#' Especially useful for time series data that has occasional time gaps.
+#' If there are multiple intervals of the same frequency and `most_common = TRUE`, it takes the first one in the sorted vector and a warning is raised.
 #'
 #' @param x A numeric, Date, POSIXt, or POSIXct vector.
 #' @param most_common A logical value indicating whether the most common interval (default) should be returned or all intervals and their frequencies in a sorted data frame.
@@ -16,11 +18,11 @@
 #' @export
 #'
 #' @examples
-#' get_interval(c(1, 3, 5:10))
-#' get_interval(as.Date(c("2020-01-01", "2020-01-03", "2020-01-05", "2020-01-06")))
-#' get_interval(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04")))
-#' get_interval(c(0, 3, 5, 7:10), most_common = FALSE)
-get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
+#' get_step(c(1, 3, 5:10))
+#' get_step(as.Date(c("2020-01-01", "2020-01-03", "2020-01-05", "2020-01-06")))
+#' get_step(as.POSIXct(c("2020-01-01 00:00:00", "2020-01-01 00:00:02", "2020-01-01 00:00:04")))
+#' get_step(c(0, 3, 5, 7:10), most_common = FALSE)
+get_step <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
   # Handle inputs
   stopifnot(is.numeric(x) | inherits(x, c("Date", "POSIXt", "POSIXct")))
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
@@ -30,7 +32,7 @@ get_interval <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
     x <- x[!is.na(x)]
   }
 
-  # Handle cases where get_interval doesn't need to be called
+  # Handle cases where get_step doesn't need to be called
   if (length(x) == 0 | all(is.na(x))) {
     return(NA_real_)
   }

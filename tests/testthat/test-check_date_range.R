@@ -5,7 +5,7 @@ test_that("basic case works", {
   # TODO: check date range getss restricted and warnings/errors handled properly
 })
 
-test_that("chearacter inputs works", {
+test_that("character inputs works", {
   # Test "now"
   check_date_range("now") |>
     expect_no_error() |>
@@ -23,6 +23,17 @@ test_that("chearacter inputs works", {
     expect_no_error() |>
     expect_no_warning()
   check_date_range(c("now", "now"), c("now", "now")) |>
+    expect_no_error() |>
+    expect_no_warning()
+
+  # And other place holders
+  check_date_range("today") |>
+    expect_no_error() |>
+    expect_no_warning()
+  check_date_range("yesterday") |>
+    expect_no_error() |>
+    expect_no_warning()
+  check_date_range("tomorrow") |>
     expect_no_error() |>
     expect_no_warning()
 
@@ -105,4 +116,11 @@ test_that("now_time_step works as expected", {
   expect_equal(format(hourly[1], "%M:%S"), "00:00")
   expect_equal(format(daily[1], "%H:%M:%S"), "00:00:00")
   expect_equal(format(biminutely[1], "%S"), "00")
+})
+
+test_that("as_interval works as expected", {
+  c("yesterday", "now") |>
+    check_date_range(as_interval = TRUE) |>
+    lubridate::int_length() |>
+    expect_equal(24 * 3600)
 })

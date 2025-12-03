@@ -12,7 +12,7 @@
 #'   The names of the list are used as the unit prefix.
 #'   The values of the list must be powers of 10.
 #'   Default is `list("K" = 1e3, "M" = 1e6, "B" = 1e9, "T" = 1e12)`.
-#' @return A shortened string representation of `x` if `reverse = FALSE`, 
+#' @return A shortened string representation of `x` if `reverse = FALSE`,
 #'  or a numeric vector of lengthened `x` values if `reverse = TRUE`.
 #' @export
 #' @examples
