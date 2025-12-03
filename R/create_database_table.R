@@ -203,7 +203,8 @@ partition_data <- function(new_data, partition_by, partition_type) {
             .range = list(within)
           ) |>
           dplyr::rename_with(.cols = c(.partition, .range), .fn = \(x) {
-            paste0(x, "_", col, "_", paste(within, collapse = "to"))
+            paste0(x, "_", col, "_", paste(within, collapse = "to")) |>
+              gsub(pattern = "-|:| ", replacement = "_")
           })
       } else if (partition_type == "list") {} else {}
     }
