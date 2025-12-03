@@ -256,6 +256,23 @@ partition_data <- function(new_data, partition_by, partition_type) {
     dplyr::group_nest(.partition, dplyr::across(dplyr::starts_with(".range_")))
 }
 
+# TODO: extend to work with other partition types and implement
+make_partition_names <- function(partition_by, partition_type) {
+  columns <- names(partition_by)
+  if (partition_type == "range") {
+    columns |>
+      lapply(\(column) {
+        ranges <- partition_by[[column]]
+        range_texts <- ranges |>
+          sapply(paste, collapse = "to") |>
+          gsub(pattern = "-|:| ", replacement = "")
+        column |>
+          paste0("_", range_texts)
+      }) |> 
+      stats::setNames(columns)
+  }
+}
+
 # TODO: add default partition if needed?
 create_postgres_partitions <- function(
   db,
