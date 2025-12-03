@@ -12,8 +12,10 @@
 <url><loc>https://b-nilson.github.io/handyr/reference/check_date_range.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/check_urls_exist.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/clamp.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/connect_to_database.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/convert_units.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/create_database.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/create_database_table.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/delete_database_entries.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/do_if.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/do_if_enough.html</loc></url>
@@ -21,8 +23,9 @@
 <url><loc>https://b-nilson.github.io/handyr/reference/for_each.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_communities.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_file_index.html</loc></url>
-<url><loc>https://b-nilson.github.io/handyr/reference/get_interval.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/get_precision.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_season.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/get_step.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/get_timezone.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/index.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/is_within.html</loc></url>
@@ -34,6 +37,7 @@
 <url><loc>https://b-nilson.github.io/handyr/reference/read_from_database.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/rolling.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/save_figure.html</loc></url>
+<url><loc>https://b-nilson.github.io/handyr/reference/sentence_range.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/seq.Interval.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/sf_as_df.html</loc></url>
 <url><loc>https://b-nilson.github.io/handyr/reference/shorten_number.html</loc></url>

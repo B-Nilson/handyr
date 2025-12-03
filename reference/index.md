@@ -17,11 +17,17 @@
 - [`clamp()`](https://b-nilson.github.io/handyr/reference/clamp.md) :
   Replace out-of-range values with the nearest in-range value
 
+- [`connect_to_database()`](https://b-nilson.github.io/handyr/reference/connect_to_database.md)
+  : Create a connection to a database
+
 - [`convert_units()`](https://b-nilson.github.io/handyr/reference/convert_units.md)
   : Convert between common units
 
 - [`create_database()`](https://b-nilson.github.io/handyr/reference/create_database.md)
   : Create a file-based database
+
+- [`create_database_table()`](https://b-nilson.github.io/handyr/reference/create_database_table.md)
+  : Create table if not already existing
 
 - [`delete_database_entries()`](https://b-nilson.github.io/handyr/reference/delete_database_entries.md)
   : Delete specific entries from a database table.
@@ -44,11 +50,14 @@
 - [`get_file_index()`](https://b-nilson.github.io/handyr/reference/get_file_index.md)
   : Get a file index from a URL
 
-- [`get_interval()`](https://b-nilson.github.io/handyr/reference/get_interval.md)
-  : Determine distance(s) between values
+- [`get_precision()`](https://b-nilson.github.io/handyr/reference/get_precision.md)
+  : Get the number of decimal places in a numeric vector
 
 - [`get_season()`](https://b-nilson.github.io/handyr/reference/get_season.md)
   : Get the season from a date
+
+- [`get_step()`](https://b-nilson.github.io/handyr/reference/get_step.md)
+  : Determine most common distance between values
 
 - [`get_timezone()`](https://b-nilson.github.io/handyr/reference/get_timezone.md)
   : Lookup timezones of latitude/longitude pairs
@@ -81,6 +90,9 @@
 
 - [`save_figure()`](https://b-nilson.github.io/handyr/reference/save_figure.md)
   : Save a ggplot2 figure for publishing
+
+- [`sentence_range()`](https://b-nilson.github.io/handyr/reference/sentence_range.md)
+  : Convert a sequence of numbers to a human-readable string
 
 - [`seq(`*`<Interval>`*`)`](https://b-nilson.github.io/handyr/reference/seq.Interval.md)
   : Extend seq() to work with Intervals

@@ -133,33 +133,34 @@
 <div class="section level3">
 <h3 id="spatial--temporal-data-manipulation">Spatial / Temporal Data Manipulation<a class="anchor" aria-label="anchor" href="#spatial--temporal-data-manipulation"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># Local timezone lookup</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">get_timezone</span>(<span class="at">lng =</span> <span class="sc">-</span><span class="fl">105.053144</span>, <span class="at">lat =</span> <span class="fl">69.116178</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># Detailed season description</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">7</span>, <span class="fu">Sys.time</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">get_season</span>(<span class="at">as_factor =</span> <span class="cn">TRUE</span>, <span class="at">include_year =</span> <span class="cn">TRUE</span>, <span class="at">include_months =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># Split large date ranges into specific-size chunks</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">8</span>, <span class="fu">Sys.time</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="fu">split_date_range</span>(<span class="at">max_duration =</span> <span class="st">"120 days"</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co"># Get most likely data interval (useful for when occasional gaps may exist)</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="fu">get_interval</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">16</span><span class="sc">:</span><span class="dv">20</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co"># Convert sf objects back to data frames cleanly</span></span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>cities <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Nanaimo"</span>, <span class="st">"Port Moody"</span>, <span class="st">"Prince George"</span>),</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">124.0531</span>, <span class="sc">-</span><span class="fl">122.8519</span>, <span class="sc">-</span><span class="fl">122.7949</span>),</span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">49.1633</span>, <span class="fl">49.2844</span>, <span class="fl">53.8934</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  )</span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>cities_sf <span class="ot">&lt;-</span> cities <span class="sc">|&gt;</span></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="at">crs =</span> <span class="st">"WGS84"</span>)</span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="fu">sf_as_df</span>(cities_sf)</span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a></span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co"># Or just get the x/y coordinates as a data.frame</span></span>
-<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="fu">extract_sf_coords</span>(cities_sf)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Local timezone lookup</span></span>
+<span><span class="fu"><a href="reference/get_timezone.html">get_timezone</a></span><span class="op">(</span>lng <span class="op">=</span> <span class="op">-</span><span class="fl">105.053144</span>, lat <span class="op">=</span> <span class="fl">69.116178</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Detailed season description</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">10</span><span class="op">^</span><span class="fl">7</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/get_season.html">get_season</a></span><span class="op">(</span>as_factor <span class="op">=</span> <span class="cn">TRUE</span>, include_year <span class="op">=</span> <span class="cn">TRUE</span>, include_months <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Split large date ranges into specific-size chunks</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">10</span><span class="op">^</span><span class="fl">8</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/split_date_range.html">split_date_range</a></span><span class="op">(</span>max_duration <span class="op">=</span> <span class="st">"120 days"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get most likely data interval (useful for when occasional gaps may exist)</span></span>
+<span><span class="fu"><a href="reference/get_step.html">get_step</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">14</span>, <span class="fl">16</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert sf objects back to data frames cleanly</span></span>
+<span><span class="va">cities</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nanaimo"</span>, <span class="st">"Port Moody"</span>, <span class="st">"Prince George"</span><span class="op">)</span>,</span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">124.0531</span>, <span class="op">-</span><span class="fl">122.8519</span>, <span class="op">-</span><span class="fl">122.7949</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">49.1633</span>, <span class="fl">49.2844</span>, <span class="fl">53.8934</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">cities_sf</span> <span class="op">&lt;-</span> <span class="va">cities</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"WGS84"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/sf_as_df.html">sf_as_df</a></span><span class="op">(</span><span class="va">cities_sf</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or just get the x/y coordinates as a data.frame</span></span>
+<span><span class="fu"><a href="reference/extract_sf_coords.html">extract_sf_coords</a></span><span class="op">(</span><span class="va">cities_sf</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="miscellaneous-quality-of-life-improvments">Miscellaneous Quality of Life Improvments<a class="anchor" aria-label="anchor" href="#miscellaneous-quality-of-life-improvments"></a>

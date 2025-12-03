@@ -12,6 +12,7 @@ write_to_database(
   new_data,
   primary_keys,
   unique_indexes = NULL,
+  indexes = NULL,
   insert_new = TRUE,
   update_duplicates = FALSE,
   use_on_conflict = FALSE,
@@ -40,17 +41,32 @@ write_to_database(
   identifier of individual rows in a table. Multiple columns can be
   specified and uniqueness will be assessed based on the combination of
   columns. (e.g. `primary_keys = c("col1", "col2")` will add a primary
-  key on the combination of `col1` and `col2`).
+  key on the combination of `col1` and `col2`). Primary keys are
+  functionally similiar to "unique indexes", but act as the main row
+  identifier.
 
 - unique_indexes:
 
   A list of character vector(s) of column names to use as unique
   indexes. These will be added to the table, in addition to the primary
-  key. Multiple columns can be specified and uniqueness will be assessed
-  based on the combination of columns. (e.g.
+  key, and will result in an error if non-unique data is
+  inserted/existing. Indexes speed up queries by allowing for faster
+  lookups, but can increase the size of the database and reduce write
+  performance. Multiple columns can be specified and uniqueness will be
+  assessed based on the combination of columns. (e.g.
   `unique_indexes = list(c("col1", "col2"))` will add a unique index on
   the combination of `col1` and `col2`.). If `NULL` (the default), no
   unique indexes will be added.
+
+- indexes:
+
+  A list of character vector(s) of column names to use as indexes. These
+  will be added to the table, in addition to the primary key and unique
+  indexes. Indexes speed up queries by allowing for faster lookups, but
+  can increase the size of the database and reduce write performance.
+  Multiple columns can be specified for composite indexes, and the index
+  will be named after the list names if provided. If `NULL` (the
+  default), no indexes will be added.
 
 - insert_new:
 

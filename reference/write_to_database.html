@@ -43,6 +43,7 @@
 <span>  <span class="va">new_data</span>,</span>
 <span>  <span class="va">primary_keys</span>,</span>
 <span>  unique_indexes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  indexes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  insert_new <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  update_duplicates <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  use_on_conflict <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -69,15 +70,25 @@
 <dt id="arg-primary-keys">primary_keys<a class="anchor" aria-label="anchor" href="#arg-primary-keys"></a></dt>
 <dd><p>A character vector of column names to use as the primary key, the main identifier of individual rows in a table.
 Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
-(e.g. <code>primary_keys = c("col1", "col2")</code> will add a primary key on the combination of <code>col1</code> and <code>col2</code>).</p></dd>
+(e.g. <code>primary_keys = c("col1", "col2")</code> will add a primary key on the combination of <code>col1</code> and <code>col2</code>).
+Primary keys are functionally similiar to "unique indexes", but act as the main row identifier.</p></dd>
 
 
 <dt id="arg-unique-indexes">unique_indexes<a class="anchor" aria-label="anchor" href="#arg-unique-indexes"></a></dt>
 <dd><p>A list of character vector(s) of column names to use as unique indexes.
-These will be added to the table, in addition to the primary key.
+These will be added to the table, in addition to the primary key, and will result in an error if non-unique data is inserted/existing.
+Indexes speed up queries by allowing for faster lookups, but can increase the size of the database and reduce write performance.
 Multiple columns can be specified and uniqueness will be assessed based on the combination of columns.
 (e.g. <code>unique_indexes = list(c("col1", "col2"))</code> will add a unique index on the combination of <code>col1</code> and <code>col2</code>.).
 If <code>NULL</code> (the default), no unique indexes will be added.</p></dd>
+
+
+<dt id="arg-indexes">indexes<a class="anchor" aria-label="anchor" href="#arg-indexes"></a></dt>
+<dd><p>A list of character vector(s) of column names to use as indexes.
+These will be added to the table, in addition to the primary key and unique indexes.
+Indexes speed up queries by allowing for faster lookups, but can increase the size of the database and reduce write performance.
+Multiple columns can be specified for composite indexes, and the index will be named after the list names if provided.
+If <code>NULL</code> (the default), no indexes will be added.</p></dd>
 
 
 <dt id="arg-insert-new">insert_new<a class="anchor" aria-label="anchor" href="#arg-insert-new"></a></dt>

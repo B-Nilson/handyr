@@ -17,11 +17,15 @@ swap(x, what, with)
 
 - what:
 
-  One or more values to be replaced with `with` throughout `x`.
+  One or more values to be replaced with `with` throughout `x`, or a
+  logical vector with the same length as `x` indicating which values to
+  replace.
 
 - with:
 
-  A single value to replace `what` for throughout `x`.
+  A single value to replace `what` for throughout `x`, or a vector with
+  the same length as `x` indicating which values to insert for each
+  value in `x`.
 
 ## Value
 
@@ -47,4 +51,10 @@ swap(c(-20:20), what = Inf, with = NA)
 #>  [1] -20 -19 -18 -17 -16 -15 -14 -13 -12 -11 -10  -9  -8  -7  -6  -5  -4  -3  -2
 #> [20]  -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
 #> [39]  18  19  20
+x <- 1:10
+swap(x, what = x < 5, with = -1)
+#>  [1] -1 -1 -1 -1  5  6  7  8  9 10
+y <- 10:1
+swap(x, what = x < 5, with = y)
+#>  [1] 10  9  8  7  5  6  7  8  9 10
 ```

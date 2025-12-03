@@ -44,7 +44,8 @@ and provides quick ways to generate date ranges using "now" or "YYYY-MM-DD HH" f
 <span>  date_range <span class="op">=</span> <span class="st">"now"</span>,</span>
 <span>  within <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"UTC"</span>,</span>
-<span>  now_time_step <span class="op">=</span> <span class="st">"1 hours"</span></span>
+<span>  now_time_step <span class="op">=</span> <span class="st">"1 hours"</span>,</span>
+<span>  as_interval <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -54,7 +55,7 @@ and provides quick ways to generate date ranges using "now" or "YYYY-MM-DD HH" f
 
 <dl><dt id="arg-date-range-within">date_range, within<a class="anchor" aria-label="anchor" href="#arg-date-range-within"></a></dt>
 <dd><p>A vector of 1 or 2 dates, datetimes, or characters
-(formatted as "YYYY-MM-DD HH:MM:SS" with the same timezone as <code>tz</code> or "now" for the current time) representing the start and end of: an input <code>date_range</code> or a maximum allowed date range (<code>within</code>).
+(formatted as "YYYY-MM-DD HH:MM:SS" with the same timezone as <code>tz</code> or "now"/"today" for the current time, or "yesterday" or "tomorrow" for that plus/minus one day) representing the start and end of: an input <code>date_range</code> or a maximum allowed date range (<code>within</code>).
 NA values will be replaced with 1970-01-01 or "now" for the first and second values, respectively.
 Default for <code>date_range</code> is "now".
 Default for <code>within</code> is c(NA, NA) - which is equivalent to c("1970-01-01 00", "now")</p></dd>
@@ -66,6 +67,10 @@ Default for <code>within</code> is c(NA, NA) - which is equivalent to c("1970-01
 
 <dt id="arg-now-time-step">now_time_step<a class="anchor" aria-label="anchor" href="#arg-now-time-step"></a></dt>
 <dd><p>A character string representing the time step to use when generating the current time if <code>within</code> is not fully specified. Passed to <code><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">lubridate::floor_date()</a></code>.</p></dd>
+
+
+<dt id="arg-as-interval">as_interval<a class="anchor" aria-label="anchor" href="#arg-as-interval"></a></dt>
+<dd><p>A logical value indicating whether to return an <code>Interval</code> object instead of a vector of dates.</p></dd>
 
 </dl></div>
     <div class="section level2">

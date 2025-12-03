@@ -32,12 +32,10 @@ get_file_index("https://aqmap.ca/aqmap/outputs/")
 #> ℹ In argument: `size = convert_units(...)`.
 #> Caused by warning in `shorten_number()`:
 #> ! NAs introduced by coercion
-#> # A tibble: 5 × 4
+#> # A tibble: 3 × 4
 #>   name                                 last_modified       size type 
 #>   <chr>                                <dttm>              [kB] <fct>
-#> 1 aqmap_sensor_selection_polygons.html 2024-08-29 12:46:00 5100 file 
-#> 2 aqsu_past_2_week.rds                 2025-11-13 05:00:00 9900 file 
-#> 3 data_requests/                       2025-11-04 11:43:00   NA dir  
-#> 4 fnic_coverage.csv                    2025-02-10 13:01:00   62 file 
-#> 5 screenshots/                         2024-08-29 12:46:00   NA dir  
+#> 1 aqmap_sensor_selection_polygons.html 2025-11-18 14:00:00 5100 file 
+#> 2 aqsu_past_2_week.rds                 2025-12-03 05:00:00 3000 file 
+#> 3 screenshots/                         2025-11-18 14:26:00   NA dir  
 ```

@@ -7,7 +7,7 @@ to switch between common measurement units.
 ## Usage
 
 ``` r
-convert_units(x, from, to, keep_units = FALSE, ...)
+convert_units(x, from = NULL, to = NULL, keep_units = NULL, ...)
 ```
 
 ## Arguments
@@ -20,12 +20,17 @@ convert_units(x, from, to, keep_units = FALSE, ...)
 
   A string indicating the current/desired unit of `x`. Run
   [`units::valid_udunits()`](https://r-quantities.github.io/units/reference/valid_udunits.html)
-  for a list of valid units for your system.
+  for a list of valid units for your system. If `from` is `NULL`
+  (default), tries to get units from `x` and fails if `x` does not have
+  a `units` attribute. If `to` is `NULL`,
+  [`units::convert_to_base()`](https://r-quantities.github.io/units/reference/convert_to_base.html)
+  is used to convert to pre-defined base units for the `from` unit.
 
 - keep_units:
 
-  A logical value indicating whether to keep the units after conversion
-  (default is `FALSE`).
+  A logical value (or `NULL`) indicating whether to keep the units after
+  conversion. Default is `NULL`, which is `TRUE` if `x` has a `units`
+  attribute, `FALSE` otherwise.
 
 - ...:
 
@@ -52,4 +57,10 @@ convert_units(c(1, 2, 3), from = "m/s", to = "km/h")
 #> [1]  3.6  7.2 10.8
 convert_units(c(1, 2, 3), from = "ug/m3", to = "mg/km3")
 #> [1] 1e+06 2e+06 3e+06
+1:5 |> units::set_units("cm") |> convert_units(to = "km")
+#> Units: [km]
+#> [1] 1e-05 2e-05 3e-05 4e-05 5e-05
+1:5 |> units::set_units("cm") |> convert_units()
+#> Units: [m]
+#> [1] 0.01 0.02 0.03 0.04 0.05
 ```

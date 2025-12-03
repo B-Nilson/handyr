@@ -82,6 +82,7 @@ summarise_logs(logs)
 ### Spatial / Temporal Data Manipulation
 
 ``` r
+
 # Local timezone lookup
 get_timezone(lng = -105.053144, lat = 69.116178)
 
@@ -94,7 +95,7 @@ c(Sys.time() - 10^8, Sys.time()) |>
   split_date_range(max_duration = "120 days")
 
 # Get most likely data interval (useful for when occasional gaps may exist)
-get_interval(c(1:10, 12, 14, 16:20)
+get_step(c(1:10, 12, 14, 16:20))
 
 # Convert sf objects back to data frames cleanly
 cities <- data.frame(
