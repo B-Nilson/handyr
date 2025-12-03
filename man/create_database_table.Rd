@@ -33,11 +33,11 @@ Indexes speed up queries by allowing for faster lookups, but can increase the si
 
 \item{indexes}{A list of character vector(s) of column names to use as indexes.}
 
-\item{partition_by}{A named list of partitions to create, where names correspond to the names of the columns to partition by, and values correspond to the values of that column within each partition (i.e. \code{partition_by = list(gear = list(c(1, 4), c(4, 6)), carb = list(c(1, 4), c(4, 10)))} will create partition the table into 2 partitions, one for gears 1,2, and 3, and one for gear 4 and 5).
+\item{partition_by}{(UNDER DEVELOPMENT)  A named list of partitions to create, where names correspond to the names of the columns to partition by, and values correspond to the values of that column within each partition (i.e. \code{partition_by = list(gear = list(c(1, 4), c(4, 6)), carb = list(c(1, 4), c(4, 10)))} will create partition the table into 2 partitions, one for gears 1,2, and 3, and one for gear 4 and 5).
 True partitioning is only supported for Postgres, but for other types mulitiple partition tables will be created and linked using a View.
 If \code{NULL} (the default), no partitioning will be used.}
 
-\item{partition_type}{A character string specifying the type of partitioning to use.
+\item{partition_type}{(UNDER DEVELOPMENT) A character string specifying the type of partitioning to use.
 Currently supports "range" (expects pairs of inclusive start and exclusive end values), "list" (expects vectors of values to match), and "hash" (expects single values).
 Default is "range".
 Ignored if \code{partition_by} is \code{NULL}.}

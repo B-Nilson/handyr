@@ -13,10 +13,10 @@
 #'   These will be added to the table, in addition to the primary key, and will result in an error if non-unique data is inserted/existing.
 #'   Indexes speed up queries by allowing for faster lookups, but can increase the size of the database and reduce write performance.
 #' @param indexes A list of character vector(s) of column names to use as indexes.
-#' @param partition_by A named list of partitions to create, where names correspond to the names of the columns to partition by, and values correspond to the values of that column within each partition (i.e. `partition_by = list(gear = list(c(1, 4), c(4, 6)), carb = list(c(1, 4), c(4, 10)))` will create partition the table into 2 partitions, one for gears 1,2, and 3, and one for gear 4 and 5).
+#' @param partition_by (UNDER DEVELOPMENT)  A named list of partitions to create, where names correspond to the names of the columns to partition by, and values correspond to the values of that column within each partition (i.e. `partition_by = list(gear = list(c(1, 4), c(4, 6)), carb = list(c(1, 4), c(4, 10)))` will create partition the table into 2 partitions, one for gears 1,2, and 3, and one for gear 4 and 5).
 #'   True partitioning is only supported for Postgres, but for other types mulitiple partition tables will be created and linked using a View.
 #'   If `NULL` (the default), no partitioning will be used.
-#' @param partition_type A character string specifying the type of partitioning to use.
+#' @param partition_type (UNDER DEVELOPMENT) A character string specifying the type of partitioning to use.
 #'   Currently supports "range" (expects pairs of inclusive start and exclusive end values), "list" (expects vectors of values to match), and "hash" (expects single values).
 #'   Default is "range".
 #'   Ignored if `partition_by` is `NULL`.
@@ -268,7 +268,7 @@ make_partition_names <- function(partition_by, partition_type) {
           gsub(pattern = "-|:| ", replacement = "")
         column |>
           paste0("_", range_texts)
-      }) |> 
+      }) |>
       stats::setNames(columns)
   }
 }
