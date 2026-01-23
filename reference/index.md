@@ -44,6 +44,9 @@
 - [`for_each()`](https://b-nilson.github.io/handyr/reference/for_each.md)
   : Loop over a vector-like object and apply a function
 
+- [`get_and_unzip()`](https://b-nilson.github.io/handyr/reference/get_and_unzip.md)
+  : Get a zip file and unzip it
+
 - [`get_communities()`](https://b-nilson.github.io/handyr/reference/get_communities.md)
   : Get a communities within a region from OpenStreetMap
 
