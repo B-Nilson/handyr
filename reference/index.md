@@ -38,6 +38,9 @@
 - [`do_if_enough()`](https://b-nilson.github.io/handyr/reference/do_if_enough.md)
   : Apply a function if enough values are non-NA
 
+- [`elementwise_mean()`](https://b-nilson.github.io/handyr/reference/elementwise_mean.md)
+  : Vectorized element-wise mean, optionally ignoring NA values
+
 - [`extract_sf_coords()`](https://b-nilson.github.io/handyr/reference/extract_sf_coords.md)
   : Add sf coordinates and crs as columns
 

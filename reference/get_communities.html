@@ -75,32 +75,34 @@ with columns "osm_id", "type" (community type), "name", "population"/"population
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">get_communities</span><span class="op">(</span><span class="st">"Fort St. John, BC"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 4 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 5 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -120.8469 ymin: 56.2524 xmax: -120.8469 ymax: 56.2524</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -120.8472 ymin: 56.25276 xmax: -120.8472 ymax: 56.25276</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                osm_id type          name population                  geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2865722923 2865722923 city Fort St. John      18609 POINT (-120.8469 56.2524)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                osm_id type          name population         population_source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2865722923 2865722923 city Fort St. John      21465 census (Date: 2021-05-11)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2865722923 POINT (-120.8472 56.25276)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_communities</span><span class="op">(</span><span class="st">"Yukon, Canada"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 65 features and 4 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 66 features and 5 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -140.8773 ymin: 60.00194 xmax: -128.7068 ymax: 68.98877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -140.8773 ymin: 60.00194 xmax: -128.7068 ymax: 69.16143</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                osm_id    type               name population</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 664245432   664245432  hamlet          Keno City         24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2737836444 2737836444 village   Stewart Crossing         25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9181339576 9181339576  hamlet   Two Mile Village         79</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2138092203 2138092203    town           Carcross        317</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2705565763 2705565763    town         Ross River        382</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2668706359 2668706359    town               Faro        400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2700798050 2700798050    town           Carmacks        503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2976400400 2976400400    city         Whitehorse      27889</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107350205   107350205  hamlet          Ruby Camp         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107350219   107350219  hamlet Mendenhall Landing         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                osm_id    type               name population   population_source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 664245432   664245432  hamlet          Keno City         24                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2737836444 2737836444 village   Stewart Crossing         25                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9181339576 9181339576  hamlet   Two Mile Village         79                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2138092203 2138092203    town           Carcross        317                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2705565763 2705565763    town         Ross River        382                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2668706359 2668706359    town               Faro        400                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2700798050 2700798050    town           Carmacks        503                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2976400400 2976400400    city         Whitehorse      36550 census (Date: 2025)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107350205   107350205  hamlet          Ruby Camp         NA                &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107350219   107350219  hamlet Mendenhall Landing         NA                &lt;NA&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                              geometry</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 664245432  POINT (-135.3022 63.90958)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2737836444  POINT (-136.679 63.37544)</span>
