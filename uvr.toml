@@ -11,8 +11,6 @@ prettyunits = "*"
 rlang = "*"
 rvest = "*"
 tidyr = "*"
-
-[dev-dependencies]
 DBI = "*"
 RPostgres = "*"
 RSQLite = "*"
