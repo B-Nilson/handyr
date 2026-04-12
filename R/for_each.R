@@ -111,17 +111,15 @@ for_each <- function(
   stopifnot(is.logical(.quiet), length(.quiet) == 1)
 
   # Handle .join_by provided when .join is FALSE
-  if (!is.null(.join_by) & !.join) {
+  set_join <- !is.null(.join_by) & !.join
+  if (set_join) {
     .join <- TRUE
   }
 
   # Handle .bind being TRUE when .as_list is NULL
-  if (.bind & is.null(.as_list)) {
-    .as_list <- TRUE
-  }
-
-  # Handle .join being TRUE when .as_list is NULL
-  if (.join & is.null(.as_list)) {
+  #     or .join being TRUE when .as_list is NULL
+  set_as_list <- .bind & is.null(.as_list) | (.join & is.null(.as_list))
+  if (set_as_list) {
     .as_list <- TRUE
   }
 
@@ -136,7 +134,8 @@ for_each <- function(
 
   # Setup parallel if desired
   # TODO: handle potential side effect here if user already had a plan() going
-  if (.parallel & length(x) > 1) {
+  need_parallel <- .parallel & length(x) > 1
+  if (need_parallel) {
     rlang::check_installed("future.apply", reason = "`.parallel` set to `TRUE`")
     if (is.null(.workers)) {
       .workers <- parallel::detectCores()
@@ -190,7 +189,8 @@ for_each <- function(
   }
 
   # Stop running in parallel
-  if (.parallel & .parallel_cleanup) {
+  cleanup_parallel <- need_parallel & .parallel_cleanup
+  if (cleanup_parallel) {
     future::plan(future::sequential)
   }
   # Use x as names if desired

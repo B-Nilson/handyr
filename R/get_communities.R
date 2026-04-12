@@ -70,26 +70,20 @@ get_communities <- function(
 # Convert population:date, source:population, and source:population:date to population_source
 make_osm_population_source <- function(osm_results) {
   # Replicate population:date if source:population:date is missing and vice versa
-  if (
-    "source:population:date" %in%
-      names(osm_results) &
-      !"population:date" %in% names(osm_results)
-  ) {
+  need_pop_date <- ("source:population:date" %in% names(osm_results)) &
+    !"population:date" %in% names(osm_results)
+  need_src_pop_date <- ("population:date" %in% names(osm_results)) &
+    !"source:population:date" %in% names(osm_results)
+  if (need_pop_date) {
     osm_results$`population:date` <- osm_results$`source:population:date`
-  } else if (
-    "population:date" %in%
-      names(osm_results) &
-      !"source:population:date" %in% names(osm_results)
-  ) {
+  } else if (need_src_pop_date) {
     osm_results$`source:population:date` <- osm_results$`population:date`
   }
 
   # Handle "source:population" missing when date provided
-  if (
-    !"source:population" %in% names(osm_results) &
-      "population:date" %in%
-        names(osm_results)
-  ) {
+  need_src_pop <- (!"source:population" %in% names(osm_results)) &
+    ("population:date" %in% names(osm_results))
+  if (need_src_pop) {
     osm_results$`source:population` <- NA
   }
 

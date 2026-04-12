@@ -67,7 +67,8 @@ create_database_table <- function(
   }
 
   # Create partition tables and a master view if applicable
-  if (is_partitioned & !is_postgres) {
+  make_false_partitions <- is_partitioned & !is_postgres
+  if (make_false_partitions) {
     db |>
       create_pretend_partitions(
         partitioned_data = partitioned_data,
@@ -122,7 +123,8 @@ create_database_table <- function(
     )
 
   # Mark table as partitioned if postgres and partition_by is provided
-  if (is_partitioned & is_postgres) {
+  make_partitions <- is_partitioned & is_postgres
+  if (make_partitions) {
     partition_cols <- names(partition_by) |>
       DBI::dbQuoteIdentifier(conn = db) |>
       paste0(collapse = ", ")
@@ -136,7 +138,7 @@ create_database_table <- function(
   db |> DBI::dbExecute(create_query)
 
   # Create partition tables if postgres and partition_by is provided
-  if (is_partitioned & is_postgres) {
+  if (make_partitions) {
     db |>
       create_postgres_partitions(
         partitioned_data = partitioned_data,
@@ -146,7 +148,8 @@ create_database_table <- function(
   }
 
   # insert rows if provided
-  if (nrow(new_data) & insert_data) {
+  use_insert <- nrow(new_data) & insert_data
+  if (use_insert) {
     success <- db |>
       DBI::dbWriteTable(
         value = new_data,
