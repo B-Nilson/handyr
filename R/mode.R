@@ -23,7 +23,8 @@ mode <- function(..., na.rm = FALSE) {
     x <- x[!is.na(x)]
   }
   # Handle cases where mode doesn't need to be called
-  if (length(x) == 0 | all(is.na(x))) {
+  not_needed <- length(x) == 0 | all(is.na(x))
+  if (not_needed) {
     return(ifelse(is.numeric(x), NA_real_, NA_character_))
   }
 

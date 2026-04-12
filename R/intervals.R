@@ -28,12 +28,10 @@ as_interval <- function(date_range = NULL, start = NULL, end = NULL) {
   }
 
   # Handle non-date start/end
-  if (
-    "character" %in%
-      class(start) |
-      "character" %in% class(end) |
-      anyNA(c(start, end))
-  ) {
+  needs_conversion <- ("character" %in% class(start)) |
+    ("character" %in% class(end)) |
+    anyNA(c(start, end))
+  if (needs_conversion) {
     # TODO: vectorise check_date_range()
     date_ranges <- start |>
       for_each(

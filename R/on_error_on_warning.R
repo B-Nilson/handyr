@@ -30,12 +30,12 @@ on_error <- function(..., .return = NULL, .message = FALSE, .warn = FALSE) {
 
   # Run input, catch errors if any and control response
   tryCatch(..., error = \(e) {
-    if (.message == TRUE) {
+    if (identical(.message, TRUE)) {
       message(as.character(e))
     } else if (is.character(.message)) {
       message(.message |> paste(sep = ":\n\t", as.character(e)))
     }
-    if (.warn == TRUE) {
+    if (identical(.warn, TRUE)) {
       warning(as.character(e))
     } else if (is.character(.warn)) {
       warning(.warn |> paste(sep = ":\n\t", as.character(e)))
@@ -56,12 +56,12 @@ on_warning <- function(..., .return = NULL, .message = FALSE, .stop = FALSE) {
 
   # Run input, catch warnings if any and control response
   tryCatch(..., warning = \(e) {
-    if (.message == TRUE) {
+    if (identical(.message, TRUE)) {
       message(as.character(e))
     } else if (is.character(.message)) {
       message(.message |> paste(sep = ":\n\t", as.character(e)))
     }
-    if (.stop == TRUE) {
+    if (identical(.stop, TRUE)) {
       stop(as.character(e))
     } else if (is.character(.stop)) {
       stop(.stop |> paste(sep = ":\n\t", as.character(e)))

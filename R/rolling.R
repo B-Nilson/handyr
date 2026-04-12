@@ -55,7 +55,8 @@ rolling <- function(
   if (is.character(FUN)) {
     # Use built in vectorized (faster) implementations where available
     built_ins <- c("sum", "mean", "max", "min", "quantile", "median")
-    if (FUN %in% built_ins & .direction != "center") {
+    use_builtin <- FUN %in% built_ins & .direction != "center"
+    if (use_builtin) {
       roll_fun <- paste0("roll_", FUN) |> get()
       rolling_val <- x |>
         roll_fun(

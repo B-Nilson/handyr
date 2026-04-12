@@ -11,7 +11,7 @@
 check_urls_exist <- function(urls, quiet = FALSE, ...) {
   stopifnot("At least one URL must be provided." = length(urls) >= 1)
   stopifnot(
-    "`urls` must be a character vector." = identical(class(urls), "character")
+    "`urls` must be a character vector." = inherits(urls, "character")
   )
   stopifnot("`urls` must not contain missing values." = !anyNA(urls))
   stopifnot(

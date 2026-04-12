@@ -135,7 +135,8 @@ db_combine_tables <- function(
       unique_indexes = unique_indexes,
       indexes = indexes
     )
-  if (insert_new & update_duplicates & use_on_conflict) {
+  use_upsert <- insert_new & update_duplicates & use_on_conflict
+  if (use_upsert) {
     # Do both insert and merge
     db |>
       db_upsert_from(

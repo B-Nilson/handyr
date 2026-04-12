@@ -66,7 +66,8 @@ do_if_enough <- function(x, FUN, ..., .min_non_na = 1, .return = NA) {
   x <- x[!is.na(x)]
 
   # Apply function if min_length low enough to not matter
-  if (.min_non_na <= 1 & length(x) >= .min_non_na) {
+  not_needed <- .min_non_na <= 1 & length(x) >= .min_non_na
+  if (not_needed) {
     return(FUN(x, ...))
   }
 

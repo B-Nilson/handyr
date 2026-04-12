@@ -33,7 +33,8 @@ get_step <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
   }
 
   # Handle cases where get_step doesn't need to be called
-  if (length(x) == 0 | all(is.na(x))) {
+  not_needed <- length(x) == 0 | all(is.na(x))
+  if (not_needed) {
     return(NA_real_)
   }
 
@@ -62,7 +63,8 @@ get_step <- function(x, most_common = TRUE, na.rm = FALSE, quiet = FALSE) {
   }
 
   # Warn if more than one interval has the same frequency
-  if (!quiet & nrow(interval_freqs) > 1) {
+  need_warn <- !quiet & nrow(interval_freqs) > 1
+  if (need_warn) {
     if (interval_freqs$frequency[1] == interval_freqs$frequency[2]) {
       warning(paste0(
         "More than one interval has the same top frequency.",

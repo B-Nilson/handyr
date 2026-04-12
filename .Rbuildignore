@@ -1,5 +1,6 @@
-^renv$
-^renv\.lock$
+^.uvr$
+^uvr.lock$
+^uvr.toml$
 ^handyr\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
