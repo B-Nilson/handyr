@@ -205,7 +205,7 @@ partition_data <- function(new_data, partition_by, partition_type) {
             .partition = .data[[col]] >= within[1] & .data[[col]] < within[2],
             .range = list(within)
           ) |>
-          dplyr::rename_with(.cols = c(.partition, .range), .fn = \(x) {
+          dplyr::rename_with(.cols = c(".partition", ".range"), .fn = \(x) {
             paste0(x, "_", col, "_", paste(within, collapse = "to")) |>
               gsub(pattern = "-|:| ", replacement = "_")
           })
