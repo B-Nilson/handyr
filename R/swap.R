@@ -27,7 +27,7 @@ swap <- function(x, what, with) {
     return(x)
   }
   if (all(is.na(what))) {
-    what <- NA_character_ # in case `NA` (NA_logical_) is passed
+    what <- c(NA_character_, NaN) # in case `NA` (NA_logical_) is passed
   }
   stopifnot(length(what) >= 1)
   stopifnot(
