@@ -32,7 +32,7 @@
 #' @param .parallel_cleanup A logical value indicating if the parallel plan should be reset to sequential using `future::plan("sequential")` if `.parallel = TRUE`.
 #'   Default is `TRUE`.
 #' @param .show_progress A logical value indicating if the progress bar (see [pbapply::pbsapply()]) should be shown if `.parallel = TRUE`.
-#'   Default is `!.quiet`.
+#'   Default is `!.quiet` if interactive and `pbapply` is available, `FALSE` otherwise`.
 #' @param .quiet A logical value indicating if the output should be invisible (no messages/warnings).
 #'   Default is `FALSE`.
 #'
@@ -85,7 +85,7 @@ for_each <- function(
   .workers = NULL,
   .plan = "multisession",
   .parallel_cleanup = TRUE,
-  .show_progress = !.quiet,
+  .show_progress = !.quiet & interactive() & rlang::is_installed("pbapply"),
   .quiet = FALSE
 ) {
   # Handle inputs

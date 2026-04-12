@@ -20,7 +20,7 @@ for_each(
   .workers = NULL,
   .plan = "multisession",
   .parallel_cleanup = TRUE,
-  .show_progress = !.quiet,
+  .show_progress = !.quiet & interactive() & rlang::is_installed("pbapply"),
   .quiet = FALSE
 )
 }
@@ -72,7 +72,7 @@ If an an existing plan is set of the same type, this argument is ignored.}
 Default is \code{TRUE}.}
 
 \item{.show_progress}{A logical value indicating if the progress bar (see \code{\link[pbapply:pbapply]{pbapply::pbsapply()}}) should be shown if \code{.parallel = TRUE}.
-Default is \code{!.quiet}.}
+Default is \code{!.quiet} if interactive and \code{pbapply} is available, \code{FALSE} otherwise`.}
 
 \item{.quiet}{A logical value indicating if the output should be invisible (no messages/warnings).
 Default is \code{FALSE}.}
