@@ -24,8 +24,8 @@ get_timezone <- function(lng, lat, method = "accurate", quiet = FALSE, ...) {
   rlang::check_installed("sf")
   # Handle inputs
   stopifnot(
-    all(!is.na(lng)),
-    all(!is.na(lat)),
+    !anyNA(lng),
+    !anyNA(lat),
     is.numeric(lng),
     is.numeric(lat),
     all(lng >= -180),
