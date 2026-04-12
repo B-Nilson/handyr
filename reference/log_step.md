@@ -71,13 +71,13 @@ return is wrapped with `list(.log_init = {...})` to aid in tracking for
 logs <- log_step("My Awesome Script", time = FALSE, header = TRUE)
 #> |--------------------   My Awesome Script   --------------------|
 logs$step_1 <- log_step("Step 1...")
-#> 2026-04-12 16:58:46: Step 1...
+#> 2026-04-12 21:26:36: Step 1...
 # Do something
 logs$step_two <- log_step("Step-", 2, "...", sep = "")
-#> 2026-04-12 16:58:46: Step-2...
+#> 2026-04-12 21:26:36: Step-2...
 # Do something else
 logs$done <- log_step("Complete")
-#> 2026-04-12 16:58:46: Complete
+#> 2026-04-12 21:26:36: Complete
 # Summarise run times and save log to file
 summarise_logs(logs, save_to = tempfile())
 #> 

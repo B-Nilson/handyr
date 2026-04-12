@@ -22,7 +22,7 @@ for_each(
   .workers = NULL,
   .plan = "multisession",
   .parallel_cleanup = TRUE,
-  .show_progress = !.quiet,
+  .show_progress = !.quiet & interactive() & rlang::is_installed("pbapply"),
   .quiet = FALSE
 )
 ```
@@ -131,7 +131,8 @@ for_each(
 
   A logical value indicating if the progress bar (see
   [`pbapply::pbsapply()`](https://peter.solymos.org/pbapply/reference/pbapply.html))
-  should be shown if `.parallel = TRUE`. Default is `!.quiet`.
+  should be shown if `.parallel = TRUE`. Default is `!.quiet` if
+  interactive and `pbapply` is available, `FALSE` otherwise\`.
 
 - .quiet:
 

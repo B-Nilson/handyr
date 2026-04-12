@@ -40,16 +40,16 @@ Other Utilities:
 logs <- log_step("Example usage of log_summarise", header = TRUE)
 #> |--------------------   Example usage of log_summarise   --------------------|
 logs$step_one <- log_step("Step-1...")
-#> 2026-04-12 16:58:50: Step-1...
+#> 2026-04-12 21:26:40: Step-1...
 # Do something
 logs$step_two <- log_step("Step-2...")
-#> 2026-04-12 16:58:50: Step-2...
+#> 2026-04-12 21:26:40: Step-2...
 # Do something else
 logs$step_three <- log_step("Step-3...")
-#> 2026-04-12 16:58:50: Step-3...
+#> 2026-04-12 21:26:40: Step-3...
 # Do something else
 logs$done <- log_step("Complete")
-#> 2026-04-12 16:58:50: Complete
+#> 2026-04-12 21:26:40: Complete
 # Summarise run times and write to file
 summarise_logs(logs, save_to = tempfile())
 #> 

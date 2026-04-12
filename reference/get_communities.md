@@ -47,8 +47,43 @@ columns "osm_id", "type" (community type), "name",
 
 ``` r
 get_communities("Fort St. John, BC")
-#> Error in httr2::req_perform(req): HTTP 504 Gateway Timeout.
+#> Simple feature collection with 1 feature and 5 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -120.8472 ymin: 56.25276 xmax: -120.8472 ymax: 56.25276
+#> Geodetic CRS:  WGS 84
+#>                osm_id type          name population         population_source
+#> 2865722923 2865722923 city Fort St. John      21465 census (Date: 2021-05-11)
+#>                              geometry
+#> 2865722923 POINT (-120.8472 56.25276)
 
 get_communities("Yukon, Canada")
-#> Error in httr2::req_perform(req): HTTP 504 Gateway Timeout.
+#> Simple feature collection with 66 features and 5 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -140.8773 ymin: 60.00194 xmax: -128.7068 ymax: 69.16143
+#> Geodetic CRS:  WGS 84
+#> First 10 features:
+#>                osm_id    type               name population   population_source
+#> 664245432   664245432  hamlet          Keno City         24                <NA>
+#> 2737836444 2737836444 village   Stewart Crossing         25                <NA>
+#> 9181339576 9181339576  hamlet   Two Mile Village         79                <NA>
+#> 2138092203 2138092203    town           Carcross        317                <NA>
+#> 2705565763 2705565763    town         Ross River        382                <NA>
+#> 2668706359 2668706359    town               Faro        400                <NA>
+#> 2700798050 2700798050    town           Carmacks        503                <NA>
+#> 2976400400 2976400400    city         Whitehorse      36550 census (Date: 2025)
+#> 107350205   107350205  hamlet          Ruby Camp         NA                <NA>
+#> 107350219   107350219  hamlet Mendenhall Landing         NA                <NA>
+#>                              geometry
+#> 664245432  POINT (-135.3022 63.90958)
+#> 2737836444  POINT (-136.679 63.37544)
+#> 9181339576 POINT (-128.7439 60.08715)
+#> 2138092203 POINT (-134.7087 60.16679)
+#> 2705565763  POINT (-132.4495 61.9798)
+#> 2668706359 POINT (-133.3553 62.22954)
+#> 2700798050 POINT (-136.2899 62.08877)
+#> 2976400400 POINT (-135.0549 60.72157)
+#> 107350205  POINT (-137.9167 61.08333)
+#> 107350219  POINT (-136.0167 60.76667)
 ```
