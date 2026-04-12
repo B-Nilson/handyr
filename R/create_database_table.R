@@ -178,7 +178,7 @@ create_database_table <- function(
 
   # Add indexes if provided
   if (length(indexes) > 0) {
-    for (i in 1:length(indexes)) {
+    for (i in seq_along(indexes)) {
       index_name <- NULL
       if (!(is.null(names(indexes)) | names(indexes)[i] == "")) {
         index_name <- names(indexes)[i]
