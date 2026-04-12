@@ -25,7 +25,7 @@ sentence_range <- function(x, reverse = FALSE) {
           as.numeric() |>
           sort()
       })
-    if(length(x) == 1) {
+    if (length(x) == 1) {
       reversed <- reversed[[1]]
     }
     return(reversed)
