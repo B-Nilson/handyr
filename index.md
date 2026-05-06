@@ -9,6 +9,7 @@ You can install the development version of handyr from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("B-Nilson/handyr")
 ```
@@ -18,6 +19,7 @@ pak::pak("B-Nilson/handyr")
 ### Create and write/read/delete from Databases
 
 ``` r
+
 library(handyr)
 
 # Create a file-based database (or setup postgresql server if on Windows)
@@ -55,6 +57,7 @@ db |>
 ### Record/log Steps in a Workflow
 
 ``` r
+
 library(handyr)
 
 # Initiate logging entry
@@ -76,12 +79,14 @@ summarise_logs(logs)
 
 ``` r
 
+
 # TODO: examples showcasing for_each
 ```
 
 ### Spatial / Temporal Data Manipulation
 
 ``` r
+
 
 # Local timezone lookup
 get_timezone(lng = -105.053144, lat = 69.116178)

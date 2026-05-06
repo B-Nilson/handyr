@@ -13,11 +13,11 @@ clamp(x, range = c(NA, NA))
 
 - x:
 
-  A numeric vector.
+  A numeric or date/POSIXct vector.
 
 - range:
 
-  A numeric vector of length two to clamp `x` to.
+  A numeric or date/POSIXct vector of length two to clamp `x` to.
 
   - If `range[1]` is `NA` (default), then `min(x)` will be used.
 
@@ -25,7 +25,7 @@ clamp(x, range = c(NA, NA))
 
 ## Value
 
-A numeric vector equal to `x` with:
+A numeric or date/POSIXct vector equal to `x` with:
 
 - values less than `min(range)` set to `min(range)`
 

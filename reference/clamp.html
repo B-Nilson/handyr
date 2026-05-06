@@ -45,18 +45,18 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A numeric vector.</p></dd>
+<dd><p>A numeric or date/POSIXct vector.</p></dd>
 
 
 <dt id="arg-range">range<a class="anchor" aria-label="anchor" href="#arg-range"></a></dt>
-<dd><p>A numeric vector of length two to clamp <code>x</code> to.</p><ul><li><p>If <code>range[1]</code> is <code>NA</code> (default), then <code>min(x)</code> will be used.</p></li>
+<dd><p>A numeric or date/POSIXct vector of length two to clamp <code>x</code> to.</p><ul><li><p>If <code>range[1]</code> is <code>NA</code> (default), then <code>min(x)</code> will be used.</p></li>
 <li><p>If <code>range[2]</code> is <code>NA</code> (default), then <code>max(x)</code> will be used.</p></li>
 </ul></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector equal to <code>x</code> with:</p><ul><li><p>values less than <code>min(range)</code> set to <code>min(range)</code></p></li>
+    <p>A numeric or date/POSIXct vector equal to <code>x</code> with:</p><ul><li><p>values less than <code>min(range)</code> set to <code>min(range)</code></p></li>
 <li><p>values greater than <code>max(range)</code> set to <code>max(range)</code></p></li>
 </ul></div>
 
