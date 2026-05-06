@@ -7,16 +7,16 @@
 clamp(x, range = c(NA, NA))
 }
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric or date/POSIXct vector.}
 
-\item{range}{A numeric vector of length two to clamp \code{x} to.
+\item{range}{A numeric or date/POSIXct vector of length two to clamp \code{x} to.
 \itemize{
 \item If \code{range[1]} is \code{NA} (default), then \code{min(x)} will be used.
 \item If \code{range[2]} is \code{NA} (default), then \code{max(x)} will be used.
 }}
 }
 \value{
-A numeric vector equal to \code{x} with:
+A numeric or date/POSIXct vector equal to \code{x} with:
 \itemize{
 \item values less than \code{min(range)} set to \code{min(range)}
 \item values greater than \code{max(range)} set to \code{max(range)}
