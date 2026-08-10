@@ -70,7 +70,10 @@ test_that("dates are supported", {
     class = "Date"
   )
 
-  datetimes <- as.POSIXct(c("2022-01-01 00:00:00", "2022-01-03 00:00:00"), tz = "UTC")
+  datetimes <- as.POSIXct(
+    c("2022-01-01 00:00:00", "2022-01-03 00:00:00"),
+    tz = "UTC"
+  )
   expect_equal(
     min(datetimes),
     expected = as.POSIXct("2022-01-01 00:00:00", tz = "UTC")

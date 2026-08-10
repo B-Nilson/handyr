@@ -123,7 +123,14 @@ test_that("vectorized max/min respect .min_non_na", {
 test_that("vectorized quantile/median respect .min_non_na", {
   x <- c(1, NA, NA, 2, 3, 4)
   expect_equal(
-    x |> rolling("quantile", .width = 3, .min_non_na = 2, probs = 0.5, .fill = NULL),
+    x |>
+      rolling(
+        "quantile",
+        .width = 3,
+        .min_non_na = 2,
+        probs = 0.5,
+        .fill = NULL
+      ),
     expected = c(NA, NA, NA, NA, 2.5, 3)
   )
   expect_equal(
@@ -177,11 +184,23 @@ test_that("vectorized mean returns .fill verbatim (not divided by window count)"
   # Matches zoo::rollapply with align = "left"/"right" and FUN = mean(na.rm = TRUE)
   expect_equal(
     x |> rolling("mean", .width = 3, .direction = "forward", .fill = -1),
-    expected = zoo::rollapply(x, 3, \(z) mean(z, na.rm = TRUE), fill = -1, align = "left")
+    expected = zoo::rollapply(
+      x,
+      3,
+      \(z) mean(z, na.rm = TRUE),
+      fill = -1,
+      align = "left"
+    )
   )
   expect_equal(
     x |> rolling("mean", .width = 3, .fill = -1),
-    expected = zoo::rollapply(x, 3, \(z) mean(z, na.rm = TRUE), fill = -1, align = "right")
+    expected = zoo::rollapply(
+      x,
+      3,
+      \(z) mean(z, na.rm = TRUE),
+      fill = -1,
+      align = "right"
+    )
   )
 })
 
@@ -205,7 +224,9 @@ test_that("width larger than x (all windows partial) returns .fill, matching zoo
       expected = c(-1, -1, -1)
     )
     # Default fill is NA
-    expect_true(all(is.na(x |> rolling("sum", .width = 5, .direction = direction))))
+    expect_true(all(is.na(
+      x |> rolling("sum", .width = 5, .direction = direction)
+    )))
   }
 })
 
@@ -215,5 +236,8 @@ test_that("empty x returns an empty vector", {
   expect_equal(rolling(numeric(0), "max", .width = 3), numeric(0))
   expect_equal(rolling(numeric(0), "mean", .width = 3), numeric(0))
   expect_equal(rolling(numeric(0), "median", .width = 3), numeric(0))
-  expect_equal(rolling(numeric(0), "quantile", .width = 3, probs = 0.5), numeric(0))
+  expect_equal(
+    rolling(numeric(0), "quantile", .width = 3, probs = 0.5),
+    numeric(0)
+  )
 })

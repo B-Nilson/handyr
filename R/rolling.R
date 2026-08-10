@@ -275,10 +275,11 @@ roll_median <- function(
 
 build_roll_matrix <- function(x, width = 3, direction = "backward", fill = NA) {
   stopifnot(
-    "direction must be 'backward' or 'forward'" = direction %in% c(
-      "backward",
-      "forward"
-    )
+    "direction must be 'backward' or 'forward'" = direction %in%
+      c(
+        "backward",
+        "forward"
+      )
   )
   fill <- ifelse(is.null(fill), NA, fill)
   value_matrix <- matrix(fill, nrow = length(x), ncol = width)
