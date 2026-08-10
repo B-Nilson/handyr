@@ -54,13 +54,14 @@ log_step <- function(
   original_message <- paste(messages, collapse = sep)
   message <- original_message # modify a copy so we can return the original
 
-  # Get current timestamp
-  timestamp <- Sys.time() |>
+  # Get current timestamp (full precision so run times can be sub-second)
+  timestamp <- Sys.time()
+  timestamp_text <- timestamp |>
     format(time_format, tz = tz)
 
   # Prepend timestamp if desired
   if (time) {
-    message <- timestamp |>
+    message <- timestamp_text |>
       paste0(": ", message)
   }
 
@@ -79,7 +80,7 @@ log_step <- function(
 
   # Create log entry for `summarise_logs()`
   log_entry <- list(
-    timestamp = as.POSIXct(timestamp, format = time_format, tz = tz),
+    timestamp = timestamp |> lubridate::with_tz(tz),
     message = message,
     text = original_message,
     is_header = header,

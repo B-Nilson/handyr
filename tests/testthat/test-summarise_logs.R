@@ -69,6 +69,21 @@ test_that("total time includes the header-to-first-step period", {
   expect_false(any(grepl("Total time: 0", msgs, fixed = TRUE)))
 })
 
+test_that("sub-second run times are captured", {
+  logs <- list(
+    log_step("Header", header = TRUE, time = FALSE, quiet = TRUE)
+  )
+  logs$step1 <- log_step("step 1", quiet = TRUE)
+  Sys.sleep(0.4)
+  logs$step2 <- log_step("step 2", quiet = TRUE)
+
+  log_summary <- suppressMessages(summarise_logs(logs))
+  step1_run <- log_summary$run_time[log_summary$text == "step 1"]
+  # step1's run time spans the ~0.4s sleep (was 0 before sub-second precision)
+  expect_true(!is.na(step1_run))
+  expect_gt(as.numeric(step1_run, units = "secs"), 0.3)
+})
+
 test_that("save_to works", {
   logs <- list(
     log_step("Header", header = TRUE, quiet = TRUE)[[1]],
