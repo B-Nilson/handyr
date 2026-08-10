@@ -92,7 +92,9 @@ get_file_index <- function(url, size_unit = "kB", timeout = 2) {
       last_modified = .data$last_modified |>
         lubridate::ymd_hm(tz = lubridate::tz(Sys.time())),
       # Format size to desired unit
+      # (directories have no size, shown as "-" or "" in the index)
       size = .data$size |>
+        swap(c("-", ""), with = NA) |>
         shorten_number(reverse = TRUE, thresholds = file_size_symbols) |>
         convert_units(from = "B", to = size_unit, keep_units = TRUE)
     )
