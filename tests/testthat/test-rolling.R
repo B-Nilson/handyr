@@ -184,3 +184,36 @@ test_that("vectorized mean returns .fill verbatim (not divided by window count)"
     expected = zoo::rollapply(x, 3, \(z) mean(z, na.rm = TRUE), fill = -1, align = "right")
   )
 })
+
+test_that("width larger than x (all windows partial) returns .fill, matching zoo", {
+  x <- 1:3
+  for (direction in c("backward", "forward")) {
+    expect_equal(
+      x |> rolling("sum", .width = 5, .direction = direction, .fill = -1),
+      expected = c(-1, -1, -1)
+    )
+    expect_equal(
+      x |> rolling("max", .width = 5, .direction = direction, .fill = -1),
+      expected = c(-1, -1, -1)
+    )
+    expect_equal(
+      x |> rolling("mean", .width = 5, .direction = direction, .fill = -1),
+      expected = c(-1, -1, -1)
+    )
+    expect_equal(
+      x |> rolling("median", .width = 5, .direction = direction, .fill = -1),
+      expected = c(-1, -1, -1)
+    )
+    # Default fill is NA
+    expect_true(all(is.na(x |> rolling("sum", .width = 5, .direction = direction))))
+  }
+})
+
+test_that("empty x returns an empty vector", {
+  expect_equal(rolling(numeric(0), "sum", .width = 3), numeric(0))
+  expect_equal(rolling(numeric(0), "sum", .width = 3, .fill = -1), numeric(0))
+  expect_equal(rolling(numeric(0), "max", .width = 3), numeric(0))
+  expect_equal(rolling(numeric(0), "mean", .width = 3), numeric(0))
+  expect_equal(rolling(numeric(0), "median", .width = 3), numeric(0))
+  expect_equal(rolling(numeric(0), "quantile", .width = 3, probs = 0.5), numeric(0))
+})

@@ -95,15 +95,18 @@ rolling <- function(
     )
 }
 
-# Indices of the partial (edge) windows that get replaced with `fill`
+# Indices of the partial (edge) windows that get replaced with `fill`,
+# clamped to the length of `x` (when `width > length(x)` every window is
+# partial, and when `length(x) == 0` there are none)
 roll_partial_idx <- function(n, width, direction) {
   if (direction == "backward") {
-    seq_len(width - 1)
+    idx <- seq_len(max(width - 1, 0))
   } else if (direction == "forward") {
-    seq_len(width - 1) + n - width + 1
+    idx <- seq_len(max(width - 1, 0)) + n - width + 1
   } else {
-    integer(0)
+    return(integer(0))
   }
+  idx[idx >= 1 & idx <= n]
 }
 
 # Vectorized rolling mean
@@ -152,8 +155,7 @@ roll_sum <- function(
   rolling_sum[n_non_missing < min_non_na] <- NA
 
   if (.include_counts) {
-    n_possible <- rep(width, length(x))
-    n_possible[1:width] <- 1:width
+    n_possible <- pmin(seq_len(length(x)), width)
     attr(rolling_sum, "n") <- n_possible
     attr(rolling_sum, "n_non_missing") <- n_non_missing
   }
@@ -272,16 +274,22 @@ roll_median <- function(
 }
 
 build_roll_matrix <- function(x, width = 3, direction = "backward", fill = NA) {
+  stopifnot(
+    "direction must be 'backward' or 'forward'" = direction %in% c(
+      "backward",
+      "forward"
+    )
+  )
   fill <- ifelse(is.null(fill), NA, fill)
   value_matrix <- matrix(fill, nrow = length(x), ncol = width)
-  for (i in 0:(width - 1)) {
+  # Only `length(x)` columns can hold real values; the rest are padding,
+  # so `width > length(x)` is valid (all windows are partial), matching
+  # zoo::rollapply
+  for (i in seq_len(min(width, length(x)))) {
     if (direction == "backward") {
-      value_matrix[(i + 1):length(x), i + 1] <- x[1:(length(x) - i)]
+      value_matrix[i:length(x), i] <- x[1:(length(x) - i + 1)]
     } else if (direction == "forward") {
-      value_matrix[1:(length(x) - i), i + 1] <- x[(i + 1):length(x)]
-    } else {
-      # TODO: implement center
-      stop("direction must be 'backward' or 'forward'")
+      value_matrix[1:(length(x) - i + 1), i] <- x[i:length(x)]
     }
   }
   return(value_matrix)
