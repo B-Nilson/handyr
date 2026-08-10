@@ -48,3 +48,45 @@ test_that("dates/times work", {
     expected = expected
   )
 })
+
+test_that("mixed types are rejected", {
+  dates <- as.Date("2022-01-01")
+  datetimes <- as.POSIXct("2022-01-01 00:00:00", tz = "UTC")
+  expect_error(
+    clamp(dates, range = rep(datetimes, 2)),
+    regexp = "same type"
+  )
+  expect_error(
+    clamp(datetimes, range = rep(dates, 2)),
+    regexp = "same type"
+  )
+  expect_error(
+    clamp(1:5, range = rep(dates, 2)),
+    regexp = "same type"
+  )
+  expect_error(
+    clamp(dates, range = c(1, 2)),
+    regexp = "same type"
+  )
+  # Unsupported range types are rejected too
+  expect_error(
+    clamp(1:5, range = c("2", "4")),
+    regexp = "numeric, Date, POSIXct"
+  )
+})
+
+test_that("same-type partially-NA ranges still work", {
+  dates <- seq(as.Date("2022-01-01"), as.Date("2022-01-05"))
+  expect_equal(
+    clamp(dates, range = c(as.Date("2022-01-03"), NA)),
+    expected = c(
+      rep(as.Date("2022-01-03"), 3),
+      as.Date("2022-01-04"),
+      as.Date("2022-01-05")
+    )
+  )
+  expect_equal(
+    clamp(dates, range = c(NA, NA)),
+    expected = dates
+  )
+})

@@ -10,6 +10,7 @@ clamp(x, range = c(NA, NA))
 \item{x}{A numeric or date/POSIXct vector.}
 
 \item{range}{A numeric or date/POSIXct vector of length two to clamp \code{x} to.
+Must be the same type as \code{x}.
 \itemize{
 \item If \code{range[1]} is \code{NA} (default), then \code{min(x)} will be used.
 \item If \code{range[2]} is \code{NA} (default), then \code{max(x)} will be used.
