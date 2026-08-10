@@ -16,7 +16,7 @@ min(..., na.rm = FALSE)
 
 - ...:
 
-  numeric or character vectors (see base::max).
+  numeric, character, Date, or POSIXct vectors (see base::max).
 
 - na.rm:
 
@@ -74,4 +74,8 @@ data.frame(
 #>   <chr>      <dbl>      <dbl> <dbl> <dbl>
 #> 1 a              3          1     3     1
 #> 2 b           -Inf        Inf    NA    NA
+
+# Dates are supported too
+max(as.Date(c("2022-01-01", "2022-01-03")), na.rm = TRUE) # Returns a Date
+#> [1] "2022-01-03"
 ```

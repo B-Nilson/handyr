@@ -13,7 +13,7 @@ mode(..., na.rm = FALSE)
 
 - ...:
 
-  numeric or character vectors (see base::max).
+  numeric, character, Date, or POSIXct vectors (see base::max).
 
 - na.rm:
 

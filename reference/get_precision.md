@@ -26,4 +26,6 @@ get_precision(1:5)
 #> [1] 0 0 0 0 0
 get_precision(c(1.2, 1.23, 1.234))
 #> [1] 1 2 3
+get_precision(c(1e-7, 1e16)) # tiny/huge numbers are handled too
+#> [1] 7 0
 ```

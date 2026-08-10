@@ -69,6 +69,5 @@ shorten_number(x)
 
 x <- c("1", "100", "1K", "10K", "100K", "1M", "10M", "100M", "1B", "10B")
 shorten_number(x, reverse = TRUE)
-#> Warning: NAs introduced by coercion
 #>  [1] 1e+00 1e+02 1e+03 1e+04 1e+05 1e+06 1e+07 1e+08 1e+09 1e+10
 ```
