@@ -137,6 +137,21 @@ test_that("vectorized quantile/median respect .min_non_na", {
   )
 })
 
+test_that("width 1 has no partial windows (fill not applied)", {
+  expect_equal(
+    (1:5) |> rolling("sum", .width = 1, .fill = -1),
+    expected = 1:5
+  )
+  expect_equal(
+    (1:5) |> rolling("max", .width = 1, .fill = -1),
+    expected = 1:5
+  )
+  expect_equal(
+    (1:5) |> rolling("sum", .width = 1, .direction = "forward", .fill = -1),
+    expected = 1:5
+  )
+})
+
 test_that("vectorized FUNs place .fill at the correct end for forward windows", {
   # Matches zoo::rollapply(1:5, width = 3, align = "left", fill = -1)
   expect_equal(
@@ -150,5 +165,22 @@ test_that("vectorized FUNs place .fill at the correct end for forward windows", 
   expect_equal(
     (1:5) |> rolling("min", .width = 3, .direction = "forward", .fill = -1),
     expected = c(1, 2, 3, -1, -1)
+  )
+  expect_equal(
+    (1:5) |> rolling("mean", .width = 3, .direction = "forward", .fill = -1),
+    expected = c(2, 3, 4, -1, -1)
+  )
+})
+
+test_that("vectorized mean returns .fill verbatim (not divided by window count)", {
+  x <- c(1, 2, NA, 4, 5)
+  # Matches zoo::rollapply with align = "left"/"right" and FUN = mean(na.rm = TRUE)
+  expect_equal(
+    x |> rolling("mean", .width = 3, .direction = "forward", .fill = -1),
+    expected = zoo::rollapply(x, 3, \(z) mean(z, na.rm = TRUE), fill = -1, align = "left")
+  )
+  expect_equal(
+    x |> rolling("mean", .width = 3, .fill = -1),
+    expected = zoo::rollapply(x, 3, \(z) mean(z, na.rm = TRUE), fill = -1, align = "right")
   )
 })

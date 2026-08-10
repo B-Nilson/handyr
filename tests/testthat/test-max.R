@@ -47,6 +47,13 @@ test_that("correct NA returned", {
   )
 })
 
+test_that("empty/NULL input returns a single NA", {
+  expect_length(max(), 1)
+  expect_equal(max(), NA)
+  expect_equal(max(NULL), NA)
+  expect_equal(max(numeric(0), na.rm = TRUE), NA_real_)
+})
+
 test_that("dates are supported", {
   dates <- as.Date(c("2022-01-01", "2022-01-03"))
   expect_equal(

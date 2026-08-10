@@ -15,6 +15,9 @@
 #' @export
 mode <- function(..., na.rm = FALSE) {
   x <- c(...)
+  if (is.null(x)) {
+    x <- logical(0) # no/`NULL` inputs should still return a single NA
+  }
   # Handle inputs
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
 

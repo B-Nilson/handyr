@@ -95,6 +95,17 @@ rolling <- function(
     )
 }
 
+# Indices of the partial (edge) windows that get replaced with `fill`
+roll_partial_idx <- function(n, width, direction) {
+  if (direction == "backward") {
+    seq_len(width - 1)
+  } else if (direction == "forward") {
+    seq_len(width - 1) + n - width + 1
+  } else {
+    integer(0)
+  }
+}
+
 # Vectorized rolling mean
 roll_mean <- function(
   x,
@@ -112,7 +123,13 @@ roll_mean <- function(
       .include_counts = TRUE
     )
   n_non_missing <- swap(attr(rolling_sum, "n_non_missing"), what = 0, with = NA)
-  as.numeric(rolling_sum) / n_non_missing
+  rolling_mean <- as.numeric(rolling_sum) / n_non_missing
+  # Apply `fill` after the division (rolling_sum's fill positions would
+  # otherwise be divided by the window count, e.g. -1/3 instead of -1)
+  if (!is.null(fill)) {
+    rolling_mean[roll_partial_idx(length(x), width, direction)] <- fill
+  }
+  rolling_mean
 }
 
 # Vectorized rolling sum
@@ -142,14 +159,7 @@ roll_sum <- function(
   }
 
   if (!is.null(fill)) {
-    partial_idx <- if (direction == "backward") {
-      1:(width - 1)
-    } else if (direction == "forward") {
-      (length(x) - width + 2):length(x)
-    } else {
-      integer(0)
-    }
-    rolling_sum[partial_idx] <- fill
+    rolling_sum[roll_partial_idx(length(x), width, direction)] <- fill
   }
 
   return(rolling_sum)
@@ -199,14 +209,7 @@ roll_maxmin <- function(
   rolling_maxmin[n_non_missing < min_non_na] <- NA
 
   if (!is.null(fill)) {
-    partial_idx <- if (direction == "backward") {
-      1:(width - 1)
-    } else if (direction == "forward") {
-      (length(x) - width + 2):length(x)
-    } else {
-      integer(0)
-    }
-    rolling_maxmin[partial_idx] <- fill
+    rolling_maxmin[roll_partial_idx(length(x), width, direction)] <- fill
   }
   return(rolling_maxmin)
 }
@@ -241,13 +244,7 @@ roll_quantile <- function(
   }
 
   if (!is.null(fill)) {
-    partial_idx <- if (direction == "backward") {
-      1:(width - 1)
-    } else if (direction == "forward") {
-      (length(x) - width + 2):length(x)
-    } else {
-      integer(0)
-    }
+    partial_idx <- roll_partial_idx(length(x), width, direction)
     if (length(probs) == 1) {
       rolling_quantile[partial_idx] <- fill
     } else {

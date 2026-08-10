@@ -6,6 +6,12 @@ test_that("basic case works", {
   expect_equal(mode(NA_real_, NA_real_), NA_real_)
 })
 
+test_that("empty/NULL input returns a single NA", {
+  expect_length(mode(), 1)
+  expect_equal(mode(), NA)
+  expect_equal(mode(NULL), NA)
+})
+
 test_that("dates are supported", {
   dates <- as.Date(c("2022-01-01", "2022-01-03", "2022-01-03"))
   expect_equal(
