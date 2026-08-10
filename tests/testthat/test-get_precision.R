@@ -8,3 +8,19 @@ test_that("basic case works", {
   get_precision(Inf) |>
     expect_equal(0)
 })
+
+test_that("tiny and huge numbers work", {
+  get_precision(1e-7) |>
+    expect_equal(7)
+  get_precision(1e-16) |>
+    expect_equal(16)
+  get_precision(1e16) |>
+    expect_equal(0)
+  get_precision(1e300) |>
+    expect_equal(0)
+  get_precision(0.001) |>
+    expect_equal(3)
+  # full precision is retained for values with many decimals
+  get_precision(1234.5678) |>
+    expect_equal(4)
+})
