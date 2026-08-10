@@ -142,11 +142,14 @@ roll_sum <- function(
   }
 
   if (!is.null(fill)) {
-    if (direction == "backward") {
-      rolling_sum[1:(width - 1)] <- fill
+    partial_idx <- if (direction == "backward") {
+      1:(width - 1)
     } else if (direction == "forward") {
-      rolling_sum[(length(x) - width + 1):length(x)] <- fill
+      (length(x) - width + 2):length(x)
+    } else {
+      integer(0)
     }
+    rolling_sum[partial_idx] <- fill
   }
 
   return(rolling_sum)
@@ -192,11 +195,18 @@ roll_maxmin <- function(
     as.data.frame(value_matrix)
   )
 
-  n_missing <- rowSums(is.na(value_matrix))
-  rolling_maxmin[n_missing < min_non_na] <- NA
+  n_non_missing <- width - rowSums(is.na(value_matrix))
+  rolling_maxmin[n_non_missing < min_non_na] <- NA
 
   if (!is.null(fill)) {
-    rolling_maxmin[1:(width - 1)] <- fill
+    partial_idx <- if (direction == "backward") {
+      1:(width - 1)
+    } else if (direction == "forward") {
+      (length(x) - width + 2):length(x)
+    } else {
+      integer(0)
+    }
+    rolling_maxmin[partial_idx] <- fill
   }
   return(rolling_maxmin)
 }
@@ -219,11 +229,29 @@ roll_quantile <- function(
   rolling_quantile <- value_matrix |>
     matrixStats::rowQuantiles(probs = probs, na.rm = TRUE)
 
-  if (!is.null(fill)) {
+  # Enforce minimum number of non-NA values per window
+  n_non_missing <- width - rowSums(is.na(value_matrix))
+  not_enough <- n_non_missing < min_non_na
+  if (any(not_enough)) {
     if (length(probs) == 1) {
-      rolling_quantile[1:(width - 1)] <- fill
+      rolling_quantile[not_enough] <- NA
     } else {
-      rolling_quantile[1:(width - 1), ] <- fill
+      rolling_quantile[not_enough, ] <- NA
+    }
+  }
+
+  if (!is.null(fill)) {
+    partial_idx <- if (direction == "backward") {
+      1:(width - 1)
+    } else if (direction == "forward") {
+      (length(x) - width + 2):length(x)
+    } else {
+      integer(0)
+    }
+    if (length(probs) == 1) {
+      rolling_quantile[partial_idx] <- fill
+    } else {
+      rolling_quantile[partial_idx, ] <- fill
     }
   }
   return(rolling_quantile)

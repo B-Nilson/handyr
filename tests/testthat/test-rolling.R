@@ -107,3 +107,48 @@ test_that("vectorized FUNs work and are faster", {
     system.time()
   expect_true(vectorized_speed[["elapsed"]] < normal_speed[["elapsed"]])
 })
+
+test_that("vectorized max/min respect .min_non_na", {
+  x <- c(1, NA, NA, 2, 3, 4)
+  expect_equal(
+    x |> rolling("max", .width = 3, .min_non_na = 2, .fill = NULL),
+    expected = c(NA, NA, NA, NA, 3, 4)
+  )
+  expect_equal(
+    x |> rolling("min", .width = 3, .min_non_na = 2, .fill = NULL),
+    expected = c(NA, NA, NA, NA, 2, 2)
+  )
+})
+
+test_that("vectorized quantile/median respect .min_non_na", {
+  x <- c(1, NA, NA, 2, 3, 4)
+  expect_equal(
+    x |> rolling("quantile", .width = 3, .min_non_na = 2, probs = 0.5, .fill = NULL),
+    expected = c(NA, NA, NA, NA, 2.5, 3)
+  )
+  expect_equal(
+    x |> rolling("median", .width = 3, .min_non_na = 2, .fill = NULL),
+    expected = c(NA, NA, NA, NA, 2.5, 3)
+  )
+  # Full windows only
+  expect_equal(
+    x |> rolling("median", .width = 3, .min_non_na = 3, .fill = NULL),
+    expected = c(NA, NA, NA, NA, NA, 3)
+  )
+})
+
+test_that("vectorized FUNs place .fill at the correct end for forward windows", {
+  # Matches zoo::rollapply(1:5, width = 3, align = "left", fill = -1)
+  expect_equal(
+    (1:5) |> rolling("sum", .width = 3, .direction = "forward", .fill = -1),
+    expected = c(6, 9, 12, -1, -1)
+  )
+  expect_equal(
+    (1:5) |> rolling("max", .width = 3, .direction = "forward", .fill = -1),
+    expected = c(3, 4, 5, -1, -1)
+  )
+  expect_equal(
+    (1:5) |> rolling("min", .width = 3, .direction = "forward", .fill = -1),
+    expected = c(1, 2, 3, -1, -1)
+  )
+})
