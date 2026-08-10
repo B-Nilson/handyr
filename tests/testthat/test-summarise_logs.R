@@ -18,6 +18,57 @@ test_that("basic case works", {
     expect_snapshot()
 })
 
+test_that("wrapped header entry (README usage) works", {
+  logs <- list(
+    log_step("My Script", header = TRUE, time = FALSE, quiet = TRUE), # wrapped in .log_init
+    log_step("step 1", quiet = TRUE),
+    log_step("step 2", quiet = TRUE)
+  )
+  log_summary <- suppressMessages(summarise_logs(logs))
+  # Header entry is unwrapped so its text/timestamp are kept
+  expect_equal(nrow(log_summary), 3)
+  expect_equal(log_summary$text[1], "My Script")
+  expect_true(log_summary$is_header[1])
+  expect_false(is.na(log_summary$timestamp[1]))
+  # No NA header row polluting the timed sections
+  sections <- log_summary[
+    !log_summary$is_not_section & log_summary$.id != max(log_summary$.id),
+  ]
+  expect_equal(nrow(sections), 1)
+  expect_equal(sections$text, "step 1")
+})
+
+test_that("total time includes the header-to-first-step period", {
+  logs <- list(
+    log_step("My Script", header = TRUE, time = FALSE, quiet = TRUE)
+  )
+  # Sleep past a second boundary so the (second-precision) timestamps can
+  # distinguish "header to last entry" from "first step to last entry"
+  Sys.sleep(1.1)
+  logs$step1 <- log_step("step 1", quiet = TRUE)
+  logs$done <- log_step("done", quiet = TRUE)
+
+  log_summary <- suppressMessages(summarise_logs(logs))
+  msgs <- testthat::capture_messages(summarise_logs(logs))
+
+  # The total should span the header (start) to the last entry
+  expected_total <- prettyunits::pretty_sec(as.numeric(
+    difftime(
+      log_summary$timestamp[nrow(log_summary)],
+      log_summary$timestamp[1],
+      units = "secs"
+    )
+  ))
+  expect_true(any(grepl(
+    paste0("Total time: ", expected_total),
+    msgs,
+    fixed = TRUE
+  )))
+  # The header-to-first-step gap is counted: total is never just the
+  # (≈0s) gap between the two steps
+  expect_false(any(grepl("Total time: 0", msgs, fixed = TRUE)))
+})
+
 test_that("save_to works", {
   logs <- list(
     log_step("Header", header = TRUE, quiet = TRUE)[[1]],
