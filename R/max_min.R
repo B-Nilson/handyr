@@ -4,7 +4,7 @@
 #'
 #' This handles the case where all values provided to max/min are NA, which normally returns Inf/-Inf and throws a warning (see examples).
 #'
-#' @param ... numeric or character vectors (see [base::max]).
+#' @param ... numeric, character, Date, or POSIXct vectors (see [base::max]).
 #' @param na.rm A logical value indicating whether NA values should be removed.
 #'
 #' @return A single value with the same type as `...`
@@ -31,9 +31,12 @@
 #'     min_x = min(x, na.rm = TRUE)
 #'   )
 #'
+#' # Dates are supported too
+#' max(as.Date(c("2022-01-01", "2022-01-03")), na.rm = TRUE) # Returns a Date
+#'
 #' @export
 max <- function(..., na.rm = FALSE) {
-  x <- unlist(list(...))
+  x <- c(...)
   # Handle inputs
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
 
@@ -44,7 +47,8 @@ max <- function(..., na.rm = FALSE) {
   # Handle cases where max doesn't need to be called
   not_needed <- length(x) == 0 | all(is.na(x))
   if (not_needed) {
-    return(ifelse(is.numeric(x), NA_real_, NA_character_))
+    # Return an NA of the same type/class as `x`
+    return(x[NA_integer_])
   }
 
   # Find maximum
@@ -54,7 +58,7 @@ max <- function(..., na.rm = FALSE) {
 #' @rdname max
 #' @export
 min <- function(..., na.rm = FALSE) {
-  x <- unlist(list(...))
+  x <- c(...)
   # Handle inputs
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
 
@@ -65,7 +69,8 @@ min <- function(..., na.rm = FALSE) {
   # Handle cases where min doesn't need to be called
   not_needed <- length(x) == 0 | all(is.na(x))
   if (not_needed) {
-    return(ifelse(is.numeric(x), NA_real_, NA_character_))
+    # Return an NA of the same type/class as `x`
+    return(x[NA_integer_])
   }
 
   # Find minimum

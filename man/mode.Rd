@@ -7,7 +7,7 @@
 mode(..., na.rm = FALSE)
 }
 \arguments{
-\item{...}{numeric or character vectors (see \link[base:Extremes]{base::max}).}
+\item{...}{numeric, character, Date, or POSIXct vectors (see \link[base:Extremes]{base::max}).}
 
 \item{na.rm}{A logical value indicating whether NA values should be removed.}
 }

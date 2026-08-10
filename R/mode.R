@@ -14,7 +14,7 @@
 #'
 #' @export
 mode <- function(..., na.rm = FALSE) {
-  x <- unlist(list(...))
+  x <- c(...)
   # Handle inputs
   stopifnot(is.logical(na.rm), length(na.rm) == 1)
 
@@ -25,7 +25,8 @@ mode <- function(..., na.rm = FALSE) {
   # Handle cases where mode doesn't need to be called
   not_needed <- length(x) == 0 | all(is.na(x))
   if (not_needed) {
-    return(ifelse(is.numeric(x), NA_real_, NA_character_))
+    # Return an NA of the same type/class as `x`
+    return(x[NA_integer_])
   }
 
   # Get most common value
