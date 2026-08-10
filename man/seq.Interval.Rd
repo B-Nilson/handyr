@@ -11,7 +11,7 @@
 Multiple intervals will be looped over using \code{sapply()} with the same \code{by} and \code{...} arguments.}
 
 \item{by}{A string indicating the interval to use.
-Can be one of "auto", "1 seconds", "1 minutes", "1 hours", or "1 days".
+Can be one of "auto", "1 secs", "1 mins", "1 hours", "1 days", or "1 years".
 If "auto", the interval will be automatically determined based length of the interval.
 Default is "auto".}
 
