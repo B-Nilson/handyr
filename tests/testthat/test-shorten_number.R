@@ -49,6 +49,24 @@ test_that("reverse works", {
   )
 })
 
+test_that("reverse works without coercion warnings", {
+  x <- c("1", "100", "1K", "10K", "100K", "1M", "10M", "100M", "1B", "10B")
+  expect_no_warning(
+    result <- shorten_number(x, reverse = TRUE)
+  )
+  expect_equal(
+    result,
+    expected = c(1, 100, 1000, 10000, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10)
+  )
+})
+
+test_that("reverse still warns for genuinely invalid input", {
+  expect_warning(
+    shorten_number(c("1K", "not a number"), reverse = TRUE),
+    regexp = "NAs introduced by coercion"
+  )
+})
+
 test_that("custom thresholds work", {
   x <- c(
     1,

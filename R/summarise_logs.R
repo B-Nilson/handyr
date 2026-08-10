@@ -32,7 +32,17 @@ summarise_logs <- function(logs, save_to = NULL) {
 
   # Make log data frame with run times
   logs_bound <- logs |>
-    for_each(as.data.frame, .bind = TRUE, .quiet = TRUE) |>
+    for_each(
+      # Unwrap header entries (`log_step(header = TRUE)` wraps them in `.log_init`)
+      \(entry) {
+        if (is.list(entry) && !is.null(entry$.log_init)) {
+          entry <- entry$.log_init
+        }
+        as.data.frame(entry)
+      },
+      .bind = TRUE,
+      .quiet = TRUE
+    ) |>
     dplyr::mutate(.id = dplyr::row_number())
   log_summary <- logs_bound |>
     dplyr::group_by(is_not_section = .data$is_header | !.data$is_timestamped) |>
@@ -62,7 +72,15 @@ summarise_logs <- function(logs, save_to = NULL) {
   sections <- log_summary[
     !log_summary$is_not_section & log_summary$.id != max(log_summary$.id),
   ]
-  total_time <- sum(sections$run_time, na.rm = TRUE) |>
+  # Total time spans the whole script: from the header (if present, otherwise
+  # the first entry) to the last entry, so the header-to-first-step period
+  # counts towards the total
+  start_time <- if (any(log_summary$is_header %in% TRUE)) {
+    log_summary$timestamp[log_summary$is_header %in% TRUE][1]
+  } else {
+    log_summary$timestamp[1]
+  }
+  total_time <- (log_summary$timestamp[nrow(log_summary)] - start_time) |>
     as.numeric(units = "secs") |>
     prettyunits::pretty_sec()
 

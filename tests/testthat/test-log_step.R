@@ -27,7 +27,7 @@ test_that("time works", {
   expect_message(log_step("Hello, world!", time = TRUE))
   result <- log_step("Hello, world!", time = TRUE)
   expect_equal(
-    paste0(result$timestamp, ": ", result$text),
+    paste0(format(result$timestamp, "%Y-%m-%d %H:%M:%S"), ": ", result$text),
     result$message
   )
 })
@@ -36,7 +36,7 @@ test_that("time_format works", {
   expect_message(log_step("Hello, world!", time_format = "%Y-%m-%d"))
   result <- log_step("Hello, world!", time_format = "%Y-%m-%d", quiet = TRUE)
   expect_equal(
-    paste0(result$timestamp, ": ", result$text),
+    paste0(format(result$timestamp, "%Y-%m-%d"), ": ", result$text),
     result$message
   )
   expect_message(log_step("Hello, world!", time_format = "%Y-%m-%d %H:%M"))
@@ -59,13 +59,21 @@ test_that("tz works", {
   expect_message(log_step("Hello, world!", tz = "America/New_York"))
   result <- log_step("Hello, world!", tz = "America/New_York", quiet = TRUE)
   expect_equal(
-    paste0(result$timestamp, ": ", result$text),
+    paste0(format(result$timestamp, "%Y-%m-%d %H:%M:%S"), ": ", result$text),
     result$message
   )
   expect_equal(
     attr(result$timestamp, "tzone"),
     "America/New_York"
   )
+})
+
+test_that("timestamps keep sub-second precision", {
+  before <- Sys.time()
+  result <- log_step("Hello, world!", quiet = TRUE)
+  after <- Sys.time()
+  expect_true(result$timestamp >= before)
+  expect_true(result$timestamp <= after)
 })
 
 test_that("header works", {

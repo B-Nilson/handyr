@@ -46,3 +46,40 @@ test_that("correct NA returned", {
     expected = NA_character_
   )
 })
+
+test_that("empty/NULL input returns a single NA", {
+  expect_length(max(), 1)
+  expect_equal(max(), NA)
+  expect_equal(max(NULL), NA)
+  expect_equal(max(numeric(0), na.rm = TRUE), NA_real_)
+})
+
+test_that("dates are supported", {
+  dates <- as.Date(c("2022-01-01", "2022-01-03"))
+  expect_equal(
+    max(dates),
+    expected = as.Date("2022-01-03")
+  )
+  expect_equal(
+    max(c(dates, NA), na.rm = TRUE),
+    expected = as.Date("2022-01-03")
+  )
+  # All-NA dates return a Date NA, not a numeric NA
+  expect_s3_class(
+    max(as.Date(c(NA, NA)), na.rm = TRUE),
+    class = "Date"
+  )
+
+  datetimes <- as.POSIXct(
+    c("2022-01-01 00:00:00", "2022-01-03 00:00:00"),
+    tz = "UTC"
+  )
+  expect_equal(
+    max(datetimes),
+    expected = as.POSIXct("2022-01-03 00:00:00", tz = "UTC")
+  )
+  expect_s3_class(
+    max(as.POSIXct(c(NA, NA), tz = "UTC"), na.rm = TRUE),
+    class = "POSIXct"
+  )
+})

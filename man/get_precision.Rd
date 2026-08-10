@@ -18,4 +18,5 @@ Get the number of decimal places in a numeric vector
 \examples{
 get_precision(1:5)
 get_precision(c(1.2, 1.23, 1.234))
+get_precision(c(1e-7, 1e16)) # tiny/huge numbers are handled too
 }

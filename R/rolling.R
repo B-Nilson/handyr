@@ -95,6 +95,20 @@ rolling <- function(
     )
 }
 
+# Indices of the partial (edge) windows that get replaced with `fill`,
+# clamped to the length of `x` (when `width > length(x)` every window is
+# partial, and when `length(x) == 0` there are none)
+roll_partial_idx <- function(n, width, direction) {
+  if (direction == "backward") {
+    idx <- seq_len(max(width - 1, 0))
+  } else if (direction == "forward") {
+    idx <- seq_len(max(width - 1, 0)) + n - width + 1
+  } else {
+    return(integer(0))
+  }
+  idx[idx >= 1 & idx <= n]
+}
+
 # Vectorized rolling mean
 roll_mean <- function(
   x,
@@ -112,7 +126,13 @@ roll_mean <- function(
       .include_counts = TRUE
     )
   n_non_missing <- swap(attr(rolling_sum, "n_non_missing"), what = 0, with = NA)
-  as.numeric(rolling_sum) / n_non_missing
+  rolling_mean <- as.numeric(rolling_sum) / n_non_missing
+  # Apply `fill` after the division (rolling_sum's fill positions would
+  # otherwise be divided by the window count, e.g. -1/3 instead of -1)
+  if (!is.null(fill)) {
+    rolling_mean[roll_partial_idx(length(x), width, direction)] <- fill
+  }
+  rolling_mean
 }
 
 # Vectorized rolling sum
@@ -135,18 +155,13 @@ roll_sum <- function(
   rolling_sum[n_non_missing < min_non_na] <- NA
 
   if (.include_counts) {
-    n_possible <- rep(width, length(x))
-    n_possible[1:width] <- 1:width
+    n_possible <- pmin(seq_len(length(x)), width)
     attr(rolling_sum, "n") <- n_possible
     attr(rolling_sum, "n_non_missing") <- n_non_missing
   }
 
   if (!is.null(fill)) {
-    if (direction == "backward") {
-      rolling_sum[1:(width - 1)] <- fill
-    } else if (direction == "forward") {
-      rolling_sum[(length(x) - width + 1):length(x)] <- fill
-    }
+    rolling_sum[roll_partial_idx(length(x), width, direction)] <- fill
   }
 
   return(rolling_sum)
@@ -192,11 +207,11 @@ roll_maxmin <- function(
     as.data.frame(value_matrix)
   )
 
-  n_missing <- rowSums(is.na(value_matrix))
-  rolling_maxmin[n_missing < min_non_na] <- NA
+  n_non_missing <- width - rowSums(is.na(value_matrix))
+  rolling_maxmin[n_non_missing < min_non_na] <- NA
 
   if (!is.null(fill)) {
-    rolling_maxmin[1:(width - 1)] <- fill
+    rolling_maxmin[roll_partial_idx(length(x), width, direction)] <- fill
   }
   return(rolling_maxmin)
 }
@@ -219,11 +234,23 @@ roll_quantile <- function(
   rolling_quantile <- value_matrix |>
     matrixStats::rowQuantiles(probs = probs, na.rm = TRUE)
 
-  if (!is.null(fill)) {
+  # Enforce minimum number of non-NA values per window
+  n_non_missing <- width - rowSums(is.na(value_matrix))
+  not_enough <- n_non_missing < min_non_na
+  if (any(not_enough)) {
     if (length(probs) == 1) {
-      rolling_quantile[1:(width - 1)] <- fill
+      rolling_quantile[not_enough] <- NA
     } else {
-      rolling_quantile[1:(width - 1), ] <- fill
+      rolling_quantile[not_enough, ] <- NA
+    }
+  }
+
+  if (!is.null(fill)) {
+    partial_idx <- roll_partial_idx(length(x), width, direction)
+    if (length(probs) == 1) {
+      rolling_quantile[partial_idx] <- fill
+    } else {
+      rolling_quantile[partial_idx, ] <- fill
     }
   }
   return(rolling_quantile)
@@ -247,16 +274,23 @@ roll_median <- function(
 }
 
 build_roll_matrix <- function(x, width = 3, direction = "backward", fill = NA) {
+  stopifnot(
+    "direction must be 'backward' or 'forward'" = direction %in%
+      c(
+        "backward",
+        "forward"
+      )
+  )
   fill <- ifelse(is.null(fill), NA, fill)
   value_matrix <- matrix(fill, nrow = length(x), ncol = width)
-  for (i in 0:(width - 1)) {
+  # Only `length(x)` columns can hold real values; the rest are padding,
+  # so `width > length(x)` is valid (all windows are partial), matching
+  # zoo::rollapply
+  for (i in seq_len(min(width, length(x)))) {
     if (direction == "backward") {
-      value_matrix[(i + 1):length(x), i + 1] <- x[1:(length(x) - i)]
+      value_matrix[i:length(x), i] <- x[1:(length(x) - i + 1)]
     } else if (direction == "forward") {
-      value_matrix[1:(length(x) - i), i + 1] <- x[(i + 1):length(x)]
-    } else {
-      # TODO: implement center
-      stop("direction must be 'backward' or 'forward'")
+      value_matrix[1:(length(x) - i + 1), i] <- x[i:length(x)]
     }
   }
   return(value_matrix)

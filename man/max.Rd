@@ -10,7 +10,7 @@ max(..., na.rm = FALSE)
 min(..., na.rm = FALSE)
 }
 \arguments{
-\item{...}{numeric or character vectors (see \link[base:Extremes]{base::max}).}
+\item{...}{numeric, character, Date, or POSIXct vectors (see \link[base:Extremes]{base::max}).}
 
 \item{na.rm}{A logical value indicating whether NA values should be removed.}
 }
@@ -44,5 +44,8 @@ data.frame(
     max_x = max(x, na.rm = TRUE),
     min_x = min(x, na.rm = TRUE)
   )
+
+# Dates are supported too
+max(as.Date(c("2022-01-01", "2022-01-03")), na.rm = TRUE) # Returns a Date
 
 }

@@ -50,6 +50,55 @@ test_that("able to make sequences from intervals", {
     expect_equal(expected)
 })
 
+test_that("by = 'auto' works for sub-day intervals", {
+  from <- as.POSIXct("2022-01-01 00:00:00", tz = "UTC")
+  # < 1 minute -> seconds
+  expect_equal(
+    lubridate::interval(from, from + 30) |> seq(),
+    seq(from, from + 30, by = "1 secs")
+  )
+  # < 1 hour -> minutes
+  expect_equal(
+    lubridate::interval(from, from + 1800) |> seq(),
+    seq(from, from + 1800, by = "1 mins")
+  )
+  # < 1 day -> hours
+  expect_equal(
+    lubridate::interval(from, from + 36000) |> seq(),
+    seq(from, from + 36000, by = "1 hours")
+  )
+  # < 1 year -> days
+  expect_equal(
+    lubridate::interval(from, from + 7 * 86400) |> seq(),
+    seq(from, from + 7 * 86400, by = "1 days")
+  )
+  # >= 1 year -> years
+  expect_equal(
+    lubridate::interval(from, from + 365 * 86400) |> seq(),
+    seq(from, from + 365 * 86400, by = "1 years")
+  )
+})
+
+test_that("by = 'auto' picks the coarser step at exact unit boundaries", {
+  from <- as.POSIXct("2022-01-01 00:00:00", tz = "UTC")
+  expect_equal(
+    lubridate::interval(from, from + 60) |> seq(),
+    seq(from, from + 60, by = "1 mins")
+  )
+  expect_equal(
+    lubridate::interval(from, from + 3600) |> seq(),
+    seq(from, from + 3600, by = "1 hours")
+  )
+  expect_equal(
+    lubridate::interval(from, from + 86400) |> seq(),
+    seq(from, from + 86400, by = "1 days")
+  )
+  expect_equal(
+    lubridate::interval(from, from + 31536000) |> seq(),
+    seq(from, from + 31536000, by = "1 years")
+  )
+})
+
 test_that("is_within works", {
   date_ranges <- c(
     start = "2025-01-01 00:00:00",

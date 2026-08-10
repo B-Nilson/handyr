@@ -59,7 +59,7 @@ shorten_number <- function(
 
   # For each symbol, replace all values greater than or equal to the threshold with the symbol
   # (or the reverse if reverse = TRUE)
-  output <- if (reverse) as.numeric(x) else as.character(x)
+  output <- as.character(x)
   for (symbol in names(thresholds)) {
     threshold <- thresholds[[symbol]]
     if (!reverse) {
@@ -78,6 +78,11 @@ shorten_number <- function(
         ) |>
         as.numeric()
     }
+  }
+  # Convert back to numeric in reverse mode only after symbols have been
+  # replaced, so valid inputs (e.g. "1K") don't trigger coercion warnings
+  if (reverse) {
+    output <- as.numeric(output)
   }
   return(output)
 }

@@ -78,7 +78,7 @@ is_within <- function(dates, interval) {
 #' @param interval A `Interval` object representing the date range.
 #'   Multiple intervals will be looped over using `sapply()` with the same `by` and `...` arguments.
 #' @param by A string indicating the interval to use.
-#'   Can be one of "auto", "1 seconds", "1 minutes", "1 hours", or "1 days".
+#'   Can be one of "auto", "1 secs", "1 mins", "1 hours", "1 days", or "1 years".
 #'   If "auto", the interval will be automatically determined based length of the interval.
 #'   Default is "auto".
 #' @param ... Additional arguments passed to `seq()`.
@@ -102,14 +102,16 @@ seq.Interval <- function(interval, by = "auto", ...) {
   if (by == "auto") {
     interval_length <- lubridate::int_length(interval)
     interval_thresholds <- c(
-      "1 seconds" = 60,
-      "1 minutes" = 3600,
-      "1 hours" = 86400,
-      "1 days" = 31536000,
-      "1 years" = Inf
+      "1 secs" = -Inf,
+      "1 mins" = 60,
+      "1 hours" = 3600,
+      "1 days" = 86400,
+      "1 years" = 31536000
     )
+    # Use the largest step size whose threshold the interval length meets or exceeds.
+    # `"1 secs" = -Inf` ensures at least one threshold always passes.
     highest_passed_threshold <- max(which(
-      interval_thresholds < interval_length
+      interval_thresholds <= interval_length
     ))
     by <- names(interval_thresholds)[highest_passed_threshold]
   }
